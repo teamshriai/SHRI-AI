@@ -477,7 +477,7 @@ const FocusAreas = () => {
           {/* ════════════════════════════
               PARTNERSHIP SUB-SECTION
           ════════════════════════════ */}
-          <div className="mt-32 pt-20 border-t border-slate-900/5 sm:mt-44 sm:pt-28">
+          <div id="partnership" className="mt-32 pt-20 border-t border-slate-900/5 sm:mt-44 sm:pt-28">
             <div className="mb-20">
               <h2 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
                 Partnership <span className="fa-shimmer-text">Opportunities</span>

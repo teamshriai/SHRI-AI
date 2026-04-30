@@ -1,46 +1,20 @@
 // Navbar.jsx
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const dropdownItems = {
-  'Focus Areas': [
-    { name: 'Clinical Research', href: '#focus' },
-    { name: 'Public Health', href: '#focus' },
-    { name: 'Biomedical Science', href: '#focus' },
-    { name: 'Health Policy', href: '#focus' },
-  ],
-  'Collaboration': [
-    { name: 'Academic Partners', href: '#collaboration' },
-    { name: 'Industry Partners', href: '#collaboration' },
-    { name: 'Government Bodies', href: '#collaboration' },
-    { name: 'NGO Network', href: '#collaboration' },
-  ],
-  'Partnership': [
-    { name: 'Strategic Alliance', href: '#partnership' },
-    { name: 'Funding Partners', href: '#partnership' },
-    { name: 'Global Network', href: '#partnership' },
-    { name: 'Become a Partner', href: '#partnership' },
-  ],
-};
-
 const navLinks = [
   { name: 'Home', href: '#hero' },
   { name: 'About Us', href: '#about' },
-  { name: 'Focus Areas', href: '#focus', hasDropdown: true },
-  { name: 'Collaboration', href: '#collaboration', hasDropdown: true },
-  { name: 'Programs', href: '#programs', hasDropdown: true },
-  { name: 'Partnership', href: '#partnership', hasDropdown: true },
+  { name: 'Focus Areas', href: '#focus' },
+  { name: 'Partnership', href: '#partnership' },
   { name: 'Contact', href: '#footer' },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [mobileDropdown, setMobileDropdown] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isSmall, setIsSmall] = useState(false);
   const navRef = useRef(null);
-  const dropdownTimerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -62,7 +36,6 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        setOpenDropdown(null);
         setIsOpen(false);
       }
     };
@@ -78,8 +51,6 @@ const Navbar = () => {
   const handleNavClick = useCallback((e, href) => {
     e.preventDefault();
     setIsOpen(false);
-    setOpenDropdown(null);
-    setMobileDropdown(null);
     const id = href.replace('#', '');
     const el = document.getElementById(id);
     if (el) {
@@ -88,19 +59,6 @@ const Navbar = () => {
       window.scrollTo({ top, behavior: 'smooth' });
     }
   }, []);
-
-  const handleDropdownEnter = (name) => {
-    clearTimeout(dropdownTimerRef.current);
-    setOpenDropdown(name);
-  };
-
-  const handleDropdownLeave = () => {
-    dropdownTimerRef.current = setTimeout(() => setOpenDropdown(null), 180);
-  };
-
-  const toggleMobileDropdown = (name) => {
-    setMobileDropdown(prev => prev === name ? null : name);
-  };
 
   const isTransparent = !scrolled && !isOpen;
   const mode = isTransparent ? 'transparent-mode' : 'solid-mode';
@@ -202,68 +160,6 @@ const Navbar = () => {
         .nav-link.solid-mode:hover {
           color: #1a1a24;
           background: rgba(0, 0, 0, 0.045);
-        }
-
-        /* ── Chevron ── */
-        .nav-chevron {
-          width: 16px;
-          height: 16px;
-          flex-shrink: 0;
-          color: rgba(45, 45, 56, 0.42);
-          transition:
-            transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            color     0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .nav-chevron.open { transform: rotate(180deg); }
-
-        /* ── Dropdown panel ── */
-        .dropdown-panel {
-          position: absolute;
-          top: calc(100% + 12px);
-          left: 0;
-          min-width: 240px;
-          background: rgba(255,255,255,0.99);
-          border: 1px solid rgba(0,0,0,0.07);
-          border-radius: 16px;
-          box-shadow:
-            0 10px 40px rgba(0,0,0,0.11),
-            0 2px 10px rgba(0,0,0,0.06);
-          padding: 8px;
-          transform-origin: top left;
-          transition:
-            opacity   0.28s cubic-bezier(0.4, 0, 0.2, 1),
-            transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-          pointer-events: none;
-          opacity: 0;
-          transform: translateY(-8px) scale(0.97);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-        }
-        .dropdown-panel.open {
-          pointer-events: auto;
-          opacity: 1;
-          transform: translateY(0px) scale(1);
-        }
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          width: 100%;
-          padding: 11px 18px;
-          border-radius: 10px;
-          font-family: 'Inter', sans-serif;
-          font-size: 15px;
-          font-weight: 400;
-          color: #4a4a5a;
-          text-decoration: none;
-          letter-spacing: -0.006em;
-          transition:
-            background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-            color      0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          cursor: pointer;
-        }
-        .dropdown-item:hover {
-          background: rgba(0,0,0,0.045);
-          color: #1a1a24;
         }
 
         /* ── CTA button ── */
@@ -376,33 +272,6 @@ const Navbar = () => {
           color: #1a1a24;
         }
 
-        .mobile-sub-panel {
-          overflow: hidden;
-          transition:
-            max-height 0.34s cubic-bezier(0.4, 0, 0.2, 1),
-            opacity    0.30s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mobile-sub-panel.open   { max-height: 400px; opacity: 1; }
-        .mobile-sub-panel.closed { max-height: 0;      opacity: 0; }
-
-        .mobile-sub-item {
-          display: block;
-          padding: 12px 16px;
-          border-radius: 10px;
-          font-family: 'Inter', sans-serif;
-          font-size: 15px;
-          color: #666;
-          text-decoration: none;
-          letter-spacing: -0.006em;
-          transition:
-            background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-            color      0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mobile-sub-item:hover {
-          background: rgba(0,0,0,0.04);
-          color: #1a1a24;
-        }
-
         .mobile-divider {
           height: 1px;
           background: rgba(0,0,0,0.055);
@@ -463,56 +332,14 @@ const Navbar = () => {
               justifyContent: 'center',
             }}>
               {navLinks.map((link) => (
-                <div
+                <a
                   key={link.name}
-                  style={{ position: 'relative' }}
-                  onMouseEnter={() => link.hasDropdown && handleDropdownEnter(link.name)}
-                  onMouseLeave={() => link.hasDropdown && handleDropdownLeave()}
+                  href={link.href}
+                  className={`nav-link ${mode}`}
+                  onClick={(e) => handleNavClick(e, link.href)}
                 >
-                  {link.hasDropdown ? (
-                    <>
-                      <button
-                        onClick={(e) => handleNavClick(e, link.href)}
-                        className={`nav-link ${mode}`}
-                      >
-                        {link.name}
-                        <svg
-                          className={`nav-chevron ${openDropdown === link.name ? 'open' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-                      <div
-                        className={`dropdown-panel ${openDropdown === link.name ? 'open' : ''}`}
-                        onMouseEnter={() => clearTimeout(dropdownTimerRef.current)}
-                        onMouseLeave={handleDropdownLeave}
-                      >
-                        {(dropdownItems[link.name] || []).map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className="dropdown-item"
-                            onClick={(e) => handleNavClick(e, item.href)}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <a
-                      href={link.href}
-                      className={`nav-link ${mode}`}
-                      onClick={(e) => handleNavClick(e, link.href)}
-                    >
-                      {link.name}
-                    </a>
-                  )}
-                </div>
+                  {link.name}
+                </a>
               ))}
             </div>
           )}
@@ -569,65 +396,13 @@ const Navbar = () => {
                 {navLinks.map((link, idx) => (
                   <div key={link.name}>
                     {idx > 0 && <div className="mobile-divider" />}
-
-                    {link.hasDropdown ? (
-                      <div>
-                        <button
-                          onClick={() => toggleMobileDropdown(link.name)}
-                          className="mobile-link"
-                        >
-                          <span>{link.name}</span>
-                          <svg
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: 'rgba(45,45,56,0.38)',
-                              transition: 'transform 0.32s cubic-bezier(0.4,0,0.2,1)',
-                              transform: mobileDropdown === link.name
-                                ? 'rotate(180deg)'
-                                : 'rotate(0deg)',
-                              flexShrink: 0,
-                            }}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-
-                        <div className={`mobile-sub-panel ${mobileDropdown === link.name ? 'open' : 'closed'}`}>
-                          <div style={{
-                            paddingLeft: 14,
-                            marginLeft: 14,
-                            marginBottom: 8,
-                            borderLeft: '2px solid rgba(0,0,0,0.07)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                          }}>
-                            {(dropdownItems[link.name] || []).map((item) => (
-                              <a
-                                key={item.name}
-                                href={item.href}
-                                className="mobile-sub-item"
-                                onClick={(e) => handleNavClick(e, item.href)}
-                              >
-                                {item.name}
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <a
-                        href={link.href}
-                        className="mobile-link"
-                        onClick={(e) => handleNavClick(e, link.href)}
-                      >
-                        {link.name}
-                      </a>
-                    )}
+                    <a
+                      href={link.href}
+                      className="mobile-link"
+                      onClick={(e) => handleNavClick(e, link.href)}
+                    >
+                      {link.name}
+                    </a>
                   </div>
                 ))}
               </div>
