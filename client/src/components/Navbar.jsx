@@ -6,7 +6,7 @@ const navLinks = [
   { name: 'About Us', href: '#about' },
   { name: 'Focus Areas', href: '#focus' },
   { name: 'Partnership', href: '#partnership' },
-  { name: 'Contact', href: '#footer' },
+  { name: 'Contact', href: '#footer', triggerForm: true },
 ];
 
 const Navbar = () => {
@@ -26,7 +26,7 @@ const Navbar = () => {
   useEffect(() => {
     const check = () => {
       setIsMobile(window.innerWidth < 1024);
-      setIsSmall(window.innerWidth < 640);
+      setIsSmall(window.innerWidth < 1200);
     };
     check();
     window.addEventListener('resize', check);
@@ -48,7 +48,7 @@ const Navbar = () => {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const handleNavClick = useCallback((e, href) => {
+  const handleNavClick = useCallback((e, href, triggerForm = false) => {
     e.preventDefault();
     setIsOpen(false);
     const id = href.replace('#', '');
@@ -57,6 +57,11 @@ const Navbar = () => {
       const navHeight = navRef.current?.offsetHeight || 90;
       const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
       window.scrollTo({ top, behavior: 'smooth' });
+
+      // If this link is marked to trigger the contact form
+      if (triggerForm) {
+        window.dispatchEvent(new CustomEvent('open-contact-form'));
+      }
     }
   }, []);
 
@@ -132,10 +137,10 @@ const Navbar = () => {
           display: inline-flex;
           align-items: center;
           gap: 5px;
-          padding: 10px 18px;
+          padding: 10px clamp(8px, 1vw, 18px);
           border-radius: 10px;
           font-family: 'DM Sans', sans-serif;
-          font-size: 16px;
+          font-size: clamp(14px, 1.1vw, 16px);
           font-weight: 400;
           letter-spacing: -0.012em;
           cursor: pointer;
@@ -146,6 +151,9 @@ const Navbar = () => {
           transition:
             color      0.35s cubic-bezier(0.4, 0, 0.2, 1),
             background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media (max-width: 1200px) {
+          .nav-link { padding: 10px 12px; }
         }
         .nav-link.transparent-mode {
           color: #2d2d38;
@@ -167,10 +175,10 @@ const Navbar = () => {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 12px 28px;
+          padding: 12px clamp(16px, 2vw, 28px);
           border-radius: 12px;
           font-family: 'DM Sans', sans-serif;
-          font-size: 16px;
+          font-size: clamp(14px, 1.1vw, 16px);
           font-weight: 500;
           letter-spacing: -0.012em;
           text-decoration: none;
@@ -327,16 +335,17 @@ const Navbar = () => {
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
-              flex: 1,
+              gap: 'clamp(4px, 0.8vw, 16px)',
+              flex: '1 1 auto',
               justifyContent: 'center',
+              padding: '0 20px',
             }}>
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   className={`nav-link ${mode}`}
-                  onClick={(e) => handleNavClick(e, link.href)}
+                  onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
                 >
                   {link.name}
                 </a>
@@ -349,7 +358,7 @@ const Navbar = () => {
             {!isMobile && (
               <a
                 href="#footer"
-                onClick={(e) => handleNavClick(e, '#footer')}
+                onClick={(e) => handleNavClick(e, '#footer', true)}
                 className={`cta-btn ${mode}`}
               >
                 Support Our Mission
@@ -399,7 +408,7 @@ const Navbar = () => {
                     <a
                       href={link.href}
                       className="mobile-link"
-                      onClick={(e) => handleNavClick(e, link.href)}
+                      onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
                     >
                       {link.name}
                     </a>
@@ -415,7 +424,7 @@ const Navbar = () => {
               }}>
                 <a
                   href="#footer"
-                  onClick={(e) => handleNavClick(e, '#footer')}
+                  onClick={(e) => handleNavClick(e, '#footer', true)}
                   className="cta-btn solid-mode"
                   style={{ width: '100%', padding: '16px 28px' }}
                 >

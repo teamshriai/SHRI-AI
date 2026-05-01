@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FocusAreas = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -6,26 +7,25 @@ const FocusAreas = () => {
   const areas = [
     {
       icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-          <circle cx="20" cy="20" r="4" stroke="#7B6FCD" strokeWidth="1.5" />
-          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round" transform="rotate(60 20 20)" />
-          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round" transform="rotate(120 20 20)" />
-          <circle cx="20" cy="4" r="2" fill="#7B6FCD" opacity="0.5" />
-          <circle cx="20" cy="36" r="2" fill="#7B6FCD" opacity="0.5" />
-          <circle cx="4" cy="20" r="2" fill="#7B6FCD" opacity="0.5" transform="rotate(60 20 20)" />
-          <circle cx="36" cy="20" r="2" fill="#7B6FCD" opacity="0.5" transform="rotate(60 20 20)" />
-          <circle cx="4" cy="20" r="2" fill="#7B6FCD" opacity="0.5" transform="rotate(120 20 20)" />
-          <circle cx="36" cy="20" r="2" fill="#7B6FCD" opacity="0.5" transform="rotate(120 20 20)" />
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <circle cx="20" cy="20" r="4" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" transform="rotate(60 20 20)" />
+          <path d="M20 4C20 4 20 8 20 12M20 28C20 28 20 32 20 36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" transform="rotate(120 20 20)" />
+          <circle cx="20" cy="4" r="2" fill="currentColor" opacity="0.5" />
+          <circle cx="20" cy="36" r="2" fill="currentColor" opacity="0.5" />
+          <circle cx="4" cy="20" r="2" fill="currentColor" opacity="0.5" transform="rotate(60 20 20)" />
+          <circle cx="36" cy="20" r="2" fill="currentColor" opacity="0.5" transform="rotate(60 20 20)" />
+          <circle cx="4" cy="20" r="2" fill="currentColor" opacity="0.5" transform="rotate(120 20 20)" />
+          <circle cx="36" cy="20" r="2" fill="currentColor" opacity="0.5" transform="rotate(120 20 20)" />
         </svg>
       ),
       accent: '#7B6FCD',
-      accentBg: 'rgba(123,111,205,0.08)',
-      accentBorder: 'rgba(123,111,205,0.18)',
-      accentLight: 'rgba(123,111,205,0.06)',
+      accentRgb: '123,111,205',
+      number: '01',
       title: 'Precision Oncology Research',
-      description:
-        'Enable early cancer detection, treatment stratification, and longitudinal monitoring through genomic precision.',
+      subtitle: 'Genomic Intelligence',
+      description: 'Enable early cancer detection, treatment stratification, and longitudinal monitoring through genomic precision.',
       features: [
         'Next-Generation Sequencing (NGS) for cancer profiling',
         'Liquid biopsy technologies (ctDNA, exosomes)',
@@ -34,21 +34,20 @@ const FocusAreas = () => {
     },
     {
       icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-          <rect x="6" y="12" width="28" height="20" rx="3" stroke="#3A82C4" strokeWidth="1.5" />
-          <path d="M13 22 L16 18 L19 23 L22 16 L25 22 L28 19" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="20" cy="8" r="3" stroke="#3A82C4" strokeWidth="1.5" />
-          <path d="M17 10.5 L16 12" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M23 10.5 L24 12" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round" />
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <rect x="6" y="12" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M13 22 L16 18 L19 23 L22 16 L25 22 L28 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="20" cy="8" r="3" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M17 10.5 L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M23 10.5 L24 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       ),
       accent: '#3A82C4',
-      accentBg: 'rgba(58,130,196,0.08)',
-      accentBorder: 'rgba(58,130,196,0.18)',
-      accentLight: 'rgba(58,130,196,0.06)',
+      accentRgb: '58,130,196',
+      number: '02',
       title: 'AI in Healthcare',
-      description:
-        'Accelerate diagnosis accuracy and personalize treatment using artificial intelligence.',
+      subtitle: 'Intelligent Diagnostics',
+      description: 'Accelerate diagnosis accuracy and personalize treatment using artificial intelligence.',
       features: [
         'Predictive models for cancer risk and outcomes',
         'Clinical decision support systems',
@@ -57,28 +56,27 @@ const FocusAreas = () => {
     },
     {
       icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-          <path d="M20 6 L20 18" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx="20" cy="21" r="4" stroke="#D4891E" strokeWidth="1.5" />
-          <path d="M8 14 L14 17.5" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M32 14 L26 17.5" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M8 28 L14 24.5" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M32 28 L26 24.5" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx="8" cy="13" r="2.5" stroke="#D4891E" strokeWidth="1.5" />
-          <circle cx="32" cy="13" r="2.5" stroke="#D4891E" strokeWidth="1.5" />
-          <circle cx="8" cy="29" r="2.5" stroke="#D4891E" strokeWidth="1.5" />
-          <circle cx="32" cy="29" r="2.5" stroke="#D4891E" strokeWidth="1.5" />
-          <circle cx="20" cy="35" r="2.5" stroke="#D4891E" strokeWidth="1.5" />
-          <path d="M20 25 L20 32.5" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" />
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <path d="M20 6 L20 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="20" cy="21" r="4" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M8 14 L14 17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M32 14 L26 17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M8 28 L14 24.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M32 28 L26 24.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="8" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="32" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="8" cy="29" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="32" cy="29" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="20" cy="35" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M20 25 L20 32.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       ),
       accent: '#D4891E',
-      accentBg: 'rgba(212,137,30,0.08)',
-      accentBorder: 'rgba(212,137,30,0.18)',
-      accentLight: 'rgba(212,137,30,0.06)',
-      title: 'Translational Research & Clinical Partnerships',
-      description:
-        'Bridge the gap between scientific discovery and patient care through strategic clinical partnerships.',
+      accentRgb: '212,137,30',
+      number: '03',
+      title: 'Translational Research',
+      subtitle: 'Bench to Bedside',
+      description: 'Bridge the gap between scientific discovery and patient care through strategic clinical partnerships.',
       features: [
         'Partner with hospitals, diagnostic labs, and academic centers',
         'Support clinical trials and validation studies',
@@ -87,21 +85,20 @@ const FocusAreas = () => {
     },
     {
       icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-          <circle cx="20" cy="20" r="13" stroke="#2aaa72" strokeWidth="1.5" />
-          <ellipse cx="20" cy="20" rx="6" ry="13" stroke="#2aaa72" strokeWidth="1.5" />
-          <path d="M7 20 Q13 17 20 20 Q27 23 33 20" stroke="#2aaa72" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M9 14 Q14 12 20 13 Q26 14 31 12" stroke="#2aaa72" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M9 26 Q14 28 20 27 Q26 26 31 28" stroke="#2aaa72" strokeWidth="1.5" strokeLinecap="round" />
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <circle cx="20" cy="20" r="13" stroke="currentColor" strokeWidth="1.5" />
+          <ellipse cx="20" cy="20" rx="6" ry="13" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M7 20 Q13 17 20 20 Q27 23 33 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M9 14 Q14 12 20 13 Q26 14 31 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M9 26 Q14 28 20 27 Q26 26 31 28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       ),
       accent: '#2aaa72',
-      accentBg: 'rgba(42,170,114,0.08)',
-      accentBorder: 'rgba(42,170,114,0.18)',
-      accentLight: 'rgba(42,170,114,0.06)',
+      accentRgb: '42,170,114',
+      number: '04',
       title: 'Global Health & Access',
-      description:
-        'Democratize access to cutting-edge cancer diagnostics globally and reduce disparities in cancer care delivery.',
+      subtitle: 'Democratising Care',
+      description: 'Democratize access to cutting-edge cancer diagnostics globally and reduce disparities in cancer care delivery.',
       features: [
         'Develop affordable diagnostic solutions',
         'Build research capacity in India, Southeast Asia, and Africa',
@@ -110,439 +107,568 @@ const FocusAreas = () => {
     },
   ];
 
-  const partners = [
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-          <path d="M8 34 L8 16 Q8 14 10 14 L30 14 Q32 14 32 16 L32 34" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M4 34 L36 34" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M16 34 L16 24 Q16 22 18 22 L22 22 Q24 22 24 24 L24 34" stroke="#7B6FCD" strokeWidth="1.5" strokeLinejoin="round"/>
-          <path d="M12 19 L12 14" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M28 19 L28 14" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M14 10 Q20 6 26 10" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-          <rect x="11" y="18" width="4" height="4" rx="0.5" stroke="#7B6FCD" strokeWidth="1.2"/>
-          <rect x="25" y="18" width="4" height="4" rx="0.5" stroke="#7B6FCD" strokeWidth="1.2"/>
-        </svg>
-      ),
-      title: 'Hospitals & Cancer Centers',
-      accent: '#7B6FCD',
-      accentBg: 'rgba(123,111,205,0.06)',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-          <circle cx="20" cy="18" r="5" stroke="#3A82C4" strokeWidth="1.5"/>
-          <path d="M20 6 L20 13" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M20 23 L20 30" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M14 9.5 L17 14" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M26 9.5 L23 14" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M8.5 18 L15 18" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M25 18 L31.5 18" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M14 26.5 L17 22" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M26 26.5 L23 22" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="18" r="2" fill="#3A82C4" opacity="0.3"/>
-          <path d="M16 30 Q20 34 24 30" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        </svg>
-      ),
-      title: 'Diagnostic Laboratories',
-      accent: '#3A82C4',
-      accentBg: 'rgba(58,130,196,0.06)',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-          <rect x="6" y="14" width="28" height="20" rx="2.5" stroke="#D4891E" strokeWidth="1.5"/>
-          <path d="M13 14 L13 11 Q13 8 16 8 L24 8 Q27 8 27 11 L27 14" stroke="#D4891E" strokeWidth="1.5" strokeLinejoin="round"/>
-          <path d="M6 22 L34 22" stroke="#D4891E" strokeWidth="1.5"/>
-          <path d="M17 22 L17 26 Q17 28 20 28 Q23 28 23 26 L23 22" stroke="#D4891E" strokeWidth="1.5" strokeLinejoin="round"/>
-          <circle cx="20" cy="25" r="1.5" fill="#D4891E" opacity="0.4"/>
-        </svg>
-      ),
-      title: 'Biotech & Medtech',
-      accent: '#D4891E',
-      accentBg: 'rgba(212,137,30,0.06)',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-          <path d="M20 6 L22.5 13.5 L30.5 13.5 L24 18.5 L26.5 26 L20 21.5 L13.5 26 L16 18.5 L9.5 13.5 L17.5 13.5 Z" stroke="#2aaa72" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
-          <path d="M14 30 L26 30" stroke="#2aaa72" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M16 33 L24 33" stroke="#2aaa72" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
-      title: 'Academic Institutions',
-      accent: '#2aaa72',
-      accentBg: 'rgba(42,170,114,0.06)',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
-          <path d="M20 10 C20 10 11 15.5 11 22.5 C11 27.3 15 31 20 31 C25 31 29 27.3 29 22.5 C29 15.5 20 10 20 10Z" stroke="#e05a8a" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
-          <path d="M15.5 22 C15.5 22 17.5 26 20 26 C22.5 26 24.5 22 24.5 22" stroke="#e05a8a" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M20 31 L20 35" stroke="#e05a8a" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M16 34.5 L24 34.5" stroke="#e05a8a" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
-      title: 'Philanthropic Organizations',
-      accent: '#e05a8a',
-      accentBg: 'rgba(224,90,138,0.06)',
-    },
-  ];
-
   const collaborationAreas = [
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-          <circle cx="20" cy="16" r="5" stroke="#7B6FCD" strokeWidth="1.5"/>
-          <path d="M20 8 L20 11" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M20 21 L20 24" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M13 16 L16 16" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M24 16 L27 16" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="20" cy="16" r="2" fill="#7B6FCD" opacity="0.25"/>
-          <path d="M12 28 C12 24 15.5 22 20 22 C24.5 22 28 24 28 28" stroke="#7B6FCD" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
-      accent: '#7B6FCD',
-      accentBg: 'rgba(123,111,205,0.05)',
-      title: 'Clinical Studies',
-      desc: 'Collaborative research initiatives and trial design',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-          <rect x="7" y="10" width="26" height="20" rx="2.5" stroke="#3A82C4" strokeWidth="1.5"/>
-          <path d="M12 18 L18 18" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M12 22 L22 22" stroke="#3A82C4" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M12 14.5 L28 14.5" stroke="#3A82C4" strokeWidth="1.3" strokeLinecap="round" opacity="0.4"/>
-          <circle cx="27" cy="18" r="3.5" stroke="#3A82C4" strokeWidth="1.4"/>
-          <path d="M27 16.5 L27 19.5 M25.5 18 L28.5 18" stroke="#3A82C4" strokeWidth="1.2" strokeLinecap="round"/>
-        </svg>
-      ),
-      accent: '#3A82C4',
-      accentBg: 'rgba(58,130,196,0.05)',
-      title: 'Data Partnerships',
-      desc: 'Shared datasets and analytics pipelines',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-          <circle cx="20" cy="20" r="13" stroke="#2aaa72" strokeWidth="1.5"/>
-          <path d="M13 20 L17.5 24.5 L27 15" stroke="#2aaa72" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      ),
-      accent: '#2aaa72',
-      accentBg: 'rgba(42,170,114,0.05)',
-      title: 'Technology Validation',
-      desc: 'Real-world testing and verification',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
-          <rect x="8" y="18" width="24" height="16" rx="2" stroke="#D4891E" strokeWidth="1.5"/>
-          <path d="M14 18 L14 13 Q14 8 20 8 Q26 8 26 13 L26 18" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="20" cy="26" r="3" stroke="#D4891E" strokeWidth="1.5"/>
-          <path d="M20 29 L20 32" stroke="#D4891E" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
-      accent: '#D4891E',
-      accentBg: 'rgba(212,137,30,0.05)',
-      title: 'Grant-Funded Research',
-      desc: 'Joint funding and co-authorship',
-    },
+    { title: 'Clinical Studies', desc: 'Collaborative research initiatives and trial design', accent: '#7B6FCD', accentRgb: '123,111,205' },
+    { title: 'Data Partnerships', desc: 'Shared datasets and analytics pipelines', accent: '#3A82C4', accentRgb: '58,130,196' },
+    { title: 'Technology Validation', desc: 'Real-world testing and verification', accent: '#2aaa72', accentRgb: '42,170,114' },
+    { title: 'Grant-Funded Research', desc: 'Joint funding and co-authorship', accent: '#D4891E', accentRgb: '212,137,30' },
   ];
 
-  const approaches = [
-    { dot: '#7B6FCD', text: 'Translational Science' },
-    { dot: '#3A82C4', text: 'Tech-Enabled Care' },
-    { dot: '#2aaa72', text: 'Global-First Mindset' },
-    { dot: '#D4891E', text: 'Nonprofit-Driven' },
-  ];
+  /* ─── shared style helpers ─── */
+  const dmSans = { fontFamily: "'DM Sans', sans-serif" };
+  const monoNum = {
+    ...dmSans,
+    fontWeight: 300,
+    fontSize: '0.68rem',
+    letterSpacing: '0.12em',
+    opacity: 0.35,
+    marginRight: '1.25rem',
+    minWidth: '2rem',
+  };
 
   return (
     <>
       <style>{`
-        .fa-root {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+        .fa2-root {
+          font-family: 'DM Sans', -apple-system, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-        .fa-shimmer-text {
+        .fa2-hero-title {
+          font-family: 'DM Sans', sans-serif;
+          font-weight: 300;
+          letter-spacing: -0.03em;
+          line-height: 1.05;
+          margin: 0;
+        }
+
+        .fa2-hero-em {
+          font-style: italic;
+          letter-spacing: -0.01em;
+        }
+
+        .fa2-shimmer {
           background: linear-gradient(
-            115deg,
-            #7B6FCD 0%,
-            #5B8DEE 22%,
-            #3A82C4 38%,
-            #2aaa72 55%,
-            #D4891E 75%,
-            #7B6FCD 100%
+            110deg,
+            #7B6FCD 0%, #a58de8 18%, #3A82C4 36%,
+            #2aaa72 52%, #D4891E 70%, #e05a8a 85%, #7B6FCD 100%
           );
-          background-size: 200% auto;
+          background-size: 250% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: fa-shimmer 6s linear infinite;
+          animation: fa2-shimmer-anim 8s linear infinite;
         }
 
-        @keyframes fa-shimmer {
-          0%   { background-position: 0%   center; }
-          100% { background-position: 200% center; }
+        @keyframes fa2-shimmer-anim {
+          from { background-position: 0% center; }
+          to   { background-position: 250% center; }
         }
 
-        .fa-bar {
-          background: linear-gradient(90deg, #7B6FCD, #3A82C4, #2aaa72, #D4891E);
-          background-size: 200% auto;
-          animation: fa-shimmer 4s linear infinite;
+        /* ── accordion shell ── */
+        .fa2-accordion {
+          border: 1px solid rgba(0,0,0,0.08);
+          overflow: hidden;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 20px 60px rgba(0,0,0,0.04);
         }
 
-        .fa-accordion-panel {
-          display: grid;
-          grid-template-rows: 0fr;
-          opacity: 0;
-          transition:
-            grid-template-rows 0.46s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity            0.38s cubic-bezier(0.22, 1, 0.36, 1);
+        .fa2-accordion-item {
+          border-bottom: 1px solid rgba(0,0,0,0.07);
+          position: relative;
+          overflow: hidden;
+          transition: background 0.25s ease;
         }
-        .fa-accordion-panel.open {
-          grid-template-rows: 1fr;
-          opacity: 1;
-        }
-        .fa-overflow { overflow: hidden; }
+        .fa2-accordion-item:last-child { border-bottom: none; }
 
-        .fa-card {
-          transition:
-            background-color 0.3s ease,
-            border-color     0.3s ease,
-            box-shadow       0.3s ease,
-            transform        0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-          will-change: transform;
+        .fa2-accordion-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          outline: none;
+          position: relative;
+          padding: clamp(1.2rem, 2.5vw, 1.75rem) clamp(1.25rem, 3vw, 2.5rem);
         }
-        .fa-card:hover  { transform: translateY(-2px); }
-        .fa-card.active { transform: translateY(-3px); }
-
-        .fa-chevron {
-          transition:
-            transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-            background-color 0.25s ease,
-            color 0.25s ease;
-        }
-        .fa-chevron.open { transform: rotate(180deg); }
-
-        .fa-underline {
-          transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        .fa2-accordion-btn:focus-visible {
+          outline: 2px solid #3A82C4;
+          outline-offset: -2px;
         }
 
-        .fa-stat-grid {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: clamp(1.5rem, 3vw, 2.5rem);
+        /* ── partner pills ── */
+        .fa2-partner-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.55rem 1.1rem;
+          border-radius: 100px;
+          font-size: 0.82rem;
+          font-weight: 500;
+          font-family: 'DM Sans', sans-serif;
+          letter-spacing: 0.01em;
+          border: 1px solid transparent;
+          background: #fff;
         }
 
-        @media (max-width: 1024px) {
-          .fa-stat-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 640px) {
-          .fa-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-        }
-
-        .fa-collab-grid {
+        /* ── collab grid ── */
+        .fa2-collab-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: clamp(2rem, 4vw, 3.5rem);
+          border: 1px solid rgba(0,0,0,0.07);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .fa2-collab-card {
+          padding: 2.2rem 2rem;
+          border-right: 1px solid rgba(0,0,0,0.07);
+          background: #fff;
+          transition: background-color 0.2s ease;
+        }
+        .fa2-collab-card:last-child { border-right: none; }
+
+        /* ── CTA ── */
+        .fa2-cta-block {
+          background: #0a0a0a;
+          padding: clamp(2.5rem, 5vw, 5rem) clamp(1.75rem, 5vw, 4rem);
+        }
+        .fa2-cta-inner {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 2rem;
+          align-items: center;
+        }
+        .fa2-cta-btns {
+          display: flex;
+          flex-direction: column;
+          gap: 0.65rem;
+          flex-shrink: 0;
+        }
+        .fa2-btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          padding: 0.9rem 2rem;
+          background: #fff;
+          color: #0a0a0a;
+          font-weight: 500;
+          font-size: 0.875rem;
+          letter-spacing: 0.01em;
+          border: none;
+          cursor: pointer;
+          text-decoration: none;
+          font-family: 'DM Sans', sans-serif;
+          white-space: nowrap;
+        }
+        .fa2-btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.65rem;
+          padding: 0.9rem 2rem;
+          background: transparent;
+          color: rgba(255,255,255,0.6);
+          font-weight: 400;
+          font-size: 0.875rem;
+          letter-spacing: 0.01em;
+          border: 1px solid rgba(255,255,255,0.15);
+          cursor: pointer;
+          text-decoration: none;
+          font-family: 'DM Sans', sans-serif;
+          white-space: nowrap;
         }
 
-        @media (max-width: 1024px) {
-          .fa-collab-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        /* ── misc ── */
+        .fa2-divider {
+          width: 100%;
+          height: 1px;
+          background: rgba(0,0,0,0.07);
         }
-        @media (max-width: 640px) {
-          .fa-collab-grid { grid-template-columns: 1fr; gap: 2rem; }
+        .fa2-partners-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem;
         }
+        .fa2-focus-grid {
+          display: grid;
+          grid-template-columns: clamp(200px, 28%, 320px) 1fr;
+          gap: clamp(3rem, 5vw, 7rem);
+          align-items: start;
+        }
+        .fa2-sticky-left { position: sticky; top: 6rem; }
 
-        .fa-btn {
-          transition: all 0.25s ease;
+        /* ── responsive ── */
+        @media (max-width: 768px) {
+          .fa2-focus-grid {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
+          .fa2-sticky-left { position: static; }
+          .fa2-cta-inner   { grid-template-columns: 1fr; }
+          .fa2-cta-btns    { flex-direction: row; flex-wrap: wrap; }
+          .fa2-collab-grid { grid-template-columns: repeat(2, 1fr); }
+          .fa2-collab-card:nth-child(odd)  { border-right: 1px solid rgba(0,0,0,0.07); }
+          .fa2-collab-card:nth-child(even) { border-right: none; }
+          .fa2-collab-card:nth-child(1),
+          .fa2-collab-card:nth-child(2)    { border-bottom: 1px solid rgba(0,0,0,0.07); }
         }
-        .fa-btn:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        @media (max-width: 480px) {
+          .fa2-collab-grid { grid-template-columns: 1fr; }
+          .fa2-collab-card { border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.07); }
+          .fa2-collab-card:last-child { border-bottom: none; }
         }
       `}</style>
 
       <section
-        className="fa-root relative isolate w-full"
-        style={{
-          background: 'linear-gradient(135deg, #fce8cc 0%, #ede4f8 35%, #cfe3ff 65%, #daeeff 100%)',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        className="fa2-root relative w-full"
+        style={{ background: '#f8f7f5', minHeight: '100vh' }}
       >
-        {/* ── Background glow blobs matching Hero/Footer theme ── */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-          <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', left: '-8%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(255,140,30,0.45) 0%, rgba(255,180,80,0.20) 35%, transparent 70%)', filter: 'blur(60px)' }} />
-          <div style={{ position: 'absolute', width: '50%', height: '60%', top: '-15%', left: '22%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(160,100,255,0.35) 0%, rgba(200,160,255,0.18) 40%, transparent 70%)', filter: 'blur(65px)' }} />
-          <div style={{ position: 'absolute', width: '55%', height: '65%', top: '40%', right: '-8%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(50,130,255,0.40) 0%, rgba(100,170,255,0.20) 35%, transparent 70%)', filter: 'blur(60px)' }} />
-          <div style={{ position: 'absolute', width: '40%', height: '50%', bottom: '-10%', left: '10%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.25) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        </div>
+        <div
+          style={{
+            maxWidth: '1600px',
+            margin: '0 auto',
+            padding: 'clamp(4rem, 8vw, 8rem) clamp(2rem, 5vw, 4rem)',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
 
-        {/* ── Main Content Container — Fullest Width ── */}
-        <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 py-20 sm:px-10 sm:py-28 lg:px-16 lg:py-36 xl:py-44">
-          
-          {/* ════════════════════════════
-              FOCUS AREAS SUB-SECTION
-          ════════════════════════════ */}
-          <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:gap-20 xl:gap-32">
-            
-            {/* Left Header Panel */}
-            <div className="lg:w-5/12 xl:w-[35%]">
-              <h2 className="mb-6 text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl lg:text-[3.6rem] xl:text-[4.2rem]">
-                Where <br />
-                <span className="fa-shimmer-text">Research</span> <br />
-                Meets <br />
-                <span className="fa-shimmer-text">Real Impact</span>
-              </h2>
-              <div className="fa-bar mb-8 h-1.5 w-24 rounded-full" />
-              <p className="max-w-md text-lg leading-relaxed text-slate-600">
-                Bridging the gap between scientific discovery and clinical care through AI and genomic precision.
+          {/* ═══════════════════════════════════
+              SECTION 1 — FOCUS AREAS
+          ═══════════════════════════════════ */}
+          <div className="fa2-focus-grid">
+
+            {/* Left sticky header */}
+            <motion.div
+              className="fa2-sticky-left"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.1 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p style={{
+                ...dmSans,
+                fontWeight: 300,
+                letterSpacing: '0.18em',
+                fontSize: '0.68rem',
+                textTransform: 'uppercase',
+                color: '#999',
+                marginBottom: '2rem',
+              }}>
+                Research Focus
               </p>
-            </div>
 
-            {/* Right Accordion Panel */}
-            <div className="flex flex-col gap-4 lg:w-7/12 xl:w-[65%]">
-              {areas.map((area, index) => {
-                const isActive = activeIndex === index;
-                return (
-                  <article
-                    key={area.title}
-                    className={`fa-card overflow-hidden rounded-3xl border backdrop-blur-3xl${isActive ? ' active' : ''}`}
-                    style={{
-                      background: isActive ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.6)',
-                      borderColor: isActive ? area.accentBorder : 'rgba(255,255,255,0.8)',
-                      boxShadow: isActive 
-                        ? `0 25px 60px rgba(0,0,0,0.08), 0 5px 20px ${area.accentBg}` 
-                        : '0 4px 20px rgba(0,0,0,0.03)',
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="flex w-full items-center gap-5 px-6 py-6 text-left outline-none sm:px-8 sm:py-8 lg:px-10 lg:py-9"
-                      onClick={() => setActiveIndex(isActive ? -1 : index)}
+              <h2
+                className="fa2-hero-title"
+                style={{ fontSize: 'clamp(2.6rem, 4.5vw, 4.2rem)', color: '#0a0a0a', marginBottom: '2rem' }}
+              >
+                Where{' '}
+                <span className="fa2-hero-em fa2-shimmer">science</span>
+                <br />
+                meets{' '}
+                <span className="fa2-hero-em fa2-shimmer">impact</span>
+              </h2>
+
+              <div style={{ width: '2rem', height: '1px', background: '#0a0a0a', marginBottom: '1.5rem' }} />
+            </motion.div>
+
+            {/* Right accordion */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="fa2-accordion">
+                {areas.map((area, index) => {
+                  const isActive = activeIndex === index;
+
+                  return (
+                    <div
+                      key={area.title}
+                      className="fa2-accordion-item"
+                      style={{ background: isActive ? '#fff' : '#fdfdfd' }}
                     >
-                      <span
-                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border sm:h-16 sm:w-16"
-                        style={{ background: area.accentBg, borderColor: area.accentBorder }}
+                      {/* Animated accent bar */}
+                      <motion.div
+                        initial={{ scaleY: 0, opacity: 0 }}
+                        animate={{ scaleY: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: 2,
+                          background: area.accent,
+                          transformOrigin: 'top',
+                          zIndex: 2,
+                        }}
+                      />
+
+                      <button
+                        type="button"
+                        className="fa2-accordion-btn"
+                        onClick={() => setActiveIndex(isActive ? null : index)}
                       >
-                        {area.icon}
-                      </span>
-                      <span className="flex-1">
-                        <span className="block text-xl font-bold text-slate-900 lg:text-2xl">{area.title}</span>
-                        <span
-                          className="fa-underline mt-3 block h-1 rounded-full"
+                        {/* Number */}
+                        <span style={monoNum}>{area.number}</span>
+
+                        {/* Icon */}
+                        <motion.span
+                          animate={{ color: isActive ? area.accent : '#bbb' }}
+                          transition={{ duration: 0.25 }}
+                          style={{ display: 'flex', alignItems: 'center', marginRight: '1.25rem', flexShrink: 0 }}
+                        >
+                          {area.icon}
+                        </motion.span>
+
+                        {/* Title + subtitle */}
+                        <span style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{
+                            ...dmSans,
+                            display: 'block',
+                            fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
+                            fontWeight: 500,
+                            color: isActive ? '#0a0a0a' : '#444',
+                            letterSpacing: '-0.01em',
+                            transition: 'color 0.2s ease',
+                            lineHeight: 1.3,
+                          }}>
+                            {area.title}
+                          </span>
+                          <span style={{
+                            ...dmSans,
+                            display: 'block',
+                            fontSize: '0.68rem',
+                            color: '#bbb',
+                            fontWeight: 300,
+                            letterSpacing: '0.1em',
+                            marginTop: '0.25rem',
+                            textTransform: 'uppercase',
+                          }}>
+                            {area.subtitle}
+                          </span>
+                        </span>
+
+                        {/* Plus / cross icon */}
+                        <motion.span
+                          animate={{ rotate: isActive ? 45 : 0 }}
+                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                           style={{
-                            background: `linear-gradient(90deg, ${area.accent}, transparent)`,
-                            width: isActive ? '6rem' : '3rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 28,
+                            height: 28,
+                            flexShrink: 0,
+                            marginLeft: '1rem',
+                            color: isActive ? area.accent : '#ccc',
+                            transition: 'color 0.2s ease',
                           }}
-                        />
-                      </span>
-                      <span className={`fa-chevron flex h-10 w-10 shrink-0 items-center justify-center rounded-full${isActive ? ' open' : ''}`}
-                            style={{ background: isActive ? area.accentBg : 'rgba(0,0,0,0.04)', color: isActive ? area.accent : '#94a3b8' }}>
-                        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                          <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                    </button>
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                          </svg>
+                        </motion.span>
+                      </button>
 
-                    <div className={`fa-accordion-panel${isActive ? ' open' : ''}`}>
-                      <div className="fa-overflow">
-                        <div className="px-6 pb-8 sm:px-8 sm:pb-10 lg:px-10 lg:pb-12">
-                          <div className="rounded-3xl p-6 sm:p-8" style={{ background: area.accentLight, border: `1px solid ${area.accentBorder}` }}>
-                            <p className="text-lg leading-8 text-slate-600">{area.description}</p>
-                            <ul className="mt-6 flex flex-col gap-4">
-                              {area.features.map((f) => (
-                                <li key={f} className="flex items-start gap-4 text-base text-slate-600">
-                                  <span className="mt-2.5 h-2 w-2 shrink-0 rounded-full" style={{ background: area.accent }} />
-                                  {f}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                      {/* Expandable panel */}
+                      <AnimatePresence initial={false}>
+                        {isActive && (
+                          <motion.div
+                            key="content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{
+                              height: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+                              opacity: { duration: 0.3 },
+                            }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            <div style={{
+                              paddingLeft: 'clamp(1.25rem, 3vw, 2.5rem)',
+                              paddingRight: 'clamp(1.25rem, 3vw, 2.5rem)',
+                              paddingBottom: 'clamp(1.5rem, 3vw, 2.25rem)',
+                            }}>
+                              <p style={{
+                                ...dmSans,
+                                fontSize: '0.875rem',
+                                color: '#666',
+                                lineHeight: 1.7,
+                                fontWeight: 300,
+                                marginBottom: '1.25rem',
+                                maxWidth: '58ch',
+                              }}>
+                                {area.description}
+                              </p>
+
+                              <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                                {area.features.map((f, fi) => (
+                                  <motion.div
+                                    key={f}
+                                    initial={{ opacity: 0, x: -8 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: fi * 0.07 + 0.1, duration: 0.4 }}
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'flex-start',
+                                      gap: '1rem',
+                                      padding: '0.9rem 0',
+                                      borderBottom: fi < area.features.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
+                                      ...dmSans,
+                                      fontSize: '0.875rem',
+                                      color: '#555',
+                                      fontWeight: 400,
+                                      lineHeight: 1.55,
+                                    }}
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, marginTop: '0.18rem' }}>
+                                      <path d="M9 12l2 2 4-4" stroke={area.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                      <circle cx="12" cy="12" r="9" stroke={area.accent} strokeWidth="1.5" opacity="0.3" />
+                                    </svg>
+                                    {f}
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </article>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </motion.div>
           </div>
 
-          {/* ════════════════════════════
-              PARTNERSHIP SUB-SECTION
-          ════════════════════════════ */}
-          <div id="partnership" className="mt-32 pt-20 border-t border-slate-900/5 sm:mt-44 sm:pt-28">
-            <div className="mb-20">
-              <h2 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-                Partnership <span className="fa-shimmer-text">Opportunities</span>
-              </h2>
-              <div className="fa-bar mb-8 h-1.5 w-24 rounded-full" />
-              <p className="max-w-2xl text-xl leading-relaxed text-slate-600">
-                Accelerating healthcare innovation through diverse global collaborations.
-              </p>
-            </div>
+          {/* ── Divider ── */}
+          <div className="fa2-divider" style={{ margin: 'clamp(4rem, 8vw, 7rem) 0' }} />
 
-            {/* Who We Collaborate With */}
-            <div className="mb-24">
-              <h3 className="mb-12 text-2xl font-bold text-slate-900 sm:text-3xl">Who We Collaborate With</h3>
-              <div className="fa-stat-grid">
-                {partners.map((p, i) => (
-                  <div key={i} className="flex flex-col items-center gap-5 text-center group">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-3xl transition-transform duration-300 group-hover:scale-110 sm:h-24 sm:w-24" 
-                         style={{ background: p.accentBg }}>
-                      {p.icon}
-                    </div>
-                    <p className="text-base font-semibold leading-snug text-slate-700 sm:text-lg">{p.title}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* ═══════════════════════════════════
+              SECTION 2 — PARTNERSHIPS
+          ═══════════════════════════════════ */}
 
-            {/* Areas of Collaboration */}
-            <div className="mb-24">
-              <h3 className="mb-12 text-2xl font-bold text-slate-900 sm:text-3xl">Areas of Collaboration</h3>
-              <div className="fa-collab-grid">
-                {collaborationAreas.map((area, i) => (
-                  <div key={i} className="rounded-3xl p-8 transition-all duration-300 hover:translate-y-[-4px]" 
-                       style={{ background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.6)' }}>
-                    <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: area.accentBg }}>
-                      {area.icon}
-                    </div>
-                    <h4 className="mb-3 text-xl font-bold text-slate-900">{area.title}</h4>
-                    <p className="text-base leading-relaxed text-slate-600">{area.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Heading */}
+          <motion.div
+            id="partnership"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            style={{ marginBottom: 'clamp(3rem, 5vw, 5rem)' }}
+          >
+            <h2
+              className="fa2-hero-title"
+              style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: '#0a0a0a', marginBottom: '1rem' }}
+            >
+              Partnership{' '}
+              <span className="fa2-hero-em fa2-shimmer">Opportunities</span>
+            </h2>
+            <p style={{ ...dmSans, fontSize: '0.875rem', color: '#888', fontWeight: 300, maxWidth: '50ch', lineHeight: 1.7 }}>
+              Accelerating healthcare innovation through diverse global collaborations.
+            </p>
+          </motion.div>
 
-            {/* Support Our Mission CTA */}
-            <div className="rounded-[2.5rem] bg-white/40 p-10 backdrop-blur-md border border-white/60 sm:p-16 lg:p-20">
-              <div className="max-w-4xl">
-                <div className="fa-bar mb-6 h-1.5 w-20 rounded-full" />
-                <h3 className="mb-6 text-4xl font-bold text-slate-900 sm:text-5xl lg:text-6xl">Support Our Mission</h3>
-                <p className="mb-10 text-xl leading-relaxed text-slate-600 sm:text-2xl">
-                  As a nonprofit, SHRI relies on strategic partnerships and philanthropic contributions to drive breakthroughs in precision cancer care.
+          {/* Areas of Collaboration */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            style={{ marginBottom: 'clamp(3rem, 5vw, 5rem)' }}
+          >
+            <p style={{ ...dmSans, fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#bbb', fontWeight: 300, marginBottom: '1.25rem' }}>
+              Areas of Collaboration
+            </p>
+            <div className="fa2-collab-grid">
+              {collaborationAreas.map((area, i) => (
+                <motion.div
+                  key={area.title}
+                  className="fa2-collab-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.1 }}
+                  whileHover={{ backgroundColor: `rgba(${area.accentRgb}, 0.03)` }}
+                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div style={{ width: 28, height: 2, background: area.accent, marginBottom: '1.5rem', borderRadius: 1 }} />
+                  <h4 style={{ ...dmSans, fontSize: '0.95rem', fontWeight: 500, color: '#0a0a0a', letterSpacing: '-0.01em', marginBottom: '0.5rem', marginTop: 0 }}>
+                    {area.title}
+                  </h4>
+                  <p style={{ ...dmSans, fontSize: '0.8rem', color: '#999', fontWeight: 300, lineHeight: 1.6, margin: 0 }}>
+                    {area.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div
+            className="fa2-cta-block"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="fa2-cta-inner">
+              <div>
+                <p style={{ ...dmSans, fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 300, marginBottom: '1rem', marginTop: 0 }}>
+                  Support Our Mission
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <a href="#contact" className="fa-btn inline-flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-lg font-bold text-white">
-                    Become a Partner
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                      <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </a>
-                  <a href="#contact" className="fa-btn inline-flex items-center gap-3 rounded-2xl border-2 border-slate-300 bg-white/60 px-10 py-5 text-lg font-bold text-slate-900 backdrop-blur-sm">
-                    Make a Contribution
-                  </a>
-                </div>
+                <h3
+                  className="fa2-hero-title"
+                  style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', color: '#fff', marginBottom: '0.75rem' }}
+                >
+                  Drive breakthroughs in{' '}
+                  <span className="fa2-hero-em" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    precision cancer care
+                  </span>
+                </h3>
+                <p style={{ ...dmSans, fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7, maxWidth: '55ch', margin: 0 }}>
+                  As a nonprofit, SHRI relies on strategic partnerships and philanthropic contributions.
+                </p>
+              </div>
+
+              <div className="fa2-cta-btns">
+                <motion.a
+                  href="#footer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                    window.dispatchEvent(new CustomEvent('open-contact-form'));
+                  }}
+                  className="fa2-btn-primary"
+                  whileHover={{ backgroundColor: '#f0f0f0', y: -2 }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  Become a Partner
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </motion.a>
+                <motion.a
+                  href="#footer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                    window.dispatchEvent(new CustomEvent('open-contact-form'));
+                  }}
+                  className="fa2-btn-secondary"
+                  whileHover={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)', y: -2 }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  Make a Contribution
+                </motion.a>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </section>

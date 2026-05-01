@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -6,14 +6,33 @@ const Footer = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [copied, setCopied] = useState(false);
+  const firstInputRef = useRef(null);
 
-  const handleGetInTouch = () => setFormVisible(true);
+  const handleGetInTouch = () => {
+    setFormVisible(true);
+    // Focus the first input after the animation starts/completes
+    setTimeout(() => {
+      firstInputRef.current?.focus();
+    }, 400); // Wait for a portion of the transition
+  };
+
   const handleExit = () => { setFormVisible(false); setShowSuccess(false); };
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowSuccess(true);
     setTimeout(() => { setShowSuccess(false); setFormVisible(false); }, 2500);
   };
+
+  useEffect(() => {
+    const handleOpenContact = () => {
+      // 1.5 sec delay so user sees the CTA section first
+      setTimeout(() => {
+        handleGetInTouch();
+      }, 250);
+    };
+    window.addEventListener('open-contact-form', handleOpenContact);
+    return () => window.removeEventListener('open-contact-form', handleOpenContact);
+  }, []);
 
   const handleCopy = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -106,11 +125,15 @@ const Footer = () => {
           transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 30;
           display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: clamp(28px, 5vw, 64px) clamp(20px, 4vw, 56px);
+          align-items: flex-start;
+          padding: clamp(60px, 8vw, 80px) clamp(20px, 4vw, 56px);
           overflow-y: auto;
           overflow-x: hidden;
+        }
+        .form-inner {
+          width: 100%;
+          max-width: 600px;
+          margin: auto;
         }
         .form-container.visible { transform: translateX(0); }
 
@@ -183,6 +206,8 @@ const Footer = () => {
         @media (max-width: 560px) { .cta-bottom-divider { border-right: none; border-bottom: 1px solid rgba(100,100,120,0.16); } }
 
         .contact-form { width: 100%; }
+        .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 560px) { .name-grid { grid-template-columns: 1fr; gap: 16px; } }
         .form-group { margin-bottom: clamp(14px, 1.8vw, 22px); }
         .form-label { display: block; font-family: var(--font-ui); font-size: 12.5px; font-weight: 500; color: #1a1a24; margin-bottom: 9px; letter-spacing: 0.01em; }
         .form-input, .form-textarea {
@@ -409,16 +434,16 @@ const Footer = () => {
             </div>
             <span className="back-arrow-label">Back</span>
           </button>
-          <div style={{ width: '100%', maxWidth: 600, paddingTop: 40 }}>
+          <div className="form-inner">
             {!showSuccess ? (
               <>
                 <h3 className="form-title" style={{ fontSize: '2.5rem' }}>Get in Touch</h3>
                 <p className="form-desc" style={{ fontSize: '21px' }}>Discuss how we can collaborate to advance precision health research.</p>
                 <form className="contact-form" onSubmit={handleSubmit}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+                  <div className="name-grid">
                     <div>
                       <label className="form-label" htmlFor="fname" style={{ fontSize: '17px' }}>First Name</label>
-                      <input className="form-input" style={{ fontSize: '21px', padding: '18px' }} type="text" id="fname" required />
+                      <input ref={firstInputRef} className="form-input" style={{ fontSize: '21px', padding: '18px' }} type="text" id="fname" required />
                     </div>
                     <div>
                       <label className="form-label" htmlFor="lname" style={{ fontSize: '17px' }}>Last Name</label>

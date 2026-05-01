@@ -1,39 +1,18 @@
+import { motion } from 'framer-motion';
+
 const Hero = () => {
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link
-        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&family=Google+Sans+Display:wght@100;200;300;400&family=Google+Sans+Text:wght@300;400;500&display=block"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
         rel="stylesheet"
       />
 
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
 
-        @keyframes float1  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-18px) translateZ(0);} }
-        @keyframes float2  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-13px) translateZ(0);} }
-        @keyframes float3  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-20px) translateZ(0);} }
-        @keyframes float4  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-11px) translateZ(0);} }
-        @keyframes float5  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-16px) translateZ(0);} }
-        @keyframes float6  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-22px) translateZ(0);} }
-        @keyframes float7  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-14px) translateZ(0);} }
-        @keyframes float8  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-19px) translateZ(0);} }
-        @keyframes float9  { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-12px) translateZ(0);} }
-        @keyframes float10 { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-17px) translateZ(0);} }
-        @keyframes float11 { 0%,100%{transform:translateY(0px) translateZ(0);} 50%{transform:translateY(-21px) translateZ(0);} }
-
-        .float-1  { animation: float1  8.0s 0.0s ease-in-out infinite; }
-        .float-2  { animation: float2  9.5s 0.8s ease-in-out infinite; }
-        .float-3  { animation: float3  7.5s 0.4s ease-in-out infinite; }
-        .float-4  { animation: float4  10s  1.2s ease-in-out infinite; }
-        .float-5  { animation: float5  8.5s 0.5s ease-in-out infinite; }
-        .float-6  { animation: float6  9.0s 1.0s ease-in-out infinite; }
-        .float-7  { animation: float7  7.8s 0.3s ease-in-out infinite; }
-        .float-8  { animation: float8  8.2s 0.7s ease-in-out infinite; }
-        .float-9  { animation: float9  9.8s 1.4s ease-in-out infinite; }
-        .float-10 { animation: float10 7.2s 0.2s ease-in-out infinite; }
-        .float-11 { animation: float11 8.8s 0.9s ease-in-out infinite; }
 
         .gl-shape {
           position: absolute;
@@ -178,16 +157,16 @@ const Hero = () => {
 
         /* ── Hero heading ── */
         .hero-heading {
-          font-family: 'Google Sans Display', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-          font-weight: 100;
+          font-family: 'DM Sans', sans-serif;
+          font-weight: 300;
           font-size: clamp(2rem, 3.8vw, 5.2rem);
           line-height: 1.08;
           letter-spacing: -0.02em;
           color: #44444e;
           margin: 0;
         }
-        .hero-heading .word-ai       { color: #c0392b; font-weight: 100; }
-        .hero-heading .word-genomics { color: #2a6db5; font-weight: 100; }
+        .hero-heading .word-ai       { color: #c0392b; font-weight: 300; }
+        .hero-heading .word-genomics { color: #2a6db5; font-weight: 300; }
 
         @media (max-width: 1280px) { .hero-heading { font-size: clamp(1.8rem, 3.4vw, 4.4rem); } }
         @media (max-width: 1024px) { .hero-heading { font-size: clamp(1.6rem, 3.8vw, 3.8rem); } }
@@ -244,7 +223,7 @@ const Hero = () => {
         }
 
         .bar-text {
-          font-family: 'Google Sans Text', 'SF Pro Text', -apple-system, sans-serif;
+          font-family: 'DM Sans', sans-serif;
           font-weight: 300;
           font-size: clamp(9px, 0.62vw, 10.5px);
           color: #78788a;
@@ -252,7 +231,7 @@ const Hero = () => {
           margin: 0;
         }
         .bar-text-muted {
-          font-family: 'Google Sans Text', 'SF Pro Text', -apple-system, sans-serif;
+          font-family: 'DM Sans', sans-serif;
           font-weight: 300;
           font-size: clamp(9px, 0.58vw, 10px);
           color: #94949e;
@@ -289,7 +268,7 @@ const Hero = () => {
           display: 'flex',
           flexDirection: 'column',
           background: 'linear-gradient(135deg, #fce8cc 0%, #ede4f8 35%, #cfe3ff 65%, #daeeff 100%)',
-          fontFamily: "'Google Sans Text', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily: "'DM Sans', sans-serif",
         }}
       >
         {/* ── Background glow blobs ── */}
@@ -304,25 +283,26 @@ const Hero = () => {
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
 
           <div className="shapes-desktop" style={{ position: 'absolute', inset: 0 }}>
-            <div className="gl-shape l1-shape float-1"  style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 20px 80px rgba(220,120,20,0.48), 0 8px 32px rgba(255,160,40,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape float-2"  style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 20px 80px rgba(230,110,40,0.48), 0 8px 32px rgba(255,145,70,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape float-3"  style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.50) 0%, rgba(180,140,245,0.36) 45%, rgba(150,110,230,0.20) 100%)',  boxShadow: '0 20px 80px rgba(140,90,220,0.48), 0 8px 32px rgba(180,130,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape float-4"  style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 20px 80px rgba(100,110,230,0.48), 0 8px 32px rgba(150,160,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape float-5"  style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 20px 80px rgba(50,120,240,0.48), 0 8px 32px rgba(100,170,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape float-6"  style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 20px 80px rgba(30,90,210,0.48), 0 8px 32px rgba(70,140,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l2-shape float-7"  style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 24px 90px rgba(200,140,20,0.58), 0 10px 40px rgba(255,190,50,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape float-8"  style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 24px 90px rgba(230,120,60,0.58), 0 10px 40px rgba(255,160,100,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape float-9"  style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 24px 90px rgba(130,80,220,0.58), 0 10px 40px rgba(180,140,255,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape float-10" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 24px 90px rgba(70,110,225,0.58), 0 10px 40px rgba(130,170,255,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape float-11" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 24px 90px rgba(50,110,230,0.58), 0 10px 40px rgba(100,165,255,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -18, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.0, repeat: Infinity, ease: "easeInOut", delay: 0.0 }} className="gl-shape l1-shape"  style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.85), 0 12px 48px rgba(255,160,40,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -13, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} className="gl-shape l1-shape"  style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.85), 0 12px 48px rgba(255,145,70,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -20, 0], rotate: [0, 2, 0] }} transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} className="gl-shape l1-shape"  style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.50) 0%, rgba(180,140,245,0.36) 45%, rgba(150,110,230,0.20) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.85), 0 12px 48px rgba(180,130,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -11, 0], rotate: [0, -1, 0] }} transition={{ duration: 10.0, repeat: Infinity, ease: "easeInOut", delay: 1.2 }} className="gl-shape l1-shape"  style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.85), 0 12px 48px rgba(150,160,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -16, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="gl-shape l1-shape"  style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -22, 0], rotate: [0, -2, 0] }} transition={{ duration: 9.0, repeat: Infinity, ease: "easeInOut", delay: 1.0 }} className="gl-shape l1-shape"  style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            
+            <motion.div animate={{ y: [0, -14, 0], rotate: [0, 1, 0] }} transition={{ duration: 7.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} className="gl-shape l2-shape"  style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -19, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} className="gl-shape l2-shape"  style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }} transition={{ duration: 9.8, repeat: Infinity, ease: "easeInOut", delay: 1.4 }} className="gl-shape l2-shape"  style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -17, 0], rotate: [0, -1, 0] }} transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -21, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
           </div>
 
           <div className="shapes-mobile" style={{ position: 'absolute', inset: 0 }}>
-            <div className="gl-shape l2-shape-mob float-7" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 24px 90px rgba(200,140,20,0.58), 0 10px 40px rgba(255,190,50,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape-mob float-8" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 24px 90px rgba(230,120,60,0.58), 0 10px 40px rgba(255,160,100,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l2-shape-mob float-9" style={{ left: '66%', top: '-13vh', background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 24px 90px rgba(130,80,220,0.58), 0 10px 40px rgba(180,140,255,0.42), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <div className="gl-shape l1-shape-mob float-5" style={{ left: '18%', top: '-6vh',  background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 20px 80px rgba(50,120,240,0.48), 0 8px 32px rgba(100,170,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <div className="gl-shape l1-shape-mob float-6" style={{ left: '58%', top: '-10vh', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 20px 80px rgba(30,90,210,0.48), 0 8px 32px rgba(70,140,255,0.32), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -14, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 7.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} className="gl-shape l2-shape-mob" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -19, 0], rotate: [0, -1, 0] }} transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} className="gl-shape l2-shape-mob" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }} transition={{ duration: 9.8, repeat: Infinity, ease: "easeInOut", delay: 1.4 }} className="gl-shape l2-shape-mob" style={{ left: '66%', top: '-13vh', background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -16, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="gl-shape l1-shape-mob" style={{ left: '18%', top: '-6vh',  background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0, -22, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 9.0, repeat: Infinity, ease: "easeInOut", delay: 1.0 }} className="gl-shape l1-shape-mob" style={{ left: '58%', top: '-10vh', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
           </div>
 
           {/* Bottom fade */}
