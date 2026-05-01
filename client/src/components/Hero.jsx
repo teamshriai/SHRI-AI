@@ -380,7 +380,7 @@ const Hero = () => {
                     </svg>
                   </div>
                   <p className="bar-text">
-                   SHRI AI is a U.S. 501(c)(3) nonprofit organization that works with hospitals and clinics to bring next-generation sequencing and AI-driven cancer diagnostics to patients in India — making precision oncology accessible, affordable, and scalable.
+                   SHRI AI is a U.S. 501(c)(3) nonprofit organization that works with hospitals and clinics to bring next-generation sequencing and AI-driven cancer diagnostics to patients across the globe — making precision oncology accessible, affordable, and scalable.
                   </p>
                 </div>
               </div>
