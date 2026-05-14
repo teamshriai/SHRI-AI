@@ -13,7 +13,6 @@ const Hero = () => {
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
 
-
         .gl-shape {
           position: absolute;
           -webkit-backface-visibility: hidden;
@@ -112,15 +111,13 @@ const Hero = () => {
           }
         }
 
-        /* ─────────────────────────────────────
-           LOGO
-        ───────────────────────────────────── */
+        /* ── Logo ── */
         .hero-logo-wrap {
           position: relative;
           display: inline-block;
-          width:  clamp(70px, 12vw, 424px);
-          height: clamp(70px, 12vw, 424px);
-          margin-bottom: clamp(6px, 1.2vw, 18px);
+          width:  clamp(52px, 8vw, 280px);
+          height: clamp(52px, 8vw, 280px);
+          margin-bottom: clamp(4px, 0.8vw, 12px);
           flex-shrink: 0;
         }
 
@@ -137,21 +134,21 @@ const Hero = () => {
 
         @media (max-width: 1024px) {
           .hero-logo-wrap {
-            width:  clamp(120px, 24vw, 320px);
-            height: clamp(120px, 24vw, 320px);
+            width:  clamp(80px, 16vw, 220px);
+            height: clamp(80px, 16vw, 220px);
           }
         }
         @media (max-width: 768px) {
           .hero-logo-wrap {
-            width:  clamp(110px, 32vw, 220px);
-            height: clamp(110px, 32vw, 220px);
-            margin-bottom: clamp(4px, 2vw, 12px);
+            width:  clamp(70px, 22vw, 160px);
+            height: clamp(70px, 22vw, 160px);
+            margin-bottom: clamp(3px, 1.5vw, 10px);
           }
         }
         @media (max-width: 480px) {
           .hero-logo-wrap {
-            width:  clamp(90px, 36vw, 170px);
-            height: clamp(90px, 36vw, 170px);
+            width:  clamp(60px, 26vw, 130px);
+            height: clamp(60px, 26vw, 130px);
           }
         }
 
@@ -159,21 +156,69 @@ const Hero = () => {
         .hero-heading {
           font-family: 'DM Sans', sans-serif;
           font-weight: 300;
-          font-size: clamp(2rem, 3.8vw, 5.2rem);
-          line-height: 1.08;
+          font-size: clamp(1.2rem, 2.1vw, 2.9rem);
+          line-height: 1.1;
           letter-spacing: -0.02em;
           color: #44444e;
-          margin: 0;
+          margin: 0 0 clamp(10px, 1.4vw, 22px) 0;
         }
         .hero-heading .word-ai       { color: #c0392b; font-weight: 300; }
         .hero-heading .word-genomics { color: #2a6db5; font-weight: 300; }
 
-        @media (max-width: 1280px) { .hero-heading { font-size: clamp(1.8rem, 3.4vw, 4.4rem); } }
-        @media (max-width: 1024px) { .hero-heading { font-size: clamp(1.6rem, 3.8vw, 3.8rem); } }
-        @media (max-width: 768px)  { .hero-heading { font-size: clamp(1.5rem, 5.5vw, 2.8rem); line-height: 1.12; } }
-        @media (max-width: 640px)  { .hero-heading { font-size: clamp(1.4rem, 6.5vw, 2.4rem); } }
-        @media (max-width: 480px)  { .hero-heading { font-size: clamp(1.2rem, 7.5vw, 2rem);   } }
-        @media (max-width: 360px)  { .hero-heading { font-size: clamp(1rem,   8vw,   1.7rem);  } }
+        @media (max-width: 1280px) { .hero-heading { font-size: clamp(1.1rem, 2.0vw, 2.5rem); } }
+        @media (max-width: 1024px) { .hero-heading { font-size: clamp(1.0rem, 2.3vw, 2.2rem); } }
+        @media (max-width: 768px)  { .hero-heading { font-size: clamp(1.0rem, 3.6vw, 1.8rem); line-height: 1.14; } }
+        @media (max-width: 640px)  { .hero-heading { font-size: clamp(0.95rem, 4.2vw, 1.6rem); } }
+        @media (max-width: 480px)  { .hero-heading { font-size: clamp(0.88rem, 4.8vw, 1.4rem); } }
+        @media (max-width: 360px)  { .hero-heading { font-size: clamp(0.8rem,  5.2vw, 1.2rem); } }
+
+        /* ── Support tagline ── */
+        .hero-support-text {
+          font-family: 'DM Sans', sans-serif;
+          font-weight: 300;
+          font-size: clamp(13px, 1.35vw, 19px);
+          color: #6a6a7e;
+          line-height: 1.7;
+          margin: 0;
+          max-width: clamp(300px, 50vw, 720px);
+        }
+        .hero-support-text a {
+          color: #2a6db5;
+          text-decoration: none;
+          font-weight: 400;
+        }
+        .hero-support-text a:hover {
+          text-decoration: underline;
+        }
+
+        @media (max-width: 1280px) {
+          .hero-support-text {
+            font-size: clamp(13px, 1.28vw, 18px);
+            max-width: clamp(280px, 52vw, 660px);
+          }
+        }
+        @media (max-width: 1024px) {
+          .hero-support-text {
+            font-size: clamp(13px, 1.55vw, 17px);
+            max-width: clamp(260px, 60vw, 580px);
+          }
+        }
+        @media (max-width: 768px) {
+          .hero-support-text {
+            font-size: clamp(13px, 3.2vw, 16px);
+            max-width: 100%;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-support-text {
+            font-size: clamp(12.5px, 3.5vw, 15px);
+          }
+        }
+        @media (max-width: 360px) {
+          .hero-support-text {
+            font-size: clamp(12px, 3.8vw, 14px);
+          }
+        }
 
         /* ── Bottom bar ── */
         .hero-bottom-bar {
@@ -185,41 +230,12 @@ const Hero = () => {
 
         .hero-bottom-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: 1fr;
           padding: 0 clamp(16px, 5vw, 56px);
         }
 
         .hero-bottom-col {
           padding: clamp(10px,1.6vw,16px) clamp(12px,1.6vw,20px);
-        }
-        .hero-bottom-col1 { padding-left: 0; border-right: 1px solid rgba(100,100,120,0.13); }
-        .hero-bottom-col2 { border-right: 1px solid rgba(100,100,120,0.13); }
-        .hero-bottom-col3 { padding-right: 0; }
-
-        .hero-bottom-col2-inner {
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-        }
-
-        .hero-bottom-col3-inner {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-end;
-          height: 100%;
-        }
-        .hero-bottom-col3-inner p { text-align: right; }
-
-        .arrow-circle {
-          flex-shrink: 0;
-          margin-top: 1px;
-          width: 20px; height: 20px;
-          border-radius: 50%;
-          border: 1px solid rgba(100,100,120,0.28);
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
 
         .bar-text {
@@ -230,33 +246,15 @@ const Hero = () => {
           line-height: 1.72;
           margin: 0;
         }
-        .bar-text-muted {
-          font-family: 'DM Sans', sans-serif;
-          font-weight: 300;
-          font-size: clamp(9px, 0.58vw, 10px);
-          color: #94949e;
-          line-height: 1.78;
-          margin: 0;
-        }
 
         @media (max-width: 768px) {
           .hero-bottom-grid {
-            grid-template-columns: 1fr;
             padding: 0;
           }
-          .hero-bottom-col,
-          .hero-bottom-col1,
-          .hero-bottom-col2,
-          .hero-bottom-col3 {
+          .hero-bottom-col {
             padding: clamp(12px, 4vw, 18px) clamp(16px, 5vw, 24px) !important;
-            border-right: none !important;
-            border-bottom: 1px solid rgba(100,100,120,0.13);
           }
-          .hero-bottom-col3 { border-bottom: none !important; }
-          .hero-bottom-col3-inner { align-items: flex-start; }
-          .hero-bottom-col3-inner p { text-align: left !important; }
-          .bar-text       { font-size: clamp(10px, 2.6vw, 13px); }
-          .bar-text-muted { font-size: clamp(10px, 2.4vw, 12px); }
+          .bar-text { font-size: clamp(10px, 2.6vw, 13px); }
         }
       `}</style>
 
@@ -289,12 +287,12 @@ const Hero = () => {
             <motion.div animate={{ y: [0, -11, 0], rotate: [0, -1, 0] }} transition={{ duration: 10.0, repeat: Infinity, ease: "easeInOut", delay: 1.2 }} className="gl-shape l1-shape"  style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.85), 0 12px 48px rgba(150,160,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
             <motion.div animate={{ y: [0, -16, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="gl-shape l1-shape"  style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
             <motion.div animate={{ y: [0, -22, 0], rotate: [0, -2, 0] }} transition={{ duration: 9.0, repeat: Infinity, ease: "easeInOut", delay: 1.0 }} className="gl-shape l1-shape"  style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            
+
             <motion.div animate={{ y: [0, -14, 0], rotate: [0, 1, 0] }} transition={{ duration: 7.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} className="gl-shape l2-shape"  style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
             <motion.div animate={{ y: [0, -19, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} className="gl-shape l2-shape"  style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
             <motion.div animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }} transition={{ duration: 9.8, repeat: Infinity, ease: "easeInOut", delay: 1.4 }} className="gl-shape l2-shape"  style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -17, 0], rotate: [0, -1, 0] }} transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -21, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -17, 0], rotate: [0, -1, 0] }} transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} className="gl-shape l2-shape"  style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0, -21, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }} className="gl-shape l2-shape"  style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
           </div>
 
           <div className="shapes-mobile" style={{ position: 'absolute', inset: 0 }}>
@@ -341,31 +339,21 @@ const Hero = () => {
                 <span className="word-genomics">Genomics</span>
               </h1>
 
+              {/* ── Support tagline ── */}
+              <p className="hero-support-text">
+                SHRI-AI proudly supports{' '}
+                <a href="https://OncoTraceAI.org" target="_blank" rel="noopener noreferrer">
+                  OncoTraceAI.org
+                </a>
+                {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision oncology through collaborative innovation and accessible healthcare technology.
+              </p>
+
             </div>
           </div>
 
-          {/* ── Bottom info bar ── */}
+          {/* ── Bottom bar (empty, kept for layout integrity) ── */}
           <div className="hero-bottom-bar">
-            <div className="hero-bottom-grid">
-
-     
-
-
-
-              <div className="hero-bottom-col hero-bottom-col2">
-                <div className="hero-bottom-col2-inner">
-                  <div className="arrow-circle">
-                    <svg width="8" height="8" fill="none" stroke="#8a8a9a" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </div>
-                  <p className="bar-text">
-                   SHRI AI is a U.S. 501(c)(3) nonprofit organization that works with hospitals and clinics to bring next-generation sequencing and AI-driven cancer diagnostics to patients across the globe — making precision oncology accessible, affordable, and scalable.
-                  </p>
-                </div>
-              </div>
-
-            </div>
+            <div className="hero-bottom-grid" />
           </div>
 
         </div>
