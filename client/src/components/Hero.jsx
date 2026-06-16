@@ -6,7 +6,7 @@ const Hero = () => {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
         rel="stylesheet"
       />
 
@@ -182,13 +182,75 @@ const Hero = () => {
           margin: 0;
           max-width: clamp(300px, 50vw, 720px);
         }
-        .hero-support-text a {
-          color: #2a6db5;
+
+        /* ── OncoTrace link ── */
+        .oncotrace-link {
+          position: relative;
+          display: inline;
           text-decoration: none;
-          font-weight: 400;
+          font-weight: 600;
+          letter-spacing: 0.015em;
+          padding-bottom: 2px;
+          background: linear-gradient(
+            90deg,
+            #0e3d8c 0%,
+            #1a5fb4 22%,
+            #2e85d4 42%,
+            #7ab8ee 50%,
+            #2e85d4 58%,
+            #1a5fb4 78%,
+            #0e3d8c 100%
+          );
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: shimmer-text 7s linear infinite;
+          filter: drop-shadow(0 0 3px rgba(60,150,255,0.14));
+          transition: filter 0.35s ease;
         }
-        .hero-support-text a:hover {
-          text-decoration: underline;
+
+        .oncotrace-link::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 100%;
+          height: 1.5px;
+          border-radius: 2px;
+          background: linear-gradient(
+            90deg,
+            rgba(14,61,140,0.08)  0%,
+            rgba(26,95,180,0.38)  22%,
+            rgba(59,158,255,0.78) 42%,
+            rgba(160,210,255,0.9) 50%,
+            rgba(59,158,255,0.78) 58%,
+            rgba(26,95,180,0.38)  78%,
+            rgba(14,61,140,0.08)  100%
+          );
+          background-size: 220% auto;
+          animation: shimmer-line 7s linear infinite;
+          filter: drop-shadow(0 0 2px rgba(59,158,255,0.30))
+                  drop-shadow(0 0 5px rgba(59,158,255,0.15));
+        }
+
+        .oncotrace-link:hover {
+          filter: drop-shadow(0 0 5px rgba(59,158,255,0.28))
+                  drop-shadow(0 0 10px rgba(59,158,255,0.14));
+        }
+        .oncotrace-link:hover::after {
+          filter: drop-shadow(0 0 4px rgba(80,180,255,0.50))
+                  drop-shadow(0 0 8px rgba(59,158,255,0.28));
+        }
+
+        @keyframes shimmer-text {
+          0%   { background-position: 220% center; }
+          100% { background-position: -220% center; }
+        }
+
+        @keyframes shimmer-line {
+          0%   { background-position: 220% center; }
+          100% { background-position: -220% center; }
         }
 
         @media (max-width: 1280px) {
@@ -248,13 +310,20 @@ const Hero = () => {
         }
 
         @media (max-width: 768px) {
-          .hero-bottom-grid {
-            padding: 0;
-          }
+          .hero-bottom-grid { padding: 0; }
           .hero-bottom-col {
             padding: clamp(12px, 4vw, 18px) clamp(16px, 5vw, 24px) !important;
           }
           .bar-text { font-size: clamp(10px, 2.6vw, 13px); }
+        }
+
+        /* ── Reduced motion ── */
+        @media (prefers-reduced-motion: reduce) {
+          .oncotrace-link,
+          .oncotrace-link::after {
+            animation: none;
+            background-position: 0% center;
+          }
         }
       `}</style>
 
@@ -342,7 +411,12 @@ const Hero = () => {
               {/* ── Support tagline ── */}
               <p className="hero-support-text">
                 SHRI-AI proudly supports{' '}
-                <a href="https://OncoTraceAI.org" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://OncoTraceAI.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="oncotrace-link"
+                >
                   OncoTraceAI.org
                 </a>
                 {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision oncology through collaborative innovation and accessible healthcare technology.
@@ -351,7 +425,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* ── Bottom bar (empty, kept for layout integrity) ── */}
+          {/* ── Bottom bar ── */}
           <div className="hero-bottom-bar">
             <div className="hero-bottom-grid" />
           </div>
