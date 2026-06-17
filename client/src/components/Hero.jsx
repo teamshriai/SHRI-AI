@@ -61,7 +61,8 @@ const Hero = () => {
         /* ── DNA clip box ── */
         .dna-clip-box {
           position: absolute;
-          right: 0; top: 0;
+          right: 0;
+          top: 0;
           height: 100vh;
           width: clamp(320px, 44vw, 740px);
           overflow: hidden;
@@ -71,8 +72,10 @@ const Hero = () => {
         .dna-img {
           position: absolute;
           display: block;
-          width: 100%; height: 115%;
-          top: -10%; left: 10%;
+          width: 100%;
+          height: 115%;
+          top: -10%;
+          left: 10%;
           object-fit: cover;
           object-position: 60% 20%;
           user-select: none;
@@ -152,10 +155,7 @@ const Hero = () => {
           }
         }
 
-        /*
-         * ── Hero heading ──
-         * Original values × 0.75 (25% smaller) — font-weight stays 300.
-         */
+        /* ── Hero heading — 25% smaller, weight 300 unchanged ── */
         .hero-heading {
           font-family: 'DM Sans', sans-serif;
           font-weight: 300;
@@ -225,20 +225,37 @@ const Hero = () => {
 
         /*
          * ── OncoTrace link ──
-         * • font-weight: 800  → bolder text
-         * • animation duration: 9s (was 4.5s) → slower, calmer shimmer
-         * • gradient spread pulled back so colours are richer but subtler
-         * • drop-shadow intensities reduced ~35% so the glow is gentler
-         * • underline height kept at 2px (slightly thinner than before)
+         * Stable, crash-free implementation:
+         * - <a> is inline-block so pseudo-elements are predictable
+         * - underline is a <span> child (not ::after on inline) — avoids
+         *   all Blink/WebKit inline pseudo-element paint bugs
+         * - will-change isolated to the animated spans only
+         * - animation slowwed to 9s, glow kept gentle
          */
-        .oncotrace-link {
+        .oncotrace-wrap {
+          display: inline-block;
           position: relative;
-          display: inline;
+          vertical-align: baseline;
+          line-height: inherit;
+        }
+
+        .oncotrace-link {
+          display: inline-block;
+          position: relative;
           text-decoration: none;
           font-weight: 800;
           letter-spacing: 0.022em;
-          padding-bottom: 2px;
+          vertical-align: baseline;
+          /* isolate stacking context so filter doesn't bleed */
+          isolation: isolate;
+          /* subtle lift on focus for a11y */
+          outline-offset: 3px;
+        }
 
+        /* The shimmer text layer */
+        .oncotrace-text {
+          display: inline-block;
+          position: relative;
           background: linear-gradient(
             90deg,
             #0d3d96  0%,
@@ -255,54 +272,52 @@ const Hero = () => {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-
-          /* slower animation */
+          will-change: background-position;
           animation: shimmer-text 9s linear infinite;
-
-          /* gentler glow */
-          filter: drop-shadow(0 0 5px rgba(30,140,255,0.28))
-                  drop-shadow(0 0 10px rgba(30,140,255,0.12));
+          /* gentle text glow via filter on this span, not the anchor */
+          filter: drop-shadow(0 0 4px rgba(30,140,255,0.22))
+                  drop-shadow(0 0 8px rgba(30,140,255,0.10));
           transition: filter 0.35s ease;
         }
 
-        .oncotrace-link::after {
-          content: '';
+        /* The underline — a sibling span, block under the text */
+        .oncotrace-underline {
+          display: block;
           position: absolute;
           left: 0;
           bottom: -2px;
           width: 100%;
           height: 2px;
           border-radius: 2px;
-
+          pointer-events: none;
           background: linear-gradient(
             90deg,
-            rgba(13,61,150,0.10)  0%,
-            rgba(20,96,200,0.50)  20%,
-            rgba(34,130,224,0.85) 38%,
-            rgba(74,174,255,0.95) 48%,
+            rgba(13,61,150,0.08)  0%,
+            rgba(20,96,200,0.45)  20%,
+            rgba(34,130,224,0.82) 38%,
+            rgba(74,174,255,0.92) 48%,
             rgba(122,207,255,1.0) 50%,
-            rgba(74,174,255,0.95) 52%,
-            rgba(34,130,224,0.85) 62%,
-            rgba(20,96,200,0.50)  80%,
-            rgba(13,61,150,0.10)  100%
+            rgba(74,174,255,0.92) 52%,
+            rgba(34,130,224,0.82) 62%,
+            rgba(20,96,200,0.45)  80%,
+            rgba(13,61,150,0.08)  100%
           );
           background-size: 220% auto;
-
-          /* slower animation — same duration as text */
+          will-change: background-position;
           animation: shimmer-line 9s linear infinite;
-
-          /* gentler underline glow */
-          filter: drop-shadow(0 0 3px rgba(74,174,255,0.48))
-                  drop-shadow(0 0 7px rgba(74,174,255,0.22));
+          filter: drop-shadow(0 0 2px rgba(74,174,255,0.40))
+                  drop-shadow(0 0 5px rgba(74,174,255,0.18));
+          transition: filter 0.35s ease;
         }
 
-        .oncotrace-link:hover {
-          filter: drop-shadow(0 0 7px rgba(74,174,255,0.48))
-                  drop-shadow(0 0 14px rgba(74,174,255,0.22));
+        /* Hover states — brighten glow only, no layout change */
+        .oncotrace-link:hover .oncotrace-text {
+          filter: drop-shadow(0 0 6px rgba(74,174,255,0.42))
+                  drop-shadow(0 0 12px rgba(74,174,255,0.20));
         }
-        .oncotrace-link:hover::after {
-          filter: drop-shadow(0 0 5px rgba(122,207,255,0.68))
-                  drop-shadow(0 0 10px rgba(74,174,255,0.36));
+        .oncotrace-link:hover .oncotrace-underline {
+          filter: drop-shadow(0 0 4px rgba(122,207,255,0.62))
+                  drop-shadow(0 0 8px rgba(74,174,255,0.30));
         }
 
         @keyframes shimmer-text {
@@ -327,7 +342,7 @@ const Hero = () => {
           padding: 0 clamp(16px, 5vw, 56px);
         }
         .hero-bottom-col {
-          padding: clamp(10px,1.6vw,16px) clamp(12px,1.6vw,20px);
+          padding: clamp(10px, 1.6vw, 16px) clamp(12px, 1.6vw, 20px);
         }
         .bar-text {
           font-family: 'DM Sans', sans-serif;
@@ -346,12 +361,13 @@ const Hero = () => {
           .bar-text { font-size: clamp(10px, 2.6vw, 13px); }
         }
 
-        /* ── Reduced motion ── */
+        /* ── Reduced motion — pause animations, static mid-gradient ── */
         @media (prefers-reduced-motion: reduce) {
-          .oncotrace-link,
-          .oncotrace-link::after {
+          .oncotrace-text,
+          .oncotrace-underline {
             animation: none;
-            background-position: 0% center;
+            background-position: 50% center;
+            will-change: auto;
           }
         }
       `}</style>
@@ -368,16 +384,28 @@ const Hero = () => {
         }}
       >
         {/* ── Background glow blobs ── */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0,
+            overflow: 'hidden', pointerEvents: 'none', zIndex: 0,
+          }}
+        >
           <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', left: '-8%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(255,140,30,0.55) 0%, rgba(255,180,80,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
           <div style={{ position: 'absolute', width: '50%', height: '60%', top: '-15%', left: '22%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(160,100,255,0.45) 0%, rgba(200,160,255,0.22) 40%, transparent 70%)', filter: 'blur(55px)' }} />
           <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', right: '-8%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(50,130,255,0.50) 0%, rgba(100,170,255,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
-          <div style={{ position: 'absolute', width: '30%', height: '40%', top: '5%',   right: '5%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.35) 0%, transparent 70%)',                             filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', width: '30%', height: '40%', top: '5%',   right: '5%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.35) 0%, transparent 70%)',                            filter: 'blur(40px)' }} />
         </div>
 
         {/* ── Glass shapes ── */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
-
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0,
+            overflow: 'hidden', pointerEvents: 'none', zIndex: 2,
+          }}
+        >
+          {/* Desktop */}
           <div className="shapes-desktop" style={{ position: 'absolute', inset: 0 }}>
             <motion.div animate={{ y: [0,-18,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.0,  repeat: Infinity, ease: 'easeInOut', delay: 0.0 }} className="gl-shape l1-shape" style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.85), 0 12px 48px rgba(255,160,40,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
             <motion.div animate={{ y: [0,-13,0], rotate: [0,-1.5,0] }} transition={{ duration: 9.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.8 }} className="gl-shape l1-shape" style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.85), 0 12px 48px rgba(255,145,70,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
@@ -393,6 +421,7 @@ const Hero = () => {
             <motion.div animate={{ y: [0,-21,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
           </div>
 
+          {/* Mobile */}
           <div className="shapes-mobile" style={{ position: 'absolute', inset: 0 }}>
             <motion.div animate={{ y: [0,-14,0], rotate: [0,1.5,0]  }} transition={{ duration: 7.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape-mob" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
             <motion.div animate={{ y: [0,-19,0], rotate: [0,-1,0]   }} transition={{ duration: 8.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape-mob" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
@@ -402,32 +431,54 @@ const Hero = () => {
           </div>
 
           {/* Bottom fade */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '38%', background: 'linear-gradient(to top, rgba(245,244,250,0.97) 0%, rgba(245,244,250,0.80) 35%, transparent 100%)', zIndex: 10 }} />
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              height: '38%',
+              background: 'linear-gradient(to top, rgba(245,244,250,0.97) 0%, rgba(245,244,250,0.80) 35%, transparent 100%)',
+              zIndex: 10,
+            }}
+          />
         </div>
 
         {/* ── DNA Image ── */}
-        <div className="dna-clip-box">
-          <img className="dna-img" src="/gene.png" alt="DNA double helix" draggable={false} />
+        <div className="dna-clip-box" aria-hidden="true">
+          <img
+            className="dna-img"
+            src="/gene.png"
+            alt=""
+            draggable={false}
+            loading="eager"
+            decoding="async"
+          />
         </div>
 
-        {/* ── Content ── */}
-        <div style={{ position: 'relative', zIndex: 20, display: 'flex', flexDirection: 'column', minHeight: '88vh' }}>
-
-          {/* Headline + Logo — bottom-left */}
+        {/* ── Main content ── */}
+        <div
+          style={{
+            position: 'relative', zIndex: 20,
+            display: 'flex', flexDirection: 'column',
+            minHeight: '88vh',
+          }}
+        >
+          {/* Headline block — anchored bottom-left */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
             <div style={{ padding: '0 clamp(16px,5vw,56px) clamp(22px,3vw,40px)' }}>
 
-              {/* ── Logo ── */}
+              {/* Logo */}
               <div className="hero-logo-wrap">
                 <img
                   className="hero-logo-img"
                   src="/trans-logo.png"
-                  alt="SHRI AI"
+                  alt="SHRI AI logo"
                   draggable={false}
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
 
-              {/* ── Heading — 25% smaller, weight 300 unchanged ── */}
+              {/* Heading */}
               <h1 className="hero-heading">
                 Advancing<br />
                 Precision Oncology<br />
@@ -437,28 +488,39 @@ const Hero = () => {
                 <span className="word-genomics">Genomics</span>
               </h1>
 
-              {/* ── Support tagline ── */}
+              {/* Support tagline */}
               <p className="hero-support-text">
                 SHRI-AI proudly supports{' '}
-                <a
-                  href="https://OncoTraceAI.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="oncotrace-link"
-                >
-                  OncoTraceAI.org
-                </a>
-                {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision oncology through collaborative innovation and accessible healthcare technology.
+                {/*
+                  Crash-safe link structure:
+                  - .oncotrace-wrap  → inline-block spacing container
+                  - .oncotrace-link  → inline-block anchor (no filter here)
+                  - .oncotrace-text  → gradient + filter lives here
+                  - .oncotrace-underline → sibling span, not ::after
+                */}
+                <span className="oncotrace-wrap">
+                  <a
+                    href="https://OncoTraceAI.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="oncotrace-link"
+                    aria-label="Visit OncoTraceAI.org (opens in new tab)"
+                  >
+                    <span className="oncotrace-text">OncoTraceAI.org</span>
+                    <span className="oncotrace-underline" aria-hidden="true" />
+                  </a>
+                </span>
+                {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision
+                oncology through collaborative innovation and accessible healthcare technology.
               </p>
 
             </div>
           </div>
 
-          {/* ── Bottom bar ── */}
-          <div className="hero-bottom-bar">
+          {/* Bottom bar */}
+          <div className="hero-bottom-bar" role="contentinfo">
             <div className="hero-bottom-grid" />
           </div>
-
         </div>
       </section>
     </>
