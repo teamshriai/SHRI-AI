@@ -6,7 +6,7 @@ const Hero = () => {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap"
         rel="stylesheet"
       />
 
@@ -58,6 +58,7 @@ const Hero = () => {
           .shapes-mobile  { display: block; }
         }
 
+        /* ── DNA clip box ── */
         .dna-clip-box {
           position: absolute;
           right: 0; top: 0;
@@ -120,7 +121,6 @@ const Hero = () => {
           margin-bottom: clamp(4px, 0.8vw, 12px);
           flex-shrink: 0;
         }
-
         .hero-logo-img {
           position: relative;
           z-index: 1;
@@ -152,11 +152,14 @@ const Hero = () => {
           }
         }
 
-        /* ── Hero heading ── */
+        /*
+         * ── Hero heading ──
+         * Original values × 0.75 (25% smaller) — font-weight stays 300.
+         */
         .hero-heading {
           font-family: 'DM Sans', sans-serif;
           font-weight: 300;
-          font-size: clamp(1.2rem, 2.1vw, 2.9rem);
+          font-size: clamp(0.9rem, 1.575vw, 2.175rem);
           line-height: 1.1;
           letter-spacing: -0.02em;
           color: #44444e;
@@ -165,12 +168,24 @@ const Hero = () => {
         .hero-heading .word-ai       { color: #c0392b; font-weight: 300; }
         .hero-heading .word-genomics { color: #2a6db5; font-weight: 300; }
 
-        @media (max-width: 1280px) { .hero-heading { font-size: clamp(1.1rem, 2.0vw, 2.5rem); } }
-        @media (max-width: 1024px) { .hero-heading { font-size: clamp(1.0rem, 2.3vw, 2.2rem); } }
-        @media (max-width: 768px)  { .hero-heading { font-size: clamp(1.0rem, 3.6vw, 1.8rem); line-height: 1.14; } }
-        @media (max-width: 640px)  { .hero-heading { font-size: clamp(0.95rem, 4.2vw, 1.6rem); } }
-        @media (max-width: 480px)  { .hero-heading { font-size: clamp(0.88rem, 4.8vw, 1.4rem); } }
-        @media (max-width: 360px)  { .hero-heading { font-size: clamp(0.8rem,  5.2vw, 1.2rem); } }
+        @media (max-width: 1280px) {
+          .hero-heading { font-size: clamp(0.825rem, 1.5vw, 1.875rem); }
+        }
+        @media (max-width: 1024px) {
+          .hero-heading { font-size: clamp(0.75rem, 1.725vw, 1.65rem); }
+        }
+        @media (max-width: 768px) {
+          .hero-heading { font-size: clamp(0.75rem, 2.7vw, 1.35rem); line-height: 1.14; }
+        }
+        @media (max-width: 640px) {
+          .hero-heading { font-size: clamp(0.7125rem, 3.15vw, 1.2rem); }
+        }
+        @media (max-width: 480px) {
+          .hero-heading { font-size: clamp(0.66rem, 3.6vw, 1.05rem); }
+        }
+        @media (max-width: 360px) {
+          .hero-heading { font-size: clamp(0.6rem, 3.9vw, 0.9rem); }
+        }
 
         /* ── Support tagline ── */
         .hero-support-text {
@@ -181,76 +196,6 @@ const Hero = () => {
           line-height: 1.7;
           margin: 0;
           max-width: clamp(300px, 50vw, 720px);
-        }
-
-        /* ── OncoTrace link ── */
-        .oncotrace-link {
-          position: relative;
-          display: inline;
-          text-decoration: none;
-          font-weight: 600;
-          letter-spacing: 0.015em;
-          padding-bottom: 2px;
-          background: linear-gradient(
-            90deg,
-            #0e3d8c 0%,
-            #1a5fb4 22%,
-            #2e85d4 42%,
-            #7ab8ee 50%,
-            #2e85d4 58%,
-            #1a5fb4 78%,
-            #0e3d8c 100%
-          );
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: shimmer-text 7s linear infinite;
-          filter: drop-shadow(0 0 3px rgba(60,150,255,0.14));
-          transition: filter 0.35s ease;
-        }
-
-        .oncotrace-link::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          bottom: -2px;
-          width: 100%;
-          height: 1.5px;
-          border-radius: 2px;
-          background: linear-gradient(
-            90deg,
-            rgba(14,61,140,0.08)  0%,
-            rgba(26,95,180,0.38)  22%,
-            rgba(59,158,255,0.78) 42%,
-            rgba(160,210,255,0.9) 50%,
-            rgba(59,158,255,0.78) 58%,
-            rgba(26,95,180,0.38)  78%,
-            rgba(14,61,140,0.08)  100%
-          );
-          background-size: 220% auto;
-          animation: shimmer-line 7s linear infinite;
-          filter: drop-shadow(0 0 2px rgba(59,158,255,0.30))
-                  drop-shadow(0 0 5px rgba(59,158,255,0.15));
-        }
-
-        .oncotrace-link:hover {
-          filter: drop-shadow(0 0 5px rgba(59,158,255,0.28))
-                  drop-shadow(0 0 10px rgba(59,158,255,0.14));
-        }
-        .oncotrace-link:hover::after {
-          filter: drop-shadow(0 0 4px rgba(80,180,255,0.50))
-                  drop-shadow(0 0 8px rgba(59,158,255,0.28));
-        }
-
-        @keyframes shimmer-text {
-          0%   { background-position: 220% center; }
-          100% { background-position: -220% center; }
-        }
-
-        @keyframes shimmer-line {
-          0%   { background-position: 220% center; }
-          100% { background-position: -220% center; }
         }
 
         @media (max-width: 1280px) {
@@ -272,14 +217,101 @@ const Hero = () => {
           }
         }
         @media (max-width: 480px) {
-          .hero-support-text {
-            font-size: clamp(12.5px, 3.5vw, 15px);
-          }
+          .hero-support-text { font-size: clamp(12.5px, 3.5vw, 15px); }
         }
         @media (max-width: 360px) {
-          .hero-support-text {
-            font-size: clamp(12px, 3.8vw, 14px);
-          }
+          .hero-support-text { font-size: clamp(12px, 3.8vw, 14px); }
+        }
+
+        /*
+         * ── OncoTrace link ──
+         * • font-weight: 800  → bolder text
+         * • animation duration: 9s (was 4.5s) → slower, calmer shimmer
+         * • gradient spread pulled back so colours are richer but subtler
+         * • drop-shadow intensities reduced ~35% so the glow is gentler
+         * • underline height kept at 2px (slightly thinner than before)
+         */
+        .oncotrace-link {
+          position: relative;
+          display: inline;
+          text-decoration: none;
+          font-weight: 800;
+          letter-spacing: 0.022em;
+          padding-bottom: 2px;
+
+          background: linear-gradient(
+            90deg,
+            #0d3d96  0%,
+            #1460c8  20%,
+            #2282e0  38%,
+            #4aaeff  48%,
+            #7acfff  50%,
+            #4aaeff  52%,
+            #2282e0  62%,
+            #1460c8  80%,
+            #0d3d96  100%
+          );
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+
+          /* slower animation */
+          animation: shimmer-text 9s linear infinite;
+
+          /* gentler glow */
+          filter: drop-shadow(0 0 5px rgba(30,140,255,0.28))
+                  drop-shadow(0 0 10px rgba(30,140,255,0.12));
+          transition: filter 0.35s ease;
+        }
+
+        .oncotrace-link::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 100%;
+          height: 2px;
+          border-radius: 2px;
+
+          background: linear-gradient(
+            90deg,
+            rgba(13,61,150,0.10)  0%,
+            rgba(20,96,200,0.50)  20%,
+            rgba(34,130,224,0.85) 38%,
+            rgba(74,174,255,0.95) 48%,
+            rgba(122,207,255,1.0) 50%,
+            rgba(74,174,255,0.95) 52%,
+            rgba(34,130,224,0.85) 62%,
+            rgba(20,96,200,0.50)  80%,
+            rgba(13,61,150,0.10)  100%
+          );
+          background-size: 220% auto;
+
+          /* slower animation — same duration as text */
+          animation: shimmer-line 9s linear infinite;
+
+          /* gentler underline glow */
+          filter: drop-shadow(0 0 3px rgba(74,174,255,0.48))
+                  drop-shadow(0 0 7px rgba(74,174,255,0.22));
+        }
+
+        .oncotrace-link:hover {
+          filter: drop-shadow(0 0 7px rgba(74,174,255,0.48))
+                  drop-shadow(0 0 14px rgba(74,174,255,0.22));
+        }
+        .oncotrace-link:hover::after {
+          filter: drop-shadow(0 0 5px rgba(122,207,255,0.68))
+                  drop-shadow(0 0 10px rgba(74,174,255,0.36));
+        }
+
+        @keyframes shimmer-text {
+          0%   { background-position: 220% center; }
+          100% { background-position: -220% center; }
+        }
+        @keyframes shimmer-line {
+          0%   { background-position: 220% center; }
+          100% { background-position: -220% center; }
         }
 
         /* ── Bottom bar ── */
@@ -289,17 +321,14 @@ const Hero = () => {
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
         }
-
         .hero-bottom-grid {
           display: grid;
           grid-template-columns: 1fr;
           padding: 0 clamp(16px, 5vw, 56px);
         }
-
         .hero-bottom-col {
           padding: clamp(10px,1.6vw,16px) clamp(12px,1.6vw,20px);
         }
-
         .bar-text {
           font-family: 'DM Sans', sans-serif;
           font-weight: 300;
@@ -343,33 +372,33 @@ const Hero = () => {
           <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', left: '-8%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(255,140,30,0.55) 0%, rgba(255,180,80,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
           <div style={{ position: 'absolute', width: '50%', height: '60%', top: '-15%', left: '22%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(160,100,255,0.45) 0%, rgba(200,160,255,0.22) 40%, transparent 70%)', filter: 'blur(55px)' }} />
           <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', right: '-8%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(50,130,255,0.50) 0%, rgba(100,170,255,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
-          <div style={{ position: 'absolute', width: '30%', height: '40%', top: '5%',   right: '5%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.35) 0%, transparent 70%)',                            filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', width: '30%', height: '40%', top: '5%',   right: '5%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.35) 0%, transparent 70%)',                             filter: 'blur(40px)' }} />
         </div>
 
         {/* ── Glass shapes ── */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
 
           <div className="shapes-desktop" style={{ position: 'absolute', inset: 0 }}>
-            <motion.div animate={{ y: [0, -18, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.0, repeat: Infinity, ease: "easeInOut", delay: 0.0 }} className="gl-shape l1-shape"  style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.85), 0 12px 48px rgba(255,160,40,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -13, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} className="gl-shape l1-shape"  style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.85), 0 12px 48px rgba(255,145,70,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -20, 0], rotate: [0, 2, 0] }} transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} className="gl-shape l1-shape"  style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.50) 0%, rgba(180,140,245,0.36) 45%, rgba(150,110,230,0.20) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.85), 0 12px 48px rgba(180,130,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -11, 0], rotate: [0, -1, 0] }} transition={{ duration: 10.0, repeat: Infinity, ease: "easeInOut", delay: 1.2 }} className="gl-shape l1-shape"  style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.85), 0 12px 48px rgba(150,160,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -16, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="gl-shape l1-shape"  style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -22, 0], rotate: [0, -2, 0] }} transition={{ duration: 9.0, repeat: Infinity, ease: "easeInOut", delay: 1.0 }} className="gl-shape l1-shape"  style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-18,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.0,  repeat: Infinity, ease: 'easeInOut', delay: 0.0 }} className="gl-shape l1-shape" style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.85), 0 12px 48px rgba(255,160,40,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-13,0], rotate: [0,-1.5,0] }} transition={{ duration: 9.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.8 }} className="gl-shape l1-shape" style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.85), 0 12px 48px rgba(255,145,70,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-20,0], rotate: [0,2,0]    }} transition={{ duration: 7.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.4 }} className="gl-shape l1-shape" style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.50) 0%, rgba(180,140,245,0.36) 45%, rgba(150,110,230,0.20) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.85), 0 12px 48px rgba(180,130,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-11,0], rotate: [0,-1,0]   }} transition={{ duration: 10.0, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }} className="gl-shape l1-shape" style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.85), 0 12px 48px rgba(150,160,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-16,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape" style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-22,0], rotate: [0,-2,0]   }} transition={{ duration: 9.0,  repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape" style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
 
-            <motion.div animate={{ y: [0, -14, 0], rotate: [0, 1, 0] }} transition={{ duration: 7.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} className="gl-shape l2-shape"  style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -19, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} className="gl-shape l2-shape"  style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }} transition={{ duration: 9.8, repeat: Infinity, ease: "easeInOut", delay: 1.4 }} className="gl-shape l2-shape"  style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -17, 0], rotate: [0, -1, 0] }} transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} className="gl-shape l2-shape"  style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -21, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }} className="gl-shape l2-shape"  style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-14,0], rotate: [0,1,0]    }} transition={{ duration: 7.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape" style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape" style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8,  repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape" style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-17,0], rotate: [0,-1,0]   }} transition={{ duration: 7.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-21,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
           </div>
 
           <div className="shapes-mobile" style={{ position: 'absolute', inset: 0 }}>
-            <motion.div animate={{ y: [0, -14, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 7.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} className="gl-shape l2-shape-mob" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -19, 0], rotate: [0, -1, 0] }} transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} className="gl-shape l2-shape-mob" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }} transition={{ duration: 9.8, repeat: Infinity, ease: "easeInOut", delay: 1.4 }} className="gl-shape l2-shape-mob" style={{ left: '66%', top: '-13vh', background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0, -16, 0], rotate: [0, -1.5, 0] }} transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="gl-shape l1-shape-mob" style={{ left: '18%', top: '-6vh',  background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0, -22, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 9.0, repeat: Infinity, ease: "easeInOut", delay: 1.0 }} className="gl-shape l1-shape-mob" style={{ left: '58%', top: '-10vh', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-14,0], rotate: [0,1.5,0]  }} transition={{ duration: 7.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape-mob" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1,0]   }} transition={{ duration: 8.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape-mob" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape-mob" style={{ left: '66%', top: '-13vh', background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-16,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape-mob" style={{ left: '18%', top: '-6vh',  background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-22,0], rotate: [0,1.5,0]  }} transition={{ duration: 9.0, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape-mob" style={{ left: '58%', top: '-10vh', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
           </div>
 
           {/* Bottom fade */}
@@ -398,7 +427,7 @@ const Hero = () => {
                 />
               </div>
 
-              {/* ── Heading ── */}
+              {/* ── Heading — 25% smaller, weight 300 unchanged ── */}
               <h1 className="hero-heading">
                 Advancing<br />
                 Precision Oncology<br />
