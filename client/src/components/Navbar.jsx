@@ -321,7 +321,7 @@ const Navbar = () => {
             />
 
             <div style={{ lineHeight: 1 }}>
-              <div className={`logo-title ${mode}`}>SHRI AI</div>
+              <div className={`logo-title ${mode}`}>SHRI-AI.org</div>
               {!isSmall && (
                 <div className={`logo-subtitle ${mode}`}>
                   Senus Healthcare Research Institute
