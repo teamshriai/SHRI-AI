@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import FocusAreas from './components/FocusAreas';
+import Team from './components/Team';
 import Footer from './components/Footer';
 
 function App() {
@@ -126,6 +127,8 @@ function App() {
           <FocusAreas />
         </div>
       </div>
+
+      <Team />
 
       <footer id="footer">
         <Footer />

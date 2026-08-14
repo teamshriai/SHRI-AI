@@ -78,7 +78,7 @@ const FocusAreas = () => {
       subtitle: 'Bench to Bedside',
       description: 'Bridge the gap between scientific discovery and patient care through strategic clinical partnerships.',
       features: [
-        'Partner with hospitals, diagnostic labs, and academic centers',
+        'Collaborate with hospitals, diagnostic labs, and academic centers',
         'Support clinical trials and validation studies',
         'Fast-track innovations from bench to bedside',
       ],
@@ -565,7 +565,7 @@ const FocusAreas = () => {
               className="fa2-hero-title"
               style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: '#0a0a0a', marginBottom: '1rem' }}
             >
-              Partnership{' '}
+              Collaboration{' '}
               <span className="fa2-hero-em fa2-shimmer">Opportunities</span>
             </h2>
             <p style={{ ...dmSans, fontSize: '0.875rem', color: '#888', fontWeight: 300, maxWidth: '50ch', lineHeight: 1.7 }}>
@@ -647,7 +647,7 @@ const FocusAreas = () => {
                   whileTap={{ scale: 0.99 }}
                   transition={{ duration: 0.18 }}
                 >
-                  Become a Partner
+                  Become a collaborator
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>

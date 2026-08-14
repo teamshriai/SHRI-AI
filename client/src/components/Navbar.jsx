@@ -5,7 +5,7 @@ const navLinks = [
   { name: 'Home', href: '#hero' },
   { name: 'About Us', href: '#about' },
   { name: 'Focus Areas', href: '#focus' },
-  { name: 'Partnership', href: '#partnership' },
+  { name: 'Collaborative organizations', href: '#partnership' },
   { name: 'Contact', href: '#footer', triggerForm: true },
 ];
 

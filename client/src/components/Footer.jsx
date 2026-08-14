@@ -486,7 +486,7 @@ const Footer = () => {
                   <span style={{ color: '#fff', fontWeight: 800, fontSize: 24 }}>S</span>
                 </div>
                 <div>
-                  <p style={{ fontWeight: 700, fontSize: 21, letterSpacing: '0.05em', margin: 0, color: '#fff' }}>SHRI</p>
+                  <p style={{ fontWeight: 700, fontSize: 21, letterSpacing: '0.05em', margin: 0, color: '#fff' }}>SHRI-AI</p>
                   <p style={{ fontSize: 17, color: '#fff', margin: 0 }}>Senus Healthcare Research Institute</p>
                 </div>
               </div>
@@ -518,7 +518,7 @@ const Footer = () => {
               <nav>
                 <a href="#about" className="shri-flink">About Us</a>
                 <a href="#focus" className="shri-flink">Focus Areas</a>
-                <a href="#partnership" className="shri-flink">Partnership</a>
+                <a href="#partnership" className="shri-flink">Collaborate</a>
                 <a href="#" className="shri-flink" onClick={(e) => { e.preventDefault(); handleGetInTouch(); }}>Contact</a>
               </nav>
             </div>
