@@ -467,7 +467,7 @@ const Footer = () => {
                   <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <h3 style={{ fontSize: '28px', margin: '0 0 16px' }}>Message Sent!</h3>
-                <p style={{ fontSize: '21px', color: '#6b6b80' }}>We'll get back to you within 24 hours.</p>
+                <p style={{ fontSize: '21px', color: '#6b6b80' }}>We'll get back to you within 24 hours</p>
               </div>
             )}
           </div>
