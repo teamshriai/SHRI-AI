@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { scrollToSection } from '../lib/scrollToSection';
 
 const FocusAreas = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -115,7 +116,7 @@ const FocusAreas = () => {
   ];
 
   /* ─── shared style helpers ─── */
-  const dmSans = { fontFamily: "'DM Sans', sans-serif" };
+  const dmSans = { fontFamily: 'var(--font-sans)' };
   const monoNum = {
     ...dmSans,
     fontWeight: 300,
@@ -129,16 +130,15 @@ const FocusAreas = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 
         .fa2-root {
-          font-family: 'DM Sans', -apple-system, sans-serif;
+          font-family: var(--font-sans);
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
         .fa2-hero-title {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           font-weight: 300;
           letter-spacing: -0.03em;
           line-height: 1.05;
@@ -209,7 +209,7 @@ const FocusAreas = () => {
           border-radius: 100px;
           font-size: 0.82rem;
           font-weight: 500;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           letter-spacing: 0.01em;
           border: 1px solid transparent;
           background: #fff;
@@ -250,8 +250,10 @@ const FocusAreas = () => {
         .fa2-btn-primary {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.65rem;
-          padding: 0.9rem 2rem;
+          padding: 0.9rem clamp(1rem, 3vw, 2rem);
+          min-height: 44px;
           background: #fff;
           color: #0a0a0a;
           font-weight: 500;
@@ -260,14 +262,15 @@ const FocusAreas = () => {
           border: none;
           cursor: pointer;
           text-decoration: none;
-          font-family: 'DM Sans', sans-serif;
-          white-space: nowrap;
+          font-family: var(--font-sans);
         }
         .fa2-btn-secondary {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.65rem;
-          padding: 0.9rem 2rem;
+          padding: 0.9rem clamp(1rem, 3vw, 2rem);
+          min-height: 44px;
           background: transparent;
           color: rgba(255,255,255,0.6);
           font-weight: 400;
@@ -276,8 +279,96 @@ const FocusAreas = () => {
           border: 1px solid rgba(255,255,255,0.15);
           cursor: pointer;
           text-decoration: none;
-          font-family: 'DM Sans', sans-serif;
-          white-space: nowrap;
+          font-family: var(--font-sans);
+        }
+
+        /* ── collaborating organisation ──
+         * Two independent blocks on one row: a plain photo card and a dark
+         * glass text panel. The row itself is a bare grid with no surface of
+         * its own, so neither block sits "inside" the other. Both are
+         * stretch-aligned, so their tops and bottoms line up exactly at any
+         * height, and the row spans the same width as the CTA block above it.
+         */
+        .fa2-org {
+          display: grid;
+          grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
+          gap: clamp(0.9rem, 1.8vw, 1.6rem);
+          align-items: stretch;
+          margin-top: clamp(2.25rem, 4vw, 3.5rem);
+        }
+
+        /* Photo card: fills its column edge to edge and matches the panel's
+           height via object-fit, so no aspect-ratio guess is needed. */
+        .fa2-org-visual {
+          position: relative;
+          margin: 0;
+          overflow: hidden;
+          background: #12121a;
+          border: 1px solid rgba(20, 20, 30, 0.1);
+          /* sets the row's floor when the panel copy is short */
+          min-height: clamp(190px, 20vw, 300px);
+        }
+        .fa2-org-visual img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: 50% 45%;
+          display: block;
+        }
+
+        /* Dark glass text panel — carries the surface that used to live on the
+           row, since the row is now just a layout grid. */
+        .fa2-org-panel {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          background:
+            linear-gradient(135deg, rgba(28, 28, 40, 0.94) 0%, rgba(12, 12, 18, 0.97) 100%);
+          backdrop-filter: blur(22px) saturate(130%);
+          -webkit-backdrop-filter: blur(22px) saturate(130%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-top-color: rgba(255, 255, 255, 0.16);
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.06) inset,
+            0 24px 60px rgba(10, 10, 16, 0.22);
+          padding: clamp(1.5rem, 2.6vw, 2.25rem) clamp(1.5rem, 2.8vw, 2.4rem);
+        }
+        .fa2-org-eyebrow {
+          font-size: 0.6rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.3);
+          font-weight: 400;
+          margin: 0 0 0.55rem;
+        }
+        .fa2-org-name {
+          font-family: var(--font-sans);
+          font-weight: 400;
+          font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+          letter-spacing: -0.02em;
+          color: #fff;
+          margin: 0 0 0.7rem;
+        }
+        .fa2-org-vision {
+          font-family: var(--font-sans);
+          font-style: italic;
+          font-weight: 300;
+          font-size: clamp(0.82rem, 1.1vw, 0.92rem);
+          line-height: 1.6;
+          color: rgba(255,255,255,0.62);
+          margin: 0 0 0.55rem;
+          max-width: 52ch;
+        }
+        .fa2-org-mission {
+          font-family: var(--font-sans);
+          font-weight: 300;
+          font-size: clamp(0.76rem, 0.95vw, 0.83rem);
+          line-height: 1.65;
+          color: rgba(255,255,255,0.38);
+          margin: 0;
+          max-width: 60ch;
         }
 
         /* ── misc ── */
@@ -308,6 +399,16 @@ const FocusAreas = () => {
           .fa2-sticky-left { position: static; }
           .fa2-cta-inner   { grid-template-columns: 1fr; }
           .fa2-cta-btns    { flex-direction: row; flex-wrap: wrap; }
+          /* Stacked: photo card on top, text panel below, both full width so
+             their left and right edges stay aligned with each other. */
+          .fa2-org {
+            grid-template-columns: 1fr;
+            gap: clamp(0.85rem, 2.5vw, 1.25rem);
+          }
+          .fa2-org-visual {
+            min-height: 0;
+            aspect-ratio: 16 / 9;
+          }
           .fa2-collab-grid { grid-template-columns: repeat(2, 1fr); }
           .fa2-collab-card:nth-child(odd)  { border-right: 1px solid rgba(0,0,0,0.07); }
           .fa2-collab-card:nth-child(even) { border-right: none; }
@@ -316,6 +417,11 @@ const FocusAreas = () => {
         }
         @media (max-width: 480px) {
           .fa2-collab-grid { grid-template-columns: 1fr; }
+          /* ~176px of fixed chrome (counter + icon + plus) left only ~80px for
+             the title at 320px; none of it used to shrink. */
+          .fa2-accordion-btn { padding: 1.1rem 0.9rem; }
+          .fa2-cta-btns { flex-direction: column; }
+          .fa2-btn-primary, .fa2-btn-secondary { width: 100%; }
           .fa2-collab-card { border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.07); }
           .fa2-collab-card:last-child { border-bottom: none; }
         }
@@ -565,7 +671,7 @@ const FocusAreas = () => {
               className="fa2-hero-title"
               style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: '#0a0a0a', marginBottom: '1rem' }}
             >
-              Collaboration{' '}
+              Collaborating{' '}
               <span className="fa2-hero-em fa2-shimmer">Opportunities</span>
             </h2>
             <p style={{ ...dmSans, fontSize: '0.875rem', color: '#888', fontWeight: 300, maxWidth: '50ch', lineHeight: 1.7 }}>
@@ -639,7 +745,7 @@ const FocusAreas = () => {
                   href="#footer"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToSection('footer');
                     window.dispatchEvent(new CustomEvent('open-contact-form'));
                   }}
                   className="fa2-btn-primary"
@@ -656,7 +762,7 @@ const FocusAreas = () => {
                   href="#footer"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToSection('footer');
                     window.dispatchEvent(new CustomEvent('open-contact-form'));
                   }}
                   className="fa2-btn-secondary"
@@ -667,6 +773,33 @@ const FocusAreas = () => {
                   Make a Contribution
                 </motion.a>
               </div>
+            </div>
+
+          </motion.div>
+
+          {/* ═══════════════════════════════════
+              COLLABORATING ORGANISATION
+              Its own container, sibling to the CTA block above.
+          ═══════════════════════════════════ */}
+          <motion.div
+            className="fa2-org"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <figure className="fa2-org-visual">
+              <img src="/indostateshealth.webp" alt="The Indo States Health hospital campus" />
+            </figure>
+            <div className="fa2-org-panel">
+              <p className="fa2-org-eyebrow">Collaborating Organization</p>
+              <h4 className="fa2-org-name">Indo States Health</h4>
+              <p className="fa2-org-vision">
+                &ldquo;Every human being gets state-of-the-art medical treatment regardless of their background.&rdquo;
+              </p>
+              <p className="fa2-org-mission">
+                Advancing equitable healthcare by making state-of-the-art medical treatment accessible to every individual, regardless of background.
+              </p>
             </div>
           </motion.div>
 

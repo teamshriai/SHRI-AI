@@ -1,11 +1,13 @@
 // Navbar.jsx
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { scrollToSection, documentTop, navbarOffset } from '../lib/scrollToSection';
 
 const navLinks = [
   { name: 'Home', href: '#hero' },
-  { name: 'About Us', href: '#about' },
-  { name: 'Focus Areas', href: '#focus' },
-  { name: 'Collaborative organizations', href: '#partnership' },
+  { name: 'About SHRI-AI', href: '#about' },
+  { name: 'Focus Area', href: '#focus' },
+  { name: 'Collaborating Organizations', href: '#partnership' },
+  { name: 'Team', href: '#team' },
   { name: 'Contact', href: '#footer', triggerForm: true },
 ];
 
@@ -15,6 +17,8 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isSmall, setIsSmall] = useState(false);
   const navRef = useRef(null);
+  const headerRef = useRef(null);
+  const [activeId, setActiveId] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -25,7 +29,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth < 1024);
+      setIsMobile(window.innerWidth < 1180);
       setIsSmall(window.innerWidth < 1200);
     };
     check();
@@ -48,20 +52,67 @@ const Navbar = () => {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // ── Active-section tracking ──
+  // Section tops are measured once (and on resize) rather than every frame:
+  // documentTop() neutralises sticky positioning, which forces a reflow and
+  // must never run per scroll event. The scroll handler then only compares
+  // cached numbers, so it stays cheap.
+  useEffect(() => {
+    let tops = [];
+    let raf = null;
+
+    const measure = () => {
+      tops = navLinks
+        .map(({ href }) => {
+          const el = document.getElementById(href.slice(1));
+          return el ? { id: href.slice(1), top: documentTop(el) } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.top - b.top);
+    };
+
+    const update = () => {
+      raf = null;
+      if (!tops.length) return;
+      // Probe just below the navbar: the section under the navbar's lower edge
+      // is the one the reader is actually looking at.
+      const probe = window.scrollY + navbarOffset() + 8;
+      const docEl = document.documentElement;
+      const atBottom = window.scrollY + window.innerHeight >= docEl.scrollHeight - 2;
+
+      let current = tops[0].id;
+      if (atBottom) {
+        current = tops[tops.length - 1].id;
+      } else {
+        for (const t of tops) if (t.top <= probe) current = t.id;
+      }
+      setActiveId((prev) => (prev === current ? prev : current));
+    };
+
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    const onResize = () => { measure(); onScroll(); };
+
+    measure();
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    // Re-measure once webfonts and images have settled, since they shift heights.
+    const settle = setTimeout(onResize, 1200);
+    if (document.fonts?.ready) document.fonts.ready.then(onResize).catch(() => {});
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      clearTimeout(settle);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   const handleNavClick = useCallback((e, href, triggerForm = false) => {
     e.preventDefault();
     setIsOpen(false);
-    const id = href.replace('#', '');
-    const el = document.getElementById(id);
-    if (el) {
-      const navHeight = navRef.current?.offsetHeight || 90;
-      const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
-      window.scrollTo({ top, behavior: 'smooth' });
-
-      // If this link is marked to trigger the contact form
-      if (triggerForm) {
-        window.dispatchEvent(new CustomEvent('open-contact-form'));
-      }
+    if (scrollToSection(href) && triggerForm) {
+      window.dispatchEvent(new CustomEvent('open-contact-form'));
     }
   }, []);
 
@@ -71,10 +122,12 @@ const Navbar = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
 
         /* ── Root nav ── */
         .nav-root {
+          /* Consumed by lib/scrollToSection so the scroll offset matches the
+             navbar's settled (solid) height rather than its transparent one. */
+          --nav-pad-solid: 16px;
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 50;
@@ -112,7 +165,7 @@ const Navbar = () => {
         }
         
         .logo-title {
-          font-family: 'Outfit', sans-serif;
+          font-family: var(--font-sans);
           font-size: 22px;
           font-weight: 500;
           letter-spacing: -0.022em;
@@ -120,7 +173,7 @@ const Navbar = () => {
           transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .logo-subtitle {
-          font-family: 'Inter', sans-serif;
+          font-family: var(--font-sans);
           font-size: 12px;
           letter-spacing: 0.04em;
           line-height: 1.4;
@@ -139,7 +192,7 @@ const Navbar = () => {
           gap: 5px;
           padding: 10px clamp(8px, 1vw, 18px);
           border-radius: 10px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           font-size: clamp(14px, 1.1vw, 16px);
           font-weight: 400;
           letter-spacing: -0.012em;
@@ -160,14 +213,76 @@ const Navbar = () => {
         }
         .nav-link.transparent-mode:hover {
           color: #1a1a24;
-          background: rgba(45, 45, 56, 0.07);
+          background: rgba(45, 45, 56, 0.13);
         }
         .nav-link.solid-mode {
           color: #2d2d38;
         }
         .nav-link.solid-mode:hover {
           color: #1a1a24;
+          background: rgba(0, 0, 0, 0.10);
+        }
+
+        /* ── Active-section underline ──
+         * Drawn on an inner span so it hugs the label text exactly rather than
+         * the link's padding box. Animated with scaleX (compositor-only) and
+         * deliberately NOT paired with a font-weight change: bolding the active
+         * link would change its text width and shift the whole row on every
+         * scroll boundary. */
+        .nav-link-label {
+          position: relative;
+          display: inline-block;
+        }
+        .nav-link-label::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -5px;
+          height: 1.5px;
+          border-radius: 2px;
+          background: currentColor;
+          transform: scaleX(0);
+          transform-origin: left center;
+          transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-link.active .nav-link-label::after {
+          transform: scaleX(1);
+        }
+        .nav-link.active {
+          color: #14141e;
+        }
+
+        /* Mobile: a left accent bar reads better than an underline on a
+           full-width row, and costs no layout shift. */
+        .mobile-link {
+          position: relative;
+        }
+        .mobile-link::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 50%;
+          width: 2px;
+          height: 0;
+          background: #14141e;
+          border-radius: 2px;
+          transform: translateY(-50%);
+          transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-link.active::before {
+          height: 60%;
+        }
+        .mobile-link.active {
+          color: #14141e;
           background: rgba(0, 0, 0, 0.045);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .nav-link-label::after,
+          .mobile-link::before {
+            transition: none;
+          }
         }
 
         /* ── CTA button ── */
@@ -177,7 +292,7 @@ const Navbar = () => {
           justify-content: center;
           padding: 12px clamp(16px, 2vw, 28px);
           border-radius: 12px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           font-size: clamp(14px, 1.1vw, 16px);
           font-weight: 500;
           letter-spacing: -0.012em;
@@ -202,12 +317,12 @@ const Navbar = () => {
           transform: translateY(-1px);
         }
         .cta-btn.solid-mode {
-          background: #1a1a24;
+          background: #3f3f4c;
           color: #fff;
           box-shadow: 0 2px 10px rgba(0,0,0,0.18);
         }
         .cta-btn.solid-mode:hover {
-          background: #2d2d38;
+          background: #52525f;
           box-shadow: 0 5px 20px rgba(0,0,0,0.22);
           transform: translateY(-1px);
         }
@@ -261,7 +376,7 @@ const Navbar = () => {
           width: 100%;
           padding: 16px 14px;
           border-radius: 12px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           font-size: 17px;
           font-weight: 400;
           color: #2d2d38;
@@ -291,8 +406,8 @@ const Navbar = () => {
         ref={navRef}
         className={`nav-root ${isTransparent ? 'transparent' : 'solid'}`}
       >
-        {/* ── Inner container ── */}
-        <div style={{
+        {/* ── Inner container (header row) ── */}
+        <div ref={headerRef} data-nav-header style={{
           maxWidth: 1400,
           margin: '0 auto',
           padding: '0 clamp(20px, 4vw, 56px)',
@@ -315,7 +430,7 @@ const Navbar = () => {
             }}
           >
             <img 
-              src="/logo.png" 
+              src="/logo.webp" 
               alt="SHRI Logo" 
               className="logo-img"
             />
@@ -340,16 +455,20 @@ const Navbar = () => {
               justifyContent: 'center',
               padding: '0 20px',
             }}>
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className={`nav-link ${mode}`}
-                  onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = activeId === link.href.slice(1);
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className={`nav-link ${mode}${isActive ? ' active' : ''}`}
+                    aria-current={isActive ? 'true' : undefined}
+                    onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
+                  >
+                    <span className="nav-link-label">{link.name}</span>
+                  </a>
+                );
+              })}
             </div>
           )}
 
@@ -361,7 +480,7 @@ const Navbar = () => {
                 onClick={(e) => handleNavClick(e, '#footer', true)}
                 className={`cta-btn ${mode}`}
               >
-                Support Our Mission
+                Support
               </a>
             )}
 
@@ -399,7 +518,7 @@ const Navbar = () => {
             <div style={{
               maxWidth: 1400,
               margin: '0 auto',
-              padding: '12px clamp(16px,4vw,56px) 20px',
+              padding: '12px clamp(20px, 4vw, 56px) 20px',
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {navLinks.map((link, idx) => (
@@ -407,7 +526,8 @@ const Navbar = () => {
                     {idx > 0 && <div className="mobile-divider" />}
                     <a
                       href={link.href}
-                      className="mobile-link"
+                      className={`mobile-link${activeId === link.href.slice(1) ? ' active' : ''}`}
+                      aria-current={activeId === link.href.slice(1) ? 'true' : undefined}
                       onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
                     >
                       {link.name}
@@ -428,7 +548,7 @@ const Navbar = () => {
                   className="cta-btn solid-mode"
                   style={{ width: '100%', padding: '16px 28px' }}
                 >
-                  Support Our Mission
+                  Support
                 </a>
               </div>
             </div>

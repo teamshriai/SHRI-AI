@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { scrollToSection } from '../lib/scrollToSection';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -10,9 +11,12 @@ const Footer = () => {
 
   const handleGetInTouch = () => {
     setFormVisible(true);
-    // Focus the first input after the animation starts/completes
+    // Focus the first input after the animation starts/completes.
+    // preventScroll matters: a default focus() scrolls the input into view, and
+    // when this runs it lands mid-flight of the navbar's smooth scroll to
+    // #footer — hijacking it and stopping hundreds of px short of the target.
     setTimeout(() => {
-      firstInputRef.current?.focus();
+      firstInputRef.current?.focus({ preventScroll: true });
     }, 400); // Wait for a portion of the transition
   };
 
@@ -45,13 +49,6 @@ const Footer = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Google+Sans+Display:wght@300;400;500;600;700&family=Google+Sans+Text:wght@300;400;500&display=swap');
-
-        :root {
-          --font-display: 'Google Sans Display', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          --font-body:    'Google Sans Text', 'Google Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          --font-ui:      'Google Sans', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        }
 
         @keyframes subtle-drift1 { 0%{transform:translateY(0) translateZ(0);} 100%{transform:translateY(-10px) translateZ(0);} }
         @keyframes subtle-drift2 { 0%{transform:translateY(0) translateZ(0);} 100%{transform:translateY(-7px) translateZ(0);} }
@@ -168,7 +165,7 @@ const Footer = () => {
         .back-arrow-btn:hover .back-arrow-icon { background: #1a1a24; transform: translateX(-4px); }
         .back-arrow-label {
           font-family: var(--font-ui);
-          font-size: 13px; font-weight: 500; color: #1a1a24; letter-spacing: 0.01em;
+          font-size: var(--fs-xs); font-weight: 500; color: #1a1a24; letter-spacing: 0.01em;
           opacity: 0; transform: translateX(-6px);
           transition: opacity 0.22s ease, transform 0.22s ease;
           pointer-events: none; white-space: nowrap;
@@ -188,7 +185,8 @@ const Footer = () => {
           background: #1a1a24; color: #fff; border: none; border-radius: 3px;
           padding: clamp(11px, 1.3vw, 15px) clamp(18px, 2vw, 30px);
           font-family: var(--font-ui);
-          font-size: clamp(12px, 1.05vw, 14px); font-weight: 500; letter-spacing: 0.02em;
+          font-size: var(--fs-xs); font-weight: var(--fw-medium); letter-spacing: 0.02em;
+          min-height: 44px;
           cursor: pointer;
           transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
           white-space: nowrap;
@@ -209,10 +207,10 @@ const Footer = () => {
         .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
         @media (max-width: 560px) { .name-grid { grid-template-columns: 1fr; gap: 16px; } }
         .form-group { margin-bottom: clamp(14px, 1.8vw, 22px); }
-        .form-label { display: block; font-family: var(--font-ui); font-size: 12.5px; font-weight: 500; color: #1a1a24; margin-bottom: 9px; letter-spacing: 0.01em; }
+        .form-label { display: block; font-family: var(--font-ui); font-size: var(--fs-2xs); font-weight: var(--fw-medium); color: #1a1a24; margin-bottom: 9px; letter-spacing: var(--ls-eyebrow); text-transform: uppercase; }
         .form-input, .form-textarea {
-          width: 100%; padding: 14px 18px;
-          font-family: var(--font-body); font-size: 14.5px; color: #1a1a24;
+          width: 100%; padding: 13px 16px; min-height: 44px;
+          font-family: var(--font-body); font-size: var(--fs-sm); color: #1a1a24;
           background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
           border: none; border-radius: 12px;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -224,20 +222,20 @@ const Footer = () => {
           box-shadow: 0 0 0 3px rgba(255,220,100,0.15), 0 0 20px rgba(255,200,70,0.25), 0 4px 16px rgba(0,0,0,0.08);
           transform: translateY(-1px);
         }
-        .form-textarea { resize: vertical; min-height: 120px; }
+        .form-textarea { resize: vertical; min-height: clamp(88px, 14vh, 130px); }
         .form-submit {
-          width: 100%; padding: 15px 24px;
-          font-family: var(--font-ui); font-size: 14.5px; font-weight: 500; color: #fff;
+          width: 100%; padding: 15px 24px; min-height: 48px;
+          font-family: var(--font-ui); font-size: var(--fs-sm); font-weight: var(--fw-medium); color: #fff;
           background: #1a1a24; border: none; border-radius: 12px; cursor: pointer;
           transition: background 0.2s ease, transform 0.15s ease;
         }
         .form-submit:hover { background: #2d2d40; transform: translateY(-2px); }
 
-        .form-title { font-family: var(--font-display); font-size: clamp(1.4rem, 2.8vw, 1.9rem); font-weight: 300; color: #1a1a24; margin: 0 0 8px; letter-spacing: -0.01em; }
-        .form-desc { font-family: var(--font-body); font-size: clamp(13px, 1.1vw, 14px); color: #3a3a4a; margin: 0 0 32px; line-height: 1.62; }
-        .hero-label { font-family: var(--font-ui); font-size: clamp(10px, 1vw, 12px); font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #6b6b80; margin: 0 0 clamp(14px, 1.8vw, 22px); }
-        .hero-heading { font-family: var(--font-display); font-weight: 300; font-size: clamp(2.1rem, 5.4vw, 4.8rem); line-height: 1.04; letter-spacing: -0.03em; text-transform: uppercase; color: #1a1a24; margin: 0; }
-        .hero-badge { display: inline-flex; align-items: center; gap: clamp(5px, 0.7vw, 11px); background: rgba(255,255,255,0.52); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1.5px solid rgba(255,255,255,0.68); border-radius: 4px; padding: 2px clamp(8px, 1.1vw, 16px); font-size: clamp(1.5rem, 4vw, 3.6rem); font-family: var(--font-display); font-weight: 300; }
+        .form-title { font-family: var(--font-display); font-size: var(--fs-h4); font-weight: var(--fw-light); color: #1a1a24; margin: 0 0 8px; letter-spacing: -0.01em; }
+        .form-desc { font-family: var(--font-body); font-size: var(--fs-sm); color: #3a3a4a; margin: 0 0 clamp(18px, 3vw, 32px); line-height: var(--lh-body); }
+        .fcta-label { font-family: var(--font-ui); font-size: var(--fs-eyebrow); font-weight: var(--fw-medium); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: #6b6b80; margin: 0 0 clamp(14px, 1.8vw, 22px); }
+        .fcta-heading { font-family: var(--font-display); font-weight: var(--fw-light); font-size: var(--fs-display); line-height: 1.04; letter-spacing: var(--ls-display); text-transform: uppercase; color: #1a1a24; margin: 0; }
+        .fcta-badge { display: inline-flex; align-items: center; gap: clamp(5px, 0.7vw, 11px); background: rgba(255,255,255,0.52); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1.5px solid rgba(255,255,255,0.68); border-radius: 4px; padding: 2px clamp(8px, 1.1vw, 16px); font-size: clamp(1.5rem, 4vw, 3.6rem); font-family: var(--font-display); font-weight: 300; }
 
         .shri-footer {
           background: #0d0d12;
@@ -249,7 +247,7 @@ const Footer = () => {
         .shri-footer-inner {
           max-width: 100%;
           margin: 0;
-          padding: 0 4vw;
+          padding: 0 var(--gutter);
         }
 
         .shri-footer-grid {
@@ -270,9 +268,9 @@ const Footer = () => {
 
         .shri-col-label {
           font-family: var(--font-ui);
-          font-size: 17px;
-          font-weight: 600;
-          letter-spacing: 0.15em;
+          font-size: var(--fs-eyebrow);
+          font-weight: var(--fw-medium);
+          letter-spacing: var(--ls-eyebrow);
           text-transform: uppercase;
           color: #fff;
           margin: 0 0 24px;
@@ -281,7 +279,7 @@ const Footer = () => {
         .shri-flink {
           color: #fff;
           text-decoration: none;
-          font-size: 21px;
+          font-size: var(--fs-body);
           transition: all 0.2s ease;
           display: block;
           margin-bottom: 16px;
@@ -304,7 +302,7 @@ const Footer = () => {
           margin-bottom: 20px;
           color: #fff;
           text-decoration: none;
-          font-size: 21px;
+          font-size: var(--fs-sm);
           transition: color 0.2s ease;
         }
         .shri-contact-item:last-child { margin-bottom: 0; }
@@ -314,7 +312,11 @@ const Footer = () => {
           border-radius: 20px;
           overflow: hidden;
           border: 1px solid rgba(255,255,255,0.15);
-          height: 220px;
+          /* Responsive but bounded: a bare aspect-ratio made the map taller
+             than the 220px it replaced on wide columns, leaving a large void
+             beside the shorter columns. */
+          aspect-ratio: 16 / 9;
+          max-height: 300px;
           margin-bottom: 24px;
           position: relative;
         }
@@ -332,20 +334,20 @@ const Footer = () => {
         .shri-address-box:hover { background: rgba(255,255,255,0.08); }
 
         .shri-address-text {
-          font-size: 21px;
+          font-size: var(--fs-xs);
           color: #fff;
           line-height: 1.6;
         }
 
         .shri-footer-bottom {
           border-top: 1px solid rgba(255,255,255,0.1);
-          padding: 32px 4vw;
+          padding: 32px var(--gutter);
           display: flex;
           justify-content: space-between;
           align-items: center;
           max-width: 100%;
           margin: 0;
-          font-size: 18px;
+          font-size: var(--fs-xs);
           color: #fff;
         }
 
@@ -354,7 +356,7 @@ const Footer = () => {
         }
 
         .shri-copy-badge {
-          font-size: 14px;
+          font-size: var(--fs-2xs);
           padding: 4px 10px;
           background: rgba(255,255,255,0.15);
           border-radius: 6px;
@@ -397,12 +399,12 @@ const Footer = () => {
           </div>
           
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 4vw' }}>
-            <p className="hero-label">Partner With Us</p>
-            <h2 className="hero-heading">
+            <p className="fcta-label">Partner With Us</p>
+            <h2 className="fcta-heading">
               Advance Precision<br />Health Research<br />
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                 In Just
-                <span className="hero-badge">
+                <span className="fcta-badge">
                   One Email
                   <svg width="32" height="32" fill="none" stroke="#1a1a24" viewBox="0 0 24 24" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -414,12 +416,12 @@ const Footer = () => {
 
           <div className="cta-bottom">
             <div className="cta-bottom-divider" style={{ padding: '32px 4vw' }}>
-              <p style={{ fontSize: '16px', fontFamily: 'var(--font-ui)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Our Mission</p>
-              <p style={{ fontSize: '21px', color: '#555', lineHeight: 1.6, margin: 0 }}>California-based 501(c)(3) nonprofit advancing equitable access to AI-driven diagnostics worldwide.</p>
+              <p style={{ fontSize: 'var(--fs-eyebrow)', fontFamily: 'var(--font-ui)', fontWeight: 500, letterSpacing: 'var(--ls-eyebrow)', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Our Mission</p>
+              <p style={{ fontSize: 'var(--fs-sm)', color: '#555', lineHeight: 'var(--lh-body)', margin: 0 }}>California-based 501(c)(3) nonprofit advancing equitable access to AI-driven diagnostics worldwide.</p>
             </div>
             <div style={{ padding: '32px 4vw' }}>
-              <p style={{ fontSize: '16px', fontFamily: 'var(--font-ui)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Vision</p>
-              <p style={{ fontSize: '21px', color: '#555', lineHeight: 1.6, margin: 0 }}>Moving innovations from lab to clinic — translational research powered by AI and genomic precision.</p>
+              <p style={{ fontSize: 'var(--fs-eyebrow)', fontFamily: 'var(--font-ui)', fontWeight: 500, letterSpacing: 'var(--ls-eyebrow)', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Vision</p>
+              <p style={{ fontSize: 'var(--fs-sm)', color: '#555', lineHeight: 'var(--lh-body)', margin: 0 }}>Moving innovations from lab to clinic — translational research powered by AI and genomic precision.</p>
             </div>
           </div>
         </div>
@@ -437,28 +439,28 @@ const Footer = () => {
           <div className="form-inner">
             {!showSuccess ? (
               <>
-                <h3 className="form-title" style={{ fontSize: '2.5rem' }}>Get in Touch</h3>
-                <p className="form-desc" style={{ fontSize: '21px' }}>Discuss how we can collaborate to advance precision health research.</p>
+                <h3 className="form-title">Get in Touch</h3>
+                <p className="form-desc">Discuss how we can collaborate to advance precision health research.</p>
                 <form className="contact-form" onSubmit={handleSubmit}>
                   <div className="name-grid">
                     <div>
-                      <label className="form-label" htmlFor="fname" style={{ fontSize: '17px' }}>First Name</label>
-                      <input ref={firstInputRef} className="form-input" style={{ fontSize: '21px', padding: '18px' }} type="text" id="fname" required />
+                      <label className="form-label" htmlFor="fname">First Name</label>
+                      <input ref={firstInputRef} className="form-input" type="text" id="fname" required />
                     </div>
                     <div>
-                      <label className="form-label" htmlFor="lname" style={{ fontSize: '17px' }}>Last Name</label>
-                      <input className="form-input" style={{ fontSize: '21px', padding: '18px' }} type="text" id="lname" required />
+                      <label className="form-label" htmlFor="lname">Last Name</label>
+                      <input className="form-input" type="text" id="lname" required />
                     </div>
                   </div>
                   <div className="form-group" style={{ marginBottom: '24px' }}>
-                    <label className="form-label" htmlFor="email" style={{ fontSize: '17px' }}>Email Address</label>
-                    <input className="form-input" style={{ fontSize: '21px', padding: '18px' }} type="email" id="email" required />
+                    <label className="form-label" htmlFor="email">Email Address</label>
+                    <input className="form-input" type="email" id="email" required />
                   </div>
                   <div className="form-group" style={{ marginBottom: '32px' }}>
-                    <label className="form-label" htmlFor="message" style={{ fontSize: '17px' }}>Message</label>
-                    <textarea className="form-textarea" style={{ fontSize: '21px', padding: '18px', minHeight: '180px' }} id="message" required />
+                    <label className="form-label" htmlFor="message">Message</label>
+                    <textarea className="form-textarea" id="message" required />
                   </div>
-                  <button type="submit" className="form-submit" style={{ fontSize: '21px', padding: '20px' }}>Send Message</button>
+                  <button type="submit" className="form-submit">Send Message</button>
                 </form>
               </>
             ) : (
@@ -466,8 +468,8 @@ const Footer = () => {
                 <div style={{ width: 80, height: 80, margin: '0 auto 32px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <h3 style={{ fontSize: '28px', margin: '0 0 16px' }}>Message Sent!</h3>
-                <p style={{ fontSize: '21px', color: '#6b6b80' }}>We'll get back to you within 24 hours</p>
+                <h3 style={{ fontSize: 'var(--fs-h4)', fontWeight: 400, margin: '0 0 16px' }}>Message Sent!</h3>
+                <p style={{ fontSize: 'var(--fs-sm)', color: '#6b6b80' }}>We'll get back to you within 24 hours</p>
               </div>
             )}
           </div>
@@ -483,15 +485,15 @@ const Footer = () => {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
                 <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #ff8c1e 0%, #a064ff 50%, #3282ff 100%)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: '#fff', fontWeight: 800, fontSize: 24 }}>S</span>
+                  <span style={{ color: '#fff', fontWeight: 500, fontSize: 'var(--fs-h4)' }}>S</span>
                 </div>
                 <div>
-                  <p style={{ fontWeight: 700, fontSize: 21, letterSpacing: '0.05em', margin: 0, color: '#fff' }}>SHRI-AI</p>
-                  <p style={{ fontSize: 17, color: '#fff', margin: 0 }}>Senus Healthcare Research Institute</p>
+                  <p style={{ fontWeight: 500, fontSize: 'var(--fs-body)', letterSpacing: '0.02em', margin: 0, color: '#fff' }}>SHRI-AI</p>
+                  <p style={{ fontSize: 'var(--fs-xs)', color: 'rgba(255,255,255,0.62)', margin: 0 }}>Senus Healthcare Research Institute</p>
                 </div>
               </div>
               
-              <p style={{ fontSize: 21, color: '#fff', lineHeight: 1.6, margin: '0 0 40px' }}>
+              <p style={{ fontSize: 'var(--fs-sm)', color: 'rgba(255,255,255,0.62)', lineHeight: 'var(--lh-body)', margin: '0 0 40px' }}>
                 Advancing equitable access to AI-driven cancer diagnostics and genomic medicine worldwide.
               </p>
 
@@ -516,9 +518,10 @@ const Footer = () => {
             <div>
               <p className="shri-col-label">Quick Links</p>
               <nav>
-                <a href="#about" className="shri-flink">About Us</a>
-                <a href="#focus" className="shri-flink">Focus Areas</a>
-                <a href="#partnership" className="shri-flink">Collaborate</a>
+                <a href="#about" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About Us</a>
+                <a href="#focus" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('focus'); }}>Focus Areas</a>
+                <a href="#partnership" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('partnership'); }}>Collaborate</a>
+                <a href="#team" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('team'); }}>Team</a>
                 <a href="#" className="shri-flink" onClick={(e) => { e.preventDefault(); handleGetInTouch(); }}>Contact</a>
               </nav>
             </div>

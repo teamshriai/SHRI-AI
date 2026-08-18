@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Single site-wide font load. Variable DM Sans, optical-size axis 9..40.
+   Weights capped at 300/400/500 — the whole type system uses only these three.
+   Every component previously shipped its own @import (5 requests, 9 families);
+   this is now the only one. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -15,12 +19,80 @@
   --color-accent-600: #059669;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — single source of truth for type, rhythm, colour.
+   Derived from the FocusAreas scale, which is the endorsed look.
+
+   Type principles encoded below:
+     · tracking tightens as size grows (-0.03em → +0.22em)
+     · line-height rises as size falls (1.05 → 1.7)
+     · body sizes quantised to a small set, measure capped in ch
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Family ── */
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  /* Legacy aliases: Footer declared these and still references them.
+     Pointed at the unified stack so nothing falls back to Google Sans. */
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-ui: var(--font-sans);
+
+  /* ── Weights (only three, ever) ── */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+
+  /* ── Display / heading tiers ── */
+  --fs-display: clamp(2.1rem, 5.4vw, 4.8rem);   /* hero + section openers */
+  --fs-h2:      clamp(2rem, 4vw, 3.5rem);
+  --fs-h3:      clamp(1.6rem, 3vw, 2.8rem);
+  --fs-h4:      clamp(1.05rem, 1.7vw, 1.3rem);
+  --lh-display: 1.05;
+  --ls-display: -0.03em;
+
+  /* ── Body tiers (quantised) ── */
+  --fs-lead: clamp(0.98rem, 1.3vw, 1.08rem);
+  --fs-body: 0.95rem;
+  --fs-sm:   0.875rem;
+  --fs-xs:   0.8rem;
+  --fs-2xs:  0.68rem;
+  --lh-body: 1.6;
+  --lh-relaxed: 1.7;
+
+  /* ── Eyebrow / overline (one tracking value, was 0.12/0.14/0.15/0.22em) ── */
+  --fs-eyebrow: 0.68rem;
+  --ls-eyebrow: 0.18em;
+
+  /* ── Measure ── */
+  --measure-narrow: 52ch;
+  --measure: 60ch;
+
+  /* ── Rhythm: one gutter, one section pad, one page width ── */
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --section-pad-y: clamp(4rem, 8vw, 7rem);
+  --page-max: 1400px;
+
+  /* ── Surfaces ── */
+  --ink: #14141e;
+  --ink-soft: #44444e;
+  --ink-muted: #6b6b7a;
+  --surface: #ffffff;
+  --surface-alt: #f8f7f5;
+  --surface-dark: #0a0a0a;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

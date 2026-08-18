@@ -4,16 +4,15 @@ const About = () => {
       <style>{`
         .about-section {
           background: linear-gradient(135deg, #fce8cc 0%, #ede4f8 35%, #cfe3ff 65%, #daeeff 100%);
-          min-height: 100vh;
+          min-height: 100dvh;
           position: relative;
           display: flex;
           flex-direction: column;
-          padding-bottom: clamp(5rem, 12vh, 8rem);
         }
 
         .about-text {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-          font-weight: 300;
+          font-family: var(--font-sans);
+          font-weight: var(--fw-light);
           line-height: 1.55;
           color: #1a1a1a;
           letter-spacing: -0.015em;
@@ -39,20 +38,21 @@ const About = () => {
         }
 
         .footer-tagline-wrapper {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
+          position: relative;
+          z-index: 10;
           width: 100%;
-          padding: clamp(2rem, 5vh, 3.5rem) clamp(1rem, 4vw, 2rem);
+          flex-shrink: 0;
+          padding: clamp(2rem, 5vh, 3.5rem) var(--gutter);
           background: linear-gradient(to top, rgba(232, 234, 246, 0.9) 0%, transparent 100%);
         }
 
         .footer-tagline {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-          font-weight: 300;
+          font-family: var(--font-sans);
+          font-weight: var(--fw-light);
           font-size: clamp(1.75rem, 4vw, 3.25rem);
-          letter-spacing: 0.02em;
+          /* was +0.02em — the only display-size heading tracking the wrong
+             direction; the system tightens tracking as size grows */
+          letter-spacing: -0.015em;
           background: linear-gradient(135deg, #7B6FCD 0%, #3A82C4 50%, #D4891E 100%);
           background-clip: text;
           -webkit-background-clip: text;
@@ -75,16 +75,12 @@ const About = () => {
 
         /* Responsive adjustments */
         @media (max-width: 640px) {
-          .about-section {
-            padding-bottom: clamp(4rem, 10vh, 6rem);
-          }
-          
           .footer-tagline {
             font-size: clamp(1.35rem, 6vw, 2rem);
           }
           
           .footer-tagline-wrapper {
-            padding: clamp(1.5rem, 4vh, 2.5rem) 1rem;
+            padding: clamp(1.5rem, 4vh, 2.5rem) var(--gutter);
           }
         }
 
@@ -130,7 +126,7 @@ const About = () => {
             }}
           >
 
-            <p className="text-center pb-4 max-w-[1400px]">
+            <p className="text-center pb-4 max-w-[1400px] mx-auto">
               <span
                 style={{
                   color: '#888',
@@ -144,7 +140,7 @@ const About = () => {
               </span>
               As a California-based 501(c)(3) nonprofit, SHRI AI partners with researchers, healthcare providers, and innovators to <span className="accent-purple" style={{ fontWeight: 400 }}>advance cancer detection and care</span>—leveraging AI and NGS-based liquid biopsy to <span className="accent-gold" style={{ fontWeight: 400 }}>translate discoveries</span> into clinical impact.
             </p>
-            <p className="text-center max-w-[1400px]">
+            <p className="text-center max-w-[1400px] mx-auto">
               We fund and support open-source technologies to <span className="accent-blue" style={{ fontWeight: 400 }}>accelerate innovation</span> and expand equitable access to precision oncology worldwide.
             </p>
 

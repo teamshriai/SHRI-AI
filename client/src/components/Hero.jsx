@@ -3,13 +3,6 @@ import { motion } from 'framer-motion';
 const Hero = () => {
   return (
     <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap"
-        rel="stylesheet"
-      />
-
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
 
@@ -155,41 +148,31 @@ const Hero = () => {
           }
         }
 
-        /* ── Hero heading — 25% smaller, weight 300 unchanged ── */
-        .hero-heading {
-          font-family: 'DM Sans', sans-serif;
-          font-weight: 300;
-          font-size: clamp(0.9rem, 1.575vw, 2.175rem);
-          line-height: 1.1;
-          letter-spacing: -0.02em;
-          color: #44444e;
+        /* ── Hero heading ──
+         * Renamed from .hero-heading: Footer.jsx defined that same class name
+         * globally, rendered later in the tree, and therefore won on this
+         * element — its values (below) are what has actually been shipping,
+         * while the six media queries that used to live here were dead code
+         * (media queries add no specificity). Those winning values are now
+         * declared here explicitly so the heading is unchanged on screen but
+         * no longer depends on another component's CSS.
+         */
+        .hero-h1 {
+          font-family: var(--font-sans);
+          font-weight: var(--fw-light);
+          font-size: var(--fs-display);
+          line-height: 1.04;
+          letter-spacing: var(--ls-display);
+          text-transform: uppercase;
+          color: #1a1a24;
           margin: 0 0 clamp(10px, 1.4vw, 22px) 0;
         }
-        .hero-heading .word-ai       { color: #c0392b; font-weight: 300; }
-        .hero-heading .word-genomics { color: #2a6db5; font-weight: 300; }
-
-        @media (max-width: 1280px) {
-          .hero-heading { font-size: clamp(0.825rem, 1.5vw, 1.875rem); }
-        }
-        @media (max-width: 1024px) {
-          .hero-heading { font-size: clamp(0.75rem, 1.725vw, 1.65rem); }
-        }
-        @media (max-width: 768px) {
-          .hero-heading { font-size: clamp(0.75rem, 2.7vw, 1.35rem); line-height: 1.14; }
-        }
-        @media (max-width: 640px) {
-          .hero-heading { font-size: clamp(0.7125rem, 3.15vw, 1.2rem); }
-        }
-        @media (max-width: 480px) {
-          .hero-heading { font-size: clamp(0.66rem, 3.6vw, 1.05rem); }
-        }
-        @media (max-width: 360px) {
-          .hero-heading { font-size: clamp(0.6rem, 3.9vw, 0.9rem); }
-        }
+        .hero-h1 .word-ai       { color: #c0392b; font-weight: var(--fw-light); }
+        .hero-h1 .word-genomics { color: #2a6db5; font-weight: var(--fw-light); }
 
         /* ── Support tagline ── */
         .hero-support-text {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-sans);
           font-weight: 300;
           font-size: clamp(13px, 1.35vw, 19px);
           color: #6a6a7e;
@@ -341,24 +324,8 @@ const Hero = () => {
           grid-template-columns: 1fr;
           padding: 0 clamp(16px, 5vw, 56px);
         }
-        .hero-bottom-col {
-          padding: clamp(10px, 1.6vw, 16px) clamp(12px, 1.6vw, 20px);
-        }
-        .bar-text {
-          font-family: 'DM Sans', sans-serif;
-          font-weight: 300;
-          font-size: clamp(9px, 0.62vw, 10.5px);
-          color: #78788a;
-          line-height: 1.72;
-          margin: 0;
-        }
-
         @media (max-width: 768px) {
           .hero-bottom-grid { padding: 0; }
-          .hero-bottom-col {
-            padding: clamp(12px, 4vw, 18px) clamp(16px, 5vw, 24px) !important;
-          }
-          .bar-text { font-size: clamp(10px, 2.6vw, 13px); }
         }
 
         /* ── Reduced motion — pause animations, static mid-gradient ── */
@@ -380,7 +347,7 @@ const Hero = () => {
           display: 'flex',
           flexDirection: 'column',
           background: 'linear-gradient(135deg, #fce8cc 0%, #ede4f8 35%, #cfe3ff 65%, #daeeff 100%)',
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: 'var(--font-sans)',
         }}
       >
         {/* ── Background glow blobs ── */}
@@ -446,7 +413,7 @@ const Hero = () => {
         <div className="dna-clip-box" aria-hidden="true">
           <img
             className="dna-img"
-            src="/gene.png"
+            src="/gene.webp"
             alt=""
             draggable={false}
             loading="eager"
@@ -470,7 +437,7 @@ const Hero = () => {
               <div className="hero-logo-wrap">
                 <img
                   className="hero-logo-img"
-                  src="/trans-logo.png"
+                  src="/trans-logo.webp"
                   alt="SHRI AI logo"
                   draggable={false}
                   loading="eager"
@@ -479,7 +446,7 @@ const Hero = () => {
               </div>
 
               {/* Heading */}
-              <h1 className="hero-heading">
+              <h1 className="hero-h1">
                 Advancing<br />
                 Precision Oncology<br />
                 Through{' '}
