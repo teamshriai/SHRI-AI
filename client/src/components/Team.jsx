@@ -7,34 +7,52 @@ const TEAM_MEMBERS = [
     id: 'sena',
     initials: 'SP',
     name: 'Sena Palanisami',
-    role: 'Chairman & CEO, ViSolve',
-    bio: 'Founder of ViSolve, Senas.net Pvt. Ltd · Ex-Chairman of OpenEMR',
+    role: 'Founder & Technology Leader',
+    bio: 'Open-source healthcare technology · Ex-Chairman of OpenEMR',
     image: '/Sena-Palanisami.webp',
-    cardSummary: 'Chairman & CEO of ViSolve, advancing interoperable healthcare technology.',
+    cardSummary: 'Open-source healthcare technology and AI for precision medicine.',
     objectPosition: '50% 22%',
     accent: '#7B6FCD',
     accentSoft: 'rgba(123, 111, 205, 0.12)',
     summary:
-      'Technology entrepreneur and software product leader with more than 30 years of experience in software product development, international R&D operations, partnerships, and customer engagement.',
+      'Technology entrepreneur and healthcare technology leader with more than four decades of experience across software, open-source technology, and healthcare IT.',
+    quote:
+      'Technology should make healthcare more accessible \u2014 not more complicated or more expensive.',
     sections: [
       {
-        heading: 'Professional Overview',
+        heading: 'Open Source in Healthcare',
         paragraphs: [
-          "He founded the ViSolve US operation in 1998 and became Chairman and CEO of ViSolve in 2001. Under his leadership, he has guided the company's overall strategy and overseen operations, administration, finance, sales, and marketing, growing ViSolve into a 50+ member, multimillion-dollar organization.",
+          "As Chairman of OpenEMR, one of the world's leading open-source Electronic Medical Record platforms, Sena helped advance the goal of making healthcare technology more accessible, affordable, and interoperable.",
+          'That work shaped a conviction that healthcare innovation should not be limited by proprietary technology or geography: open source can put high-quality clinical software in the hands of organisations and communities that would otherwise have no route to it.',
         ],
       },
       {
-        heading: 'Healthcare & Technology Leadership',
+        heading: 'AI for Precision Medicine',
         paragraphs: [
-          'Sena has a strong commitment to using information technology to enable better healthcare anytime, anywhere in the world. His entrepreneurial and strategic leadership has driven the development of customized and interoperable technology solutions designed to help communities reduce healthcare costs, improve efficiency, and enhance care.',
-          'He is also a board member of an open-source EHR community and an active member of HIMSS, with a strong interest in open source, AI, security, and healthcare technology.',
+          'Sena now applies the same philosophy through SHRI-AI, developing and supporting open-source AI for cancer detection, precision oncology, genomic medicine, stroke care, and preventive health.',
+          'SHRI-AI combines AI, medical imaging, genomics, and clinical data to build solutions meant for real deployment in partnership with hospitals, laboratories, researchers, and clinicians.',
+        ],
+      },
+      {
+        heading: 'Current Focus',
+        list: [
+          'NGS and liquid biopsy data with AI, for earlier cancer detection, disease monitoring, and personalised treatment strategies',
+          'Stroke AI \u2014 applying AI to medical imaging for early detection, risk assessment, and clinical decision support',
+          'Genomic medicine and preventive healthcare',
+          'Open-source tooling that hospitals and labs can adopt directly',
+        ],
+      },
+      {
+        heading: 'Vision',
+        paragraphs: [
+          'His long-term aim is an open healthcare technology ecosystem in which advanced AI and precision medicine reach not only major medical centres, but hospitals, laboratories, and communities in underserved regions.',
         ],
       },
       {
         heading: 'Earlier Career & Education',
         paragraphs: [
-          'Before ViSolve, Sena spent nearly 20 years at Hewlett-Packard, progressing from software development engineering into leadership roles across Development, Operations, Advanced Product Planning, Business Development, and Customer Support. At HP, he was also involved in establishing international software operations in Australia and India.',
-          "Sena holds a Master's degree in Mathematics and a Master's degree in Computer Science from the University of Minnesota, Minneapolis.",
+          'Sena founded the ViSolve US operation in 1998 and became its Chairman and CEO in 2001, growing it into a 50+ member organisation. Before that he spent nearly 20 years at Hewlett-Packard, moving from software engineering into leadership across development, operations, product planning, and business development, and helping establish international software operations in Australia and India.',
+          "He holds a Master's degree in Mathematics and a Master's degree in Computer Science from the University of Minnesota, Minneapolis.",
         ],
       },
     ],
@@ -247,6 +265,12 @@ const TeamModal = ({ member, onClose }) => {
 
           <p className="team-modal-summary">{member.summary}</p>
 
+          {member.quote && (
+            <blockquote className="team-modal-quote" style={{ borderColor: member.accent }}>
+              {member.quote}
+            </blockquote>
+          )}
+
           <div className="team-modal-body">
             {member.sections.map((section) => (
               <div className="team-modal-section" key={section.heading}>
@@ -334,10 +358,22 @@ const Team = () => {
           margin: 0;
         }
 
+        /* Cards are ~40% smaller than before (376px -> 232px wide). Width is a
+           single token so the padding and type below scale from one number.
+           Flex rather than grid auto-fit: auto-fit sizes a whole row of tracks
+           to the container, so with only three cards the leftover tracks pushed
+           the set off-centre. Flex wrap + centre stays centred at any count. */
         .team-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: clamp(1.5rem, 3vw, 2.25rem);
+          --team-card-w: clamp(196px, 17vw, 232px);
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: stretch;
+          gap: clamp(1rem, 2.2vw, 1.6rem);
+        }
+        .team-grid > * {
+          flex: 0 0 var(--team-card-w);
+          max-width: 100%;
         }
 
         /* ── Card: light "gallery mat" frame around a full-bleed portrait,
@@ -345,10 +381,10 @@ const Team = () => {
         .team-card {
           display: block;
           width: 100%;
-          padding: clamp(9px, 1vw, 12px);
+          padding: clamp(6px, 0.7vw, 8px);
           background: #ffffff;
           border: 1px solid rgba(20, 20, 30, 0.07);
-          border-radius: clamp(26px, 2.8vw, 34px);
+          border-radius: clamp(18px, 1.8vw, 22px);
           box-shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 18px 40px rgba(20, 20, 30, 0.07);
           cursor: pointer;
           font: inherit;
@@ -369,7 +405,7 @@ const Team = () => {
         .team-card-media {
           position: relative;
           aspect-ratio: 5 / 8;
-          border-radius: clamp(18px, 2vw, 24px);
+          border-radius: clamp(12px, 1.3vw, 16px);
           overflow: hidden;
           background: #f1f1f4;
         }
@@ -397,9 +433,9 @@ const Team = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          height: 52%;
+          height: 56%;
           pointer-events: none;
-          backdrop-filter: blur(26px) saturate(135%);
+          backdrop-filter: blur(18px) saturate(135%);
           -webkit-backdrop-filter: blur(26px) saturate(135%);
           background: linear-gradient(
             to top,
@@ -419,7 +455,7 @@ const Team = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          padding: 0 clamp(1.1rem, 1.9vw, 1.5rem) clamp(1.35rem, 2.2vw, 1.7rem);
+          padding: 0 clamp(0.7rem, 1.1vw, 0.9rem) clamp(0.8rem, 1.3vw, 1rem);
         }
 
         .team-name {
@@ -430,26 +466,26 @@ const Team = () => {
           font-weight: var(--fw-medium);
           /* Fixed, not vw-based: the card's width is capped by the 1200px
              container, so viewport-scaled type would overflow its own box. */
-          font-size: 1.33rem;
+          font-size: 1rem;
           color: #ffffff;
-          letter-spacing: -0.017em;
-          line-height: 1.2;
-          margin: 0 0 0.4rem;
+          letter-spacing: -0.014em;
+          line-height: 1.25;
+          margin: 0 0 0.28rem;
         }
 
         .team-badge {
-          width: 19px;
-          height: 19px;
+          width: 15px;
+          height: 15px;
           flex-shrink: 0;
         }
 
         .team-card-summary {
           font-family: var(--font-sans);
           font-weight: 400;
-          font-size: 0.94rem;
-          color: rgba(255, 255, 255, 0.78);
-          line-height: 1.5;
-          letter-spacing: -0.005em;
+          font-size: 0.76rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.45;
+          letter-spacing: -0.003em;
           margin: 0;
           text-wrap: pretty;
           /* Reserve two lines so names share a baseline across a row. No clamp:
@@ -471,10 +507,11 @@ const Team = () => {
 
         /* Between ~641 and ~830px auto-fit yielded 2 columns and an orphaned
            third card; hold a single centred column until 3 genuinely fit. */
-        @media (max-width: 860px) {
+        /* On phones give the card a little more room, since it is the only one
+           on the row. Flex handles the wrapping itself. */
+        @media (max-width: 520px) {
           .team-grid {
-            grid-template-columns: min(340px, 100%);
-            justify-content: center;
+            --team-card-w: min(260px, 100%);
           }
         }
 
@@ -609,6 +646,18 @@ const Team = () => {
           margin: 0 0 clamp(1.5rem, 3vw, 2rem);
           padding-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
           border-bottom: 1px solid rgba(20,20,30,0.08);
+        }
+
+        .team-modal-quote {
+          font-family: var(--font-sans);
+          font-style: italic;
+          font-weight: var(--fw-light);
+          font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+          line-height: 1.6;
+          color: #2f2f3c;
+          margin: 0 0 clamp(1.5rem, 3vw, 2rem);
+          padding: 0.1rem 0 0.1rem clamp(0.85rem, 1.4vw, 1.1rem);
+          border-left: 2px solid currentColor;
         }
 
         .team-modal-body {

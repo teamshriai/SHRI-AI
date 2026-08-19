@@ -51,26 +51,53 @@ const Hero = () => {
           .shapes-mobile  { display: block; }
         }
 
-        /* ── DNA clip box ── */
+        /* ── DNA clip box ──
+         * Sized top-to-bottom of the hero rather than 100vh: the hero is only
+         * min-height 88vh, so a 100vh box overshot it and the section's
+         * overflow:hidden sliced the strand off with a hard horizontal edge —
+         * worse the further you zoomed out, because the overshoot grows.
+         * The mask then fades the artwork out at top, bottom and left, so no
+         * boundary of the image is ever visible at any zoom level.
+         */
         .dna-clip-box {
           position: absolute;
           right: 0;
           top: 0;
-          height: 100vh;
+          bottom: 0;
           width: clamp(320px, 44vw, 740px);
           overflow: hidden;
           pointer-events: none;
           z-index: 5;
+          -webkit-mask-image:
+            linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%),
+            linear-gradient(to left, #000 0%, #000 58%, transparent 100%);
+          -webkit-mask-composite: source-in;
+          mask-image:
+            linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%),
+            linear-gradient(to left, #000 0%, #000 58%, transparent 100%);
+          mask-composite: intersect;
         }
+        /* Negative insets on all four sides, so the artwork always overflows the
+         * clip box and its own edges can never enter frame. The previous
+         * left:10% + width:100% put the image's left edge 10% INSIDE the box,
+         * which showed as a vertical seam at every zoom level. */
         .dna-img {
           position: absolute;
+          /* Explicit width/height, not inset: an <img> is a replaced element, so
+             width/height:auto resolves to its INTRINSIC size and the right/bottom
+             insets are ignored — which collapsed it instead of bleeding it. */
+          top: -9%;
+          left: -7%;
+          width: 114%;
+          height: 118%;
+          /* Tailwind preflight sets img { max-width: 100% }, which silently
+             capped the width and is why the original could only ever reach
+             100% and had to shift with left:10% instead of bleeding. */
+          max-width: none;
           display: block;
-          width: 100%;
-          height: 115%;
-          top: -10%;
-          left: 10%;
           object-fit: cover;
-          object-position: 60% 20%;
+          object-position: 60% 30%;
+          opacity: 0.8;
           user-select: none;
         }
 
@@ -86,25 +113,29 @@ const Hero = () => {
         }
         @media (max-width: 768px) {
           .dna-clip-box {
-            top: 0; left: 0; right: 0;
-            width: 100%; height: 100%;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
             clip-path: none;
             -webkit-clip-path: none;
             z-index: 2;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%);
+            -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%);
+            mask-composite: intersect;
           }
           .dna-img {
-            top: -8%; left: -5%;
-            width: 110%; height: 116%;
+            top: -8%; left: -6%;
+            width: 112%; height: 116%;
             object-position: 55% 50%;
-            opacity: 0.15;
+            opacity: 0.12;
           }
         }
         @media (max-width: 480px) {
           .dna-img {
-            top: -5%; left: -10%;
-            width: 120%; height: 110%;
+            top: -6%; left: -10%;
+            width: 120%; height: 112%;
             object-position: 52% 50%;
-            opacity: 0.12;
+            opacity: 0.1;
           }
         }
 

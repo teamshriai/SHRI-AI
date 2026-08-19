@@ -236,16 +236,17 @@ const FocusAreas = () => {
           padding: clamp(2.5rem, 5vw, 5rem) clamp(1.75rem, 5vw, 4rem);
         }
         .fa2-cta-inner {
-          display: grid;
-          grid-template-columns: 1fr auto;
-          gap: 2rem;
-          align-items: center;
+          display: block;
         }
-        .fa2-cta-btns {
+        /* Lede sentence and its CTA side by side, baseline-independent so the
+           button stays vertically centred against however many lines wrap. */
+        .fa2-cta-lede {
           display: flex;
-          flex-direction: column;
-          gap: 0.65rem;
-          flex-shrink: 0;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: clamp(1.25rem, 3vw, 2.5rem);
+          margin-top: clamp(1rem, 2vw, 1.5rem);
         }
         .fa2-btn-primary {
           display: inline-flex;
@@ -260,23 +261,6 @@ const FocusAreas = () => {
           font-size: 0.875rem;
           letter-spacing: 0.01em;
           border: none;
-          cursor: pointer;
-          text-decoration: none;
-          font-family: var(--font-sans);
-        }
-        .fa2-btn-secondary {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.65rem;
-          padding: 0.9rem clamp(1rem, 3vw, 2rem);
-          min-height: 44px;
-          background: transparent;
-          color: rgba(255,255,255,0.6);
-          font-weight: 400;
-          font-size: 0.875rem;
-          letter-spacing: 0.01em;
-          border: 1px solid rgba(255,255,255,0.15);
           cursor: pointer;
           text-decoration: none;
           font-family: var(--font-sans);
@@ -397,8 +381,7 @@ const FocusAreas = () => {
             gap: 2.5rem;
           }
           .fa2-sticky-left { position: static; }
-          .fa2-cta-inner   { grid-template-columns: 1fr; }
-          .fa2-cta-btns    { flex-direction: row; flex-wrap: wrap; }
+          .fa2-cta-lede    { flex-direction: column; align-items: flex-start; }
           /* Stacked: photo card on top, text panel below, both full width so
              their left and right edges stay aligned with each other. */
           .fa2-org {
@@ -420,8 +403,7 @@ const FocusAreas = () => {
           /* ~176px of fixed chrome (counter + icon + plus) left only ~80px for
              the title at 320px; none of it used to shrink. */
           .fa2-accordion-btn { padding: 1.1rem 0.9rem; }
-          .fa2-cta-btns { flex-direction: column; }
-          .fa2-btn-primary, .fa2-btn-secondary { width: 100%; }
+          .fa2-btn-primary { width: 100%; }
           .fa2-collab-card { border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.07); }
           .fa2-collab-card:last-child { border-bottom: none; }
         }
@@ -722,30 +704,30 @@ const FocusAreas = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="fa2-cta-inner">
-              <div>
-                <p style={{ ...dmSans, fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 300, marginBottom: '1rem', marginTop: 0 }}>
-                  Support Our Mission
-                </p>
-                <h3
-                  className="fa2-hero-title"
-                  style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', color: '#fff', marginBottom: '0.75rem' }}
-                >
-                  Drive breakthroughs in{' '}
-                  <span className="fa2-hero-em" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                    precision cancer care
-                  </span>
-                </h3>
+              <p style={{ ...dmSans, fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 300, marginBottom: '1rem', marginTop: 0 }}>
+                Support Our Mission
+              </p>
+              <h3
+                className="fa2-hero-title"
+                style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', color: '#fff', marginBottom: '0.75rem' }}
+              >
+                Drive breakthroughs in{' '}
+                <span className="fa2-hero-em" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  precision cancer care
+                </span>
+              </h3>
+
+              {/* Lede and the single CTA share one row, so the button reads as
+                  the direct response to the sentence beside it. */}
+              <div className="fa2-cta-lede">
                 <p style={{ ...dmSans, fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7, maxWidth: '55ch', margin: 0 }}>
                   As a nonprofit, SHRI relies on strategic partnerships and philanthropic contributions.
                 </p>
-              </div>
-
-              <div className="fa2-cta-btns">
                 <motion.a
-                  href="#footer"
+                  href="#contact"
                   onClick={(e) => {
                     e.preventDefault();
-                    scrollToSection('footer');
+                    scrollToSection('contact');
                     window.dispatchEvent(new CustomEvent('open-contact-form'));
                   }}
                   className="fa2-btn-primary"
@@ -757,20 +739,6 @@ const FocusAreas = () => {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </motion.a>
-                <motion.a
-                  href="#footer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection('footer');
-                    window.dispatchEvent(new CustomEvent('open-contact-form'));
-                  }}
-                  className="fa2-btn-secondary"
-                  whileHover={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)', y: -2 }}
-                  whileTap={{ scale: 0.99 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  Make a Contribution
                 </motion.a>
               </div>
             </div>

@@ -1,6 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { scrollToSection } from '../lib/scrollToSection';
 
+// Injected by vite.config.js at build time (see `define`), with dev fallbacks.
+/** "2026-08-19" -> "19.8.26" (D.M.YY). Built explicitly rather than via
+ *  toLocaleDateString so the footer reads identically in every locale. */
+function formatBuildVersion(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+  if (!m) return iso || '';
+  return `${Number(m[3])}.${Number(m[2])}.${m[1].slice(2)}`;
+}
+
+const BUILD_VERSION = formatBuildVersion(
+  import.meta.env.VITE_BUILD_DATE || new Date().toISOString().slice(0, 10)
+);
+
 const Footer = () => {
   const year = new Date().getFullYear();
   const [formVisible, setFormVisible] = useState(false);
@@ -11,6 +24,7 @@ const Footer = () => {
 
   const handleGetInTouch = () => {
     setFormVisible(true);
+    setShowSuccess(false);
     // Focus the first input after the animation starts/completes.
     // preventScroll matters: a default focus() scrolls the input into view, and
     // when this runs it lands mid-flight of the navbar's smooth scroll to
@@ -312,11 +326,12 @@ const Footer = () => {
           border-radius: 20px;
           overflow: hidden;
           border: 1px solid rgba(255,255,255,0.15);
-          /* Responsive but bounded: a bare aspect-ratio made the map taller
-             than the 220px it replaced on wide columns, leaving a large void
-             beside the shorter columns. */
+          /* Bounded rather than a bare aspect-ratio, which made the map taller
+             on wide columns than the 220px it replaced. Capped at ~60% of the
+             previous rendered size. */
           aspect-ratio: 16 / 9;
-          max-height: 300px;
+          width: min(100%, 305px);
+          max-height: 175px;
           margin-bottom: 24px;
           position: relative;
         }
@@ -342,8 +357,9 @@ const Footer = () => {
         .shri-footer-bottom {
           border-top: 1px solid rgba(255,255,255,0.1);
           padding: 32px var(--gutter);
-          display: flex;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          gap: clamp(0.75rem, 2vw, 2rem);
           align-items: center;
           max-width: 100%;
           margin: 0;
@@ -352,7 +368,42 @@ const Footer = () => {
         }
 
         @media (max-width: 768px) {
-          .shri-footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+          .shri-footer-bottom {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 16px;
+            text-align: center;
+          }
+          .shri-legal-links { justify-content: center; }
+        }
+
+        /* Brand mark — replaces the old "S" initial badge. Padded on a light
+           plate so the logo's own colours stay legible on the dark footer. */
+        .shri-brand-mark {
+          width: 48px;
+          height: 48px;
+          flex-shrink: 0;
+          object-fit: contain;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.94);
+          padding: 5px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Build info — centre cell of the bottom bar. */
+        .shri-build-info {
+          font-size: var(--fs-2xs);
+          color: rgba(255, 255, 255, 0.45);
+          letter-spacing: 0.04em;
+          margin: 0;
+          text-align: center;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .shri-legal-links {
+          display: flex;
+          gap: clamp(1rem, 2vw, 2rem);
+          justify-content: flex-end;
         }
 
         .shri-copy-badge {
@@ -367,6 +418,7 @@ const Footer = () => {
 
       {/* ── CTA SECTION ── */}
       <section
+        id="contact"
         style={{
           position: 'relative',
           minHeight: '70vh',
@@ -484,9 +536,13 @@ const Footer = () => {
             {/* Brand & Contact */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
-                <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #ff8c1e 0%, #a064ff 50%, #3282ff 100%)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: '#fff', fontWeight: 500, fontSize: 'var(--fs-h4)' }}>S</span>
-                </div>
+                <img
+                  src="/logo.webp"
+                  alt="SHRI-AI logo"
+                  width="48"
+                  height="48"
+                  className="shri-brand-mark"
+                />
                 <div>
                   <p style={{ fontWeight: 500, fontSize: 'var(--fs-body)', letterSpacing: '0.02em', margin: 0, color: '#fff' }}>SHRI-AI</p>
                   <p style={{ fontSize: 'var(--fs-xs)', color: 'rgba(255,255,255,0.62)', margin: 0 }}>Senus Healthcare Research Institute</p>
@@ -522,7 +578,13 @@ const Footer = () => {
                 <a href="#focus" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('focus'); }}>Focus Areas</a>
                 <a href="#partnership" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('partnership'); }}>Collaborate</a>
                 <a href="#team" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('team'); }}>Team</a>
-                <a href="#" className="shri-flink" onClick={(e) => { e.preventDefault(); handleGetInTouch(); }}>Contact</a>
+                <a
+                  href="#contact"
+                  className="shri-flink"
+                  onClick={(e) => { e.preventDefault(); scrollToSection('contact'); handleGetInTouch(); }}
+                >
+                  Contact
+                </a>
               </nav>
             </div>
 
@@ -571,7 +633,8 @@ const Footer = () => {
 
         <div className="shri-footer-bottom">
           <p>© {year} Senus Healthcare Research Institute · 501(c)(3) Nonprofit</p>
-          <div style={{ display: 'flex', gap: 32 }}>
+          <p className="shri-build-info">Version {BUILD_VERSION}</p>
+          <div className="shri-legal-links">
             <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Privacy Policy</a>
             <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Terms of Service</a>
           </div>

@@ -8,7 +8,7 @@ const navLinks = [
   { name: 'Focus Area', href: '#focus' },
   { name: 'Collaborating Organizations', href: '#partnership' },
   { name: 'Team', href: '#team' },
-  { name: 'Contact', href: '#footer', triggerForm: true },
+  { name: 'Contact', href: '#contact', triggerForm: true },
 ];
 
 const Navbar = () => {
@@ -285,48 +285,6 @@ const Navbar = () => {
           }
         }
 
-        /* ── CTA button ── */
-        .cta-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 12px clamp(16px, 2vw, 28px);
-          border-radius: 12px;
-          font-family: var(--font-sans);
-          font-size: clamp(14px, 1.1vw, 16px);
-          font-weight: 500;
-          letter-spacing: -0.012em;
-          text-decoration: none;
-          cursor: pointer;
-          border: none;
-          white-space: nowrap;
-          transition:
-            background  0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            color       0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            box-shadow  0.35s cubic-bezier(0.4, 0, 0.2, 1),
-            transform   0.22s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .cta-btn.transparent-mode {
-          background: rgba(255,255,255,0.88);
-          color: #2d2d38;
-          box-shadow: 0 2px 14px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.9);
-        }
-        .cta-btn.transparent-mode:hover {
-          background: rgba(255,255,255,1);
-          box-shadow: 0 5px 24px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,1);
-          transform: translateY(-1px);
-        }
-        .cta-btn.solid-mode {
-          background: #3f3f4c;
-          color: #fff;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.18);
-        }
-        .cta-btn.solid-mode:hover {
-          background: #52525f;
-          box-shadow: 0 5px 20px rgba(0,0,0,0.22);
-          transform: translateY(-1px);
-        }
-
         /* ── Hamburger ── */
         .hamburger-btn {
           display: flex;
@@ -472,18 +430,8 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* ── Right: CTA + Hamburger ── */}
+          {/* ── Right: Hamburger (mobile only) ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            {!isMobile && (
-              <a
-                href="#footer"
-                onClick={(e) => handleNavClick(e, '#footer', true)}
-                className={`cta-btn ${mode}`}
-              >
-                Support
-              </a>
-            )}
-
             {isMobile && (
               <button
                 onClick={() => setIsOpen(prev => !prev)}
@@ -534,22 +482,6 @@ const Navbar = () => {
                     </a>
                   </div>
                 ))}
-              </div>
-
-              {/* Mobile CTA */}
-              <div style={{
-                marginTop: 16,
-                paddingTop: 16,
-                borderTop: '1px solid rgba(0,0,0,0.06)',
-              }}>
-                <a
-                  href="#footer"
-                  onClick={(e) => handleNavClick(e, '#footer', true)}
-                  className="cta-btn solid-mode"
-                  style={{ width: '100%', padding: '16px 28px' }}
-                >
-                  Support
-                </a>
               </div>
             </div>
           </div>
