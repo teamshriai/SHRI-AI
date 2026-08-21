@@ -334,6 +334,74 @@ const Hero = () => {
                   drop-shadow(0 0 8px rgba(74,174,255,0.30));
         }
 
+        /* Two-up support row. Width is viewport-relative so it never runs
+           under the DNA artwork's opaque region on the right (the artwork is
+           clamp(320px, 44vw, 740px) wide and its left 42% is mask-faded). */
+        .hero-supports {
+          display: flex;
+          align-items: flex-start;
+          gap: clamp(1.1rem, 2.2vw, 2.25rem);
+          width: min(100%, clamp(560px, 62vw, 1000px));
+        }
+        .hero-supports > .hero-support-text {
+          flex: 1 1 0;
+          min-width: 0;
+          max-width: none;
+        }
+        /* Divider: vertical rule between the columns, flipping to a horizontal
+           rule above the second block once stacked. Mirrors the
+           .cta-bottom-divider pattern in Footer.jsx. */
+        .hero-support-alt {
+          border-left: 1px solid rgba(100, 100, 120, 0.16);
+          padding-left: clamp(1.1rem, 2.2vw, 2.25rem);
+        }
+        @media (max-width: 1024px) {
+          .hero-supports {
+            flex-direction: column;
+            /* align-items:stretch is required once stacked: in column direction
+               flex-basis sizes the HEIGHT, so the default flex-start let each
+               block shrink-to-fit its own text and the two edges no longer
+               lined up. Width stays bounded here because the DNA artwork is
+               still a right-hand column at full strength in this band. */
+            align-items: stretch;
+            width: min(100%, 60vw);
+          }
+          .hero-support-alt {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px solid rgba(100, 100, 120, 0.16);
+            padding-top: clamp(0.7rem, 2vw, 1rem);
+          }
+        }
+        @media (max-width: 768px) {
+          /* Below here the DNA becomes a faint full-bleed wash (opacity 0.12),
+             so the text can safely use the full measure. */
+          .hero-supports { width: 100%; }
+        }
+
+        /* Stroke-AI link — same three-span structure as OncoTrace, but a static
+           accent instead of a shimmer, so the two do not compete. */
+        .strokeai-text {
+          display: inline-block;
+          position: relative;
+          color: #2aaa72;
+        }
+        .strokeai-underline {
+          display: block;
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 100%;
+          height: 2px;
+          border-radius: 2px;
+          pointer-events: none;
+          background: linear-gradient(90deg, rgba(42,170,114,0.30) 0%, rgba(42,170,114,0.85) 50%, rgba(42,170,114,0.30) 100%);
+          transition: background 0.35s ease;
+        }
+        .strokeai-link:hover .strokeai-underline {
+          background: linear-gradient(90deg, rgba(42,170,114,0.55) 0%, rgba(42,170,114,1) 50%, rgba(42,170,114,0.55) 100%);
+        }
+
         @keyframes shimmer-text {
           0%   { background-position: 220% center; }
           100% { background-position: -220% center; }
@@ -486,31 +554,55 @@ const Hero = () => {
                 <span className="word-genomics">Genomics</span>
               </h1>
 
-              {/* Support tagline */}
-              <p className="hero-support-text">
-                SHRI-AI proudly supports{' '}
-                {/*
-                  Crash-safe link structure:
-                  - .oncotrace-wrap  → inline-block spacing container
-                  - .oncotrace-link  → inline-block anchor (no filter here)
-                  - .oncotrace-text  → gradient + filter lives here
-                  - .oncotrace-underline → sibling span, not ::after
-                */}
-                <span className="oncotrace-wrap">
-                  <a
-                    href="https://OncoTraceAI.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="oncotrace-link"
-                    aria-label="Visit OncoTraceAI.org (opens in new tab)"
-                  >
-                    <span className="oncotrace-text">OncoTraceAI.org</span>
-                    <span className="oncotrace-underline" aria-hidden="true" />
-                  </a>
-                </span>
-                {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision
-                oncology through collaborative innovation and accessible healthcare technology.
-              </p>
+              {/* Support taglines — two supported platforms, side by side above
+                  1024px with a hairline rule between them, stacked below it with
+                  the rule flipping to horizontal (Stroke-AI underneath). */}
+              <div className="hero-supports">
+                <p className="hero-support-text">
+                  SHRI-AI proudly supports{' '}
+                  {/*
+                    Crash-safe link structure:
+                    - .oncotrace-wrap  → inline-block spacing container
+                    - .oncotrace-link  → inline-block anchor (no filter here)
+                    - .oncotrace-text  → gradient + filter lives here
+                    - .oncotrace-underline → sibling span, not ::after
+                  */}
+                  <span className="oncotrace-wrap">
+                    <a
+                      href="https://OncoTraceAI.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="oncotrace-link"
+                      aria-label="Visit OncoTraceAI.org (opens in new tab)"
+                    >
+                      <span className="oncotrace-text">OncoTraceAI.org</span>
+                      <span className="oncotrace-underline" aria-hidden="true" />
+                    </a>
+                  </span>
+                  {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision
+                  oncology through collaborative innovation and accessible healthcare technology.
+                </p>
+
+                <p className="hero-support-text hero-support-alt">
+                  And{' '}
+                  {/* Same span structure, but static — a second shimmer would
+                      compete with OncoTrace for attention. */}
+                  <span className="oncotrace-wrap">
+                    <a
+                      href="https://stroke-ai.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="oncotrace-link strokeai-link"
+                      aria-label="Visit Stroke-AI.org (opens in new tab)"
+                    >
+                      <span className="strokeai-text">Stroke-AI.org</span>
+                      <span className="strokeai-underline" aria-hidden="true" />
+                    </a>
+                  </span>
+                  {' '}— applying AI to medical imaging for early stroke detection, risk
+                  assessment, and clinical decision support.
+                </p>
+              </div>
 
             </div>
           </div>

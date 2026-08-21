@@ -8,6 +8,7 @@ const navLinks = [
   { name: 'Focus Area', href: '#focus' },
   { name: 'Collaborating Organizations', href: '#partnership' },
   { name: 'Team', href: '#team' },
+  { name: 'Careers', href: '#careers' },
   { name: 'Contact', href: '#contact', triggerForm: true },
 ];
 
@@ -244,10 +245,17 @@ const Navbar = () => {
           background: currentColor;
           transform: scaleX(0);
           transform-origin: left center;
-          transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+          /* Opacity rides along with the scale: shrinking alone leaves a 1px
+             dot at the transform origin for the last frames of the transition,
+             which reads as a stray speck when the active link changes. */
+          opacity: 0;
+          transition:
+            transform 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .nav-link.active .nav-link-label::after {
           transform: scaleX(1);
+          opacity: 1;
         }
         .nav-link.active {
           color: #14141e;
@@ -410,6 +418,7 @@ const Navbar = () => {
               alignItems: 'center',
               gap: 'clamp(4px, 0.8vw, 16px)',
               flex: '1 1 auto',
+              minWidth: 0,
               justifyContent: 'center',
               padding: '0 20px',
             }}>

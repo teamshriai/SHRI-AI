@@ -578,6 +578,7 @@ const Footer = () => {
                 <a href="#focus" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('focus'); }}>Focus Areas</a>
                 <a href="#partnership" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('partnership'); }}>Collaborate</a>
                 <a href="#team" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('team'); }}>Team</a>
+                <a href="#careers" className="shri-flink" onClick={(e) => { e.preventDefault(); scrollToSection('careers'); }}>Careers</a>
                 <a
                   href="#contact"
                   className="shri-flink"

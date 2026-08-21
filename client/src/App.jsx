@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import FocusAreas from './components/FocusAreas';
 import Team from './components/Team';
+import Careers from './components/Careers';
 import Footer from './components/Footer';
 
 function App() {
@@ -129,6 +130,8 @@ function App() {
       </div>
 
       <Team />
+
+      <Careers />
 
       <footer id="footer">
         <Footer />
