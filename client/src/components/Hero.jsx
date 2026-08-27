@@ -272,15 +272,15 @@ const Hero = () => {
           position: relative;
           background: linear-gradient(
             90deg,
-            #0d3d96  0%,
-            #1460c8  20%,
-            #2282e0  38%,
-            #4aaeff  48%,
-            #7acfff  50%,
-            #4aaeff  52%,
-            #2282e0  62%,
-            #1460c8  80%,
-            #0d3d96  100%
+            #8c1e52  0%,
+            #b52a6b  20%,
+            #d6407a  38%,
+            #f06a9b  48%,
+            #ff9dc0  50%,
+            #f06a9b  52%,
+            #d6407a  62%,
+            #b52a6b  80%,
+            #8c1e52  100%
           );
           background-size: 220% auto;
           -webkit-background-clip: text;
@@ -289,8 +289,8 @@ const Hero = () => {
           will-change: background-position;
           animation: shimmer-text 9s linear infinite;
           /* gentle text glow via filter on this span, not the anchor */
-          filter: drop-shadow(0 0 4px rgba(30,140,255,0.22))
-                  drop-shadow(0 0 8px rgba(30,140,255,0.10));
+          filter: drop-shadow(0 0 4px rgba(214,64,122,0.22))
+                  drop-shadow(0 0 8px rgba(214,64,122,0.10));
           transition: filter 0.35s ease;
         }
 
@@ -306,32 +306,32 @@ const Hero = () => {
           pointer-events: none;
           background: linear-gradient(
             90deg,
-            rgba(13,61,150,0.08)  0%,
-            rgba(20,96,200,0.45)  20%,
-            rgba(34,130,224,0.82) 38%,
-            rgba(74,174,255,0.92) 48%,
-            rgba(122,207,255,1.0) 50%,
-            rgba(74,174,255,0.92) 52%,
-            rgba(34,130,224,0.82) 62%,
-            rgba(20,96,200,0.45)  80%,
-            rgba(13,61,150,0.08)  100%
+            rgba(140,30,82,0.08)   0%,
+            rgba(181,42,107,0.45)  20%,
+            rgba(214,64,122,0.82)  38%,
+            rgba(240,106,155,0.92) 48%,
+            rgba(255,157,192,1.0)  50%,
+            rgba(240,106,155,0.92) 52%,
+            rgba(214,64,122,0.82)  62%,
+            rgba(181,42,107,0.45)  80%,
+            rgba(140,30,82,0.08)   100%
           );
           background-size: 220% auto;
           will-change: background-position;
           animation: shimmer-line 9s linear infinite;
-          filter: drop-shadow(0 0 2px rgba(74,174,255,0.40))
-                  drop-shadow(0 0 5px rgba(74,174,255,0.18));
+          filter: drop-shadow(0 0 2px rgba(240,106,155,0.40))
+                  drop-shadow(0 0 5px rgba(240,106,155,0.18));
           transition: filter 0.35s ease;
         }
 
         /* Hover states — brighten glow only, no layout change */
         .oncotrace-link:hover .oncotrace-text {
-          filter: drop-shadow(0 0 6px rgba(74,174,255,0.42))
-                  drop-shadow(0 0 12px rgba(74,174,255,0.20));
+          filter: drop-shadow(0 0 6px rgba(240,106,155,0.42))
+                  drop-shadow(0 0 12px rgba(240,106,155,0.20));
         }
         .oncotrace-link:hover .oncotrace-underline {
-          filter: drop-shadow(0 0 4px rgba(122,207,255,0.62))
-                  drop-shadow(0 0 8px rgba(74,174,255,0.30));
+          filter: drop-shadow(0 0 4px rgba(255,157,192,0.62))
+                  drop-shadow(0 0 8px rgba(240,106,155,0.30));
         }
 
         /* Two-up support row. Width is viewport-relative so it never runs
@@ -384,7 +384,7 @@ const Hero = () => {
         .strokeai-text {
           display: inline-block;
           position: relative;
-          color: #2aaa72;
+          color: #2a6db5;
         }
         .strokeai-underline {
           display: block;
@@ -395,11 +395,11 @@ const Hero = () => {
           height: 2px;
           border-radius: 2px;
           pointer-events: none;
-          background: linear-gradient(90deg, rgba(42,170,114,0.30) 0%, rgba(42,170,114,0.85) 50%, rgba(42,170,114,0.30) 100%);
+          background: linear-gradient(90deg, rgba(42,109,181,0.30) 0%, rgba(42,109,181,0.85) 50%, rgba(42,109,181,0.30) 100%);
           transition: background 0.35s ease;
         }
         .strokeai-link:hover .strokeai-underline {
-          background: linear-gradient(90deg, rgba(42,170,114,0.55) 0%, rgba(42,170,114,1) 50%, rgba(42,170,114,0.55) 100%);
+          background: linear-gradient(90deg, rgba(42,109,181,0.55) 0%, rgba(42,109,181,1) 50%, rgba(42,109,181,0.55) 100%);
         }
 
         @keyframes shimmer-text {
@@ -536,8 +536,8 @@ const Hero = () => {
               <div className="hero-logo-wrap">
                 <img
                   className="hero-logo-img"
-                  src="/trans-logo.webp"
-                  alt="SHRI AI logo"
+                  src="/shri-ai-logo-trans.webp"
+                  alt="SHRI-AI logo"
                   draggable={false}
                   loading="eager"
                   decoding="async"
@@ -569,13 +569,13 @@ const Hero = () => {
                   */}
                   <span className="oncotrace-wrap">
                     <a
-                      href="https://OncoTraceAI.org"
+                      href="https://oncotrace-ai.org"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="oncotrace-link"
-                      aria-label="Visit OncoTraceAI.org (opens in new tab)"
+                      aria-label="Visit OncoTrace-AI.org (opens in new tab)"
                     >
-                      <span className="oncotrace-text">OncoTraceAI.org</span>
+                      <span className="oncotrace-text">OncoTrace-AI.org</span>
                       <span className="oncotrace-underline" aria-hidden="true" />
                     </a>
                   </span>
@@ -584,9 +584,9 @@ const Hero = () => {
                 </p>
 
                 <p className="hero-support-text hero-support-alt">
-                  And{' '}
+                  SHRI-AI also proudly supports{' '}
                   {/* Same span structure, but static — a second shimmer would
-                      compete with OncoTrace for attention. */}
+                      compete with OncoTrace-AI for attention. */}
                   <span className="oncotrace-wrap">
                     <a
                       href="https://stroke-ai.org"
@@ -599,8 +599,9 @@ const Hero = () => {
                       <span className="strokeai-underline" aria-hidden="true" />
                     </a>
                   </span>
-                  {' '}— applying AI to medical imaging for early stroke detection, risk
-                  assessment, and clinical decision support.
+                  {' '}— an AI initiative advancing medical imaging, early stroke detection,
+                  and risk assessment through collaborative research and accessible
+                  healthcare technology.
                 </p>
               </div>
 

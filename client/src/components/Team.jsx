@@ -37,7 +37,7 @@ const TEAM_MEMBERS = [
         heading: 'Current Focus',
         list: [
           'NGS and liquid biopsy data with AI, for earlier cancer detection, disease monitoring, and personalised treatment strategies',
-          'Stroke AI \u2014 applying AI to medical imaging for early detection, risk assessment, and clinical decision support',
+          'Stroke-AI \u2014 applying AI to medical imaging for early detection, risk assessment, and clinical decision support',
           'Genomic medicine and preventive healthcare',
           'Open-source tooling that hospitals and labs can adopt directly',
         ],

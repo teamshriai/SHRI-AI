@@ -396,8 +396,8 @@ const Navbar = () => {
             }}
           >
             <img 
-              src="/logo.webp" 
-              alt="SHRI Logo" 
+              src="/shri-ai-logo.webp" 
+              alt="SHRI-AI logo" 
               className="logo-img"
             />
 

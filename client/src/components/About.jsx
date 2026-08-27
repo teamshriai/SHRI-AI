@@ -138,7 +138,7 @@ const About = () => {
               >
                 →
               </span>
-              As a California-based 501(c)(3) nonprofit, SHRI AI partners with researchers, healthcare providers, and innovators to <span className="accent-purple" style={{ fontWeight: 400 }}>advance cancer detection and care</span>—leveraging AI and NGS-based liquid biopsy to <span className="accent-gold" style={{ fontWeight: 400 }}>translate discoveries</span> into clinical impact.
+              As a California-based 501(c)(3) nonprofit, SHRI-AI partners with researchers, healthcare providers, and innovators to <span className="accent-purple" style={{ fontWeight: 400 }}>advance cancer detection and care</span>—leveraging AI and NGS-based liquid biopsy to <span className="accent-gold" style={{ fontWeight: 400 }}>translate discoveries</span> into clinical impact.
             </p>
             <p className="text-center max-w-[1400px] mx-auto">
               We fund and support open-source technologies to <span className="accent-blue" style={{ fontWeight: 400 }}>accelerate innovation</span> and expand equitable access to precision oncology worldwide.

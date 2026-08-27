@@ -537,7 +537,7 @@ const Footer = () => {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
                 <img
-                  src="/logo.webp"
+                  src="/shri-ai-logo.webp"
                   alt="SHRI-AI logo"
                   width="48"
                   height="48"
