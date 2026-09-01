@@ -747,7 +747,7 @@ const Team = () => {
             <p className="team-label">Our Team</p>
             <h2 className="team-heading">Leadership</h2>
             <p className="team-subtext">
-              Guided by experienced leaders in healthcare, technology, and finance, committed to advancing equitable precision oncology worldwide.
+              Guided by experienced leaders in healthcare, technology, and finance, committed to advancing equitable precision healthcare worldwide.
             </p>
           </div>
 

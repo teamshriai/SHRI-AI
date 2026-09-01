@@ -48,9 +48,9 @@ const FocusAreas = () => {
       number: '02',
       title: 'AI in Healthcare',
       subtitle: 'Intelligent Diagnostics',
-      description: 'Accelerate diagnosis accuracy and personalize treatment using artificial intelligence.',
+      description: 'Accelerate diagnostic accuracy and personalise treatment across disease areas using artificial intelligence.',
       features: [
-        'Predictive models for cancer risk and outcomes',
+        'Predictive models for cancer and stroke risk',
         'Clinical decision support systems',
         'Real-world data analytics platforms',
       ],
@@ -99,11 +99,11 @@ const FocusAreas = () => {
       number: '04',
       title: 'Global Health & Access',
       subtitle: 'Democratising Care',
-      description: 'Democratize access to cutting-edge cancer diagnostics globally and reduce disparities in cancer care delivery.',
+      description: 'Democratise access to advanced diagnostics globally and reduce disparities in how care is delivered.',
       features: [
         'Develop affordable diagnostic solutions',
         'Build research capacity in India, Southeast Asia, and Africa',
-        'Reduce disparities in cancer care delivery',
+        'Reduce disparities in care delivery',
       ],
     },
   ];
@@ -713,7 +713,7 @@ const FocusAreas = () => {
               >
                 Drive breakthroughs in{' '}
                 <span className="fa2-hero-em" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  precision cancer care
+                  precision healthcare
                 </span>
               </h3>
 
@@ -721,7 +721,7 @@ const FocusAreas = () => {
                   the direct response to the sentence beside it. */}
               <div className="fa2-cta-lede">
                 <p style={{ ...dmSans, fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7, maxWidth: '55ch', margin: 0 }}>
-                  As a nonprofit, SHRI relies on strategic partnerships and philanthropic contributions.
+                  As a nonprofit, SHRI-AI relies on strategic partnerships and philanthropic contributions.
                 </p>
                 <motion.a
                   href="#contact"

@@ -21,6 +21,7 @@ const About = () => {
         .accent-purple { color: #7B6FCD; }
         .accent-gold   { color: #D4891E; }
         .accent-blue   { color: #3A82C4; }
+        .accent-green  { color: #2aaa72; }
 
         .icon-chip {
           display: inline-flex;
@@ -138,10 +139,10 @@ const About = () => {
               >
                 →
               </span>
-              As a California-based 501(c)(3) nonprofit, SHRI-AI partners with researchers, healthcare providers, and innovators to <span className="accent-purple" style={{ fontWeight: 400 }}>advance cancer detection and care</span>—leveraging AI and NGS-based liquid biopsy to <span className="accent-gold" style={{ fontWeight: 400 }}>translate discoveries</span> into clinical impact.
+              SHRI-AI is a California-based 501(c)(3) nonprofit, working alongside clinicians, researchers, and innovators to advance <span className="accent-purple" style={{ fontWeight: 400 }}>earlier detection</span> and <span className="accent-gold" style={{ fontWeight: 400 }}>precision care</span> across <span className="accent-blue" style={{ fontWeight: 400 }}>oncology and stroke</span>.
             </p>
             <p className="text-center max-w-[1400px] mx-auto">
-              We fund and support open-source technologies to <span className="accent-blue" style={{ fontWeight: 400 }}>accelerate innovation</span> and expand equitable access to precision oncology worldwide.
+              We build and fund <span className="accent-green" style={{ fontWeight: 400 }}>open-source AI</span>, pairing <span className="accent-blue" style={{ fontWeight: 400 }}>genomics and liquid biopsy</span> with medical imaging, so precision healthcare reaches hospitals, laboratories, and communities everywhere — not only the largest medical centres.
             </p>
 
           </div>

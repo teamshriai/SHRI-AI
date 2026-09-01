@@ -262,7 +262,7 @@ const Careers = () => {
             <p className="careers-label">Careers</p>
             <h2 className="careers-heading">Work with us</h2>
             <p className="careers-subtext">
-              We are building open-source AI for precision oncology and stroke care. These are
+              We are building open-source AI for earlier detection, stroke care, and precision medicine. These are
               the disciplines we hire across, spanning the laboratory, the clinic, and engineering.
             </p>
           </div>

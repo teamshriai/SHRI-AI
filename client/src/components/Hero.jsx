@@ -191,12 +191,42 @@ const Hero = () => {
         .hero-h1 {
           font-family: var(--font-sans);
           font-weight: var(--fw-light);
-          font-size: var(--fs-display);
-          line-height: 1.04;
+          /* Half the previous scale. Declared locally, not via --fs-display,
+             because that token is shared with Footer's .fcta-heading. */
+          font-size: clamp(1.7rem, 3.2vw, 2.9rem);
+          line-height: 1.12;
           letter-spacing: var(--ls-display);
           text-transform: uppercase;
           color: #1a1a24;
-          margin: 0 0 clamp(10px, 1.4vw, 22px) 0;
+          margin: 0 0 clamp(10px, 1.4vw, 18px) 0;
+          /* The heading now runs longer, so cap its measure to clear the DNA
+             artwork on the right and let the browser distribute the breaks
+             rather than pinning them with a <br /> per line. */
+          max-width: min(100%, 62vw);
+        }
+        @media (max-width: 768px) {
+          /* Below here the artwork is a faint full-bleed wash, so the heading
+             can use the whole measure. */
+          .hero-h1 { max-width: 100%; }
+        }
+
+        /* Lede between the heading and the two platform lines. */
+        .hero-lede {
+          font-family: var(--font-sans);
+          font-weight: var(--fw-light);
+          font-size: clamp(15px, 1.55vw, 22px);
+          line-height: 1.5;
+          letter-spacing: -0.011em;
+          color: #4f4f60;
+          margin: 0 0 clamp(14px, 1.8vw, 26px) 0;
+          max-width: min(100%, 54ch);
+          text-wrap: pretty;
+        }
+        @media (max-width: 768px) {
+          .hero-lede {
+            font-size: clamp(14px, 3.4vw, 17px);
+            max-width: 100%;
+          }
         }
         .hero-h1 .word-ai       { color: #c0392b; font-weight: var(--fw-light); }
         .hero-h1 .word-genomics { color: #2a6db5; font-weight: var(--fw-light); }
@@ -530,7 +560,7 @@ const Hero = () => {
         >
           {/* Headline block — anchored bottom-left */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <div style={{ padding: '0 clamp(16px,5vw,56px) clamp(22px,3vw,40px)' }}>
+            <div style={{ padding: 'clamp(92px,13vh,132px) clamp(16px,5vw,56px) clamp(22px,3vw,40px)' }}>
 
               {/* Logo */}
               <div className="hero-logo-wrap">
@@ -546,13 +576,18 @@ const Hero = () => {
 
               {/* Heading */}
               <h1 className="hero-h1">
-                Advancing<br />
-                Precision Oncology<br />
+                Advancing Oncology<br />
+                &amp; Stroke Healthcare<br />
                 Through{' '}
                 <span className="word-ai">AI</span>
                 {' '}&amp;{' '}
                 <span className="word-genomics">Genomics</span>
               </h1>
+
+              <p className="hero-lede">
+                Enabling real-time monitoring, earlier detection, and precision healthcare
+                through open-source AI and medical innovation.
+              </p>
 
               {/* Support taglines — two supported platforms, side by side above
                   1024px with a hairline rule between them, stacked below it with
@@ -579,8 +614,8 @@ const Hero = () => {
                       <span className="oncotrace-underline" aria-hidden="true" />
                     </a>
                   </span>
-                  {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and precision
-                  oncology through collaborative innovation and accessible healthcare technology.
+                  {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and
+                  precision oncology.
                 </p>
 
                 <p className="hero-support-text hero-support-alt">
@@ -599,9 +634,8 @@ const Hero = () => {
                       <span className="strokeai-underline" aria-hidden="true" />
                     </a>
                   </span>
-                  {' '}— an AI initiative advancing medical imaging, early stroke detection,
-                  and risk assessment through collaborative research and accessible
-                  healthcare technology.
+                  {' '}— an AI initiative advancing medical imaging, early stroke
+                  detection, and risk assessment.
                 </p>
               </div>
 

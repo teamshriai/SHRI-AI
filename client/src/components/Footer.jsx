@@ -550,7 +550,7 @@ const Footer = () => {
               </div>
               
               <p style={{ fontSize: 'var(--fs-sm)', color: 'rgba(255,255,255,0.62)', lineHeight: 'var(--lh-body)', margin: '0 0 40px' }}>
-                Advancing equitable access to AI-driven cancer diagnostics and genomic medicine worldwide.
+                Advancing equitable access to AI-driven diagnostics and genomic medicine in cancer and stroke care worldwide.
               </p>
 
               <div className="shri-contact-info">
