@@ -1,0 +1,5 @@
+# SPA fallback. https://shri-ai.org/careers is linked from Stroke-AI and must
+# serve the app rather than 404; App then lands on the Careers heading.
+# Read by Netlify and Netlify-compatible hosts. Ignored elsewhere, harmless.
+# Status 200 (a rewrite, not a redirect) keeps /careers in the address bar.
+/*    /index.html   200

@@ -1,0 +1,16 @@
+# SPA fallback for Apache / cPanel hosting.
+# https://shri-ai.org/careers is linked from Stroke-AI and must serve the app
+# rather than 404; App then lands on the Careers heading.
+# Guarded by IfModule, so it is inert where mod_rewrite is unavailable.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Anything that exists on disk is served as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else renders the single page.
+  RewriteRule ^ index.html [L]
+</IfModule>

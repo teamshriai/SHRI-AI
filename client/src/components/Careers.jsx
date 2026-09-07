@@ -1,61 +1,17 @@
 import { scrollToSection } from '../lib/scrollToSection';
+import { navigateToRole, roleHref } from '../lib/careersRoute';
+import { ROLES } from '../data/roles';
 
 /**
- * Open disciplines. Titles are the standard professional terms for a precision
- * oncology + clinical AI organisation, and every one maps to a focus area the
- * site already states (NGS, liquid biopsy / ctDNA, precision oncology, genomics,
- * stroke AI, translational research with hospitals and labs).
+ * Open-role grid. Titles are the standard professional terms for a clinical AI
+ * organisation working across stroke imaging and precision oncology, and every
+ * one maps to a focus area the site already states.
  *
- * Deliberately no location or employment-type field: those are not established
- * anywhere, and inventing them would mislead applicants.
+ * The roles themselves — and their full job descriptions — live in
+ * src/data/roles.js, because JobDetail.jsx renders the same objects. A card is
+ * a real link to /?role=<slug>, so it can be middle-clicked, copied or shared;
+ * the click handler upgrades that to an in-page view swap.
  */
-const ROLES = [
-  {
-    discipline: 'Business & Strategy',
-    title: 'Business Development & Partnerships Manager',
-    description:
-      'Build research and clinical partnerships with hospitals, diagnostic laboratories, and academic centres.',
-    accent: '#7B6FCD',
-  },
-  {
-    discipline: 'Laboratory Science',
-    title: 'Molecular Biologist',
-    focus: 'Genomics & Liquid Biopsy',
-    description:
-      'NGS library preparation, ctDNA and exosome assay development, and biomarker validation.',
-    accent: '#3A82C4',
-  },
-  {
-    discipline: 'Clinical',
-    title: 'Oncopathologist',
-    focus: 'Molecular Pathology',
-    description:
-      'Histopathology and molecular correlation to guide and validate diagnostic model development.',
-    accent: '#D4891E',
-  },
-  {
-    discipline: 'Computational Biology',
-    title: 'Bioinformatics Scientist',
-    description:
-      'Variant calling, ctDNA analysis pipelines, and multi-omics interpretation at scale.',
-    accent: '#2aaa72',
-  },
-  {
-    discipline: 'AI & Engineering',
-    title: 'Machine Learning Engineer',
-    focus: 'Medical Imaging & Clinical AI',
-    description:
-      'Model development for oncology and stroke imaging, from training through clinical validation.',
-    accent: '#7B6FCD',
-  },
-  {
-    discipline: 'Clinical Research',
-    title: 'Clinical Research Associate',
-    description:
-      'Coordinate validation studies with partner sites and maintain protocol and regulatory compliance.',
-    accent: '#3A82C4',
-  },
-];
 
 const Careers = () => {
   // Same path the navbar and footer Contact links use, so there is exactly one
@@ -63,6 +19,16 @@ const Careers = () => {
   const openEnquiry = () => {
     scrollToSection('contact');
     window.dispatchEvent(new CustomEvent('open-contact-form'));
+  };
+
+  // A modified click (new tab, new window, download) must keep the browser's
+  // own behaviour, which is the whole reason these are anchors and not buttons.
+  const openRole = (event, slug) => {
+    if (event.defaultPrevented) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (event.button !== 0) return;
+    event.preventDefault();
+    navigateToRole(slug);
   };
 
   return (
@@ -134,8 +100,12 @@ const Careers = () => {
           max-width: 100%;
         }
 
+        /* Cards are anchors now, so the link defaults have to be neutralised
+           here rather than inherited from Tailwind preflight. */
         .careers-card {
           display: flex;
+          text-decoration: none;
+          color: inherit;
           flex-direction: column;
           width: 100%;
           padding: clamp(1.3rem, 2vw, 1.65rem);
@@ -242,6 +212,25 @@ const Careers = () => {
           margin: clamp(2.25rem, 4vw, 3rem) auto 0;
         }
 
+        .careers-note-link {
+          background: none;
+          border: 0;
+          padding: 0;
+          font: inherit;
+          color: var(--ink);
+          cursor: pointer;
+          text-decoration: underline;
+          text-decoration-thickness: 1px;
+          text-underline-offset: 3px;
+          transition: color 0.22s ease;
+        }
+        .careers-note-link:hover { color: #3A82C4; }
+        .careers-note-link:focus-visible {
+          outline: 2px solid #3A82C4;
+          outline-offset: 3px;
+          border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
           .careers-grid { --careers-card-w: clamp(260px, 44vw, 320px); }
         }
@@ -262,19 +251,19 @@ const Careers = () => {
             <p className="careers-label">Careers</p>
             <h2 className="careers-heading">Work with us</h2>
             <p className="careers-subtext">
-              We are building open-source AI for earlier detection, stroke care, and precision medicine. These are
-              the disciplines we hire across, spanning the laboratory, the clinic, and engineering.
+              We are building AI for stroke care and precision oncology, across the clinic, the
+              laboratory and engineering. Open a role for its full description.
             </p>
           </div>
 
           <div className="careers-grid">
             {ROLES.map((role) => (
-              <button
-                key={role.title}
-                type="button"
+              <a
+                key={role.slug}
                 className="careers-card"
-                onClick={openEnquiry}
-                aria-label={`Enquire about the ${role.title} role`}
+                href={roleHref(role.slug)}
+                onClick={(event) => openRole(event, role.slug)}
+                aria-label={'Read the full job description for ' + role.title}
               >
                 <span className="careers-rule" style={{ background: role.accent }} aria-hidden="true" />
                 <span className="careers-card-label" style={{ color: role.accent }}>
@@ -282,20 +271,24 @@ const Careers = () => {
                 </span>
                 <span className="careers-card-title">{role.title}</span>
                 {role.focus && <span className="careers-card-focus">{role.focus}</span>}
-                <p className="careers-card-desc">{role.description}</p>
+                <p className="careers-card-desc">{role.summary}</p>
                 <span className="careers-card-apply">
-                  Enquire
+                  View role
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </span>
-              </button>
+              </a>
             ))}
           </div>
 
           <p className="careers-note">
-            Do not see your discipline listed? We are always glad to hear from researchers and
-            engineers working on accessible healthcare technology.
+            Do not see your discipline listed? We are always glad to hear from clinicians,
+            researchers and engineers working on accessible healthcare technology —{' '}
+            <button type="button" className="careers-note-link" onClick={openEnquiry}>
+              write to us
+            </button>
+            .
           </p>
         </div>
       </section>

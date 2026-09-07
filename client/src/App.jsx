@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -6,11 +6,49 @@ import FocusAreas from './components/FocusAreas';
 import Team from './components/Team';
 import Careers from './components/Careers';
 import Footer from './components/Footer';
+import JobDetail from './components/JobDetail';
+import { getRoleBySlug } from './data/roles';
+import {
+  ROUTE_EVENT,
+  jumpTo,
+  lastHomeScroll,
+  readRoleSlug,
+  readSectionRoute,
+} from './lib/careersRoute';
+import { scrollTargetFor } from './lib/scrollToSection';
 
 function App() {
   const wrapRef  = useRef(null);
   const aboutRef = useRef(null);
   const focusRef = useRef(null);
+
+  // ── Route ──
+  // null = the site; a slug = that job's own page. See lib/careersRoute.js for
+  // why this is a query parameter and not a path.
+  const [roleSlug, setRoleSlug] = useState(readRoleSlug);
+  // Set once the deep link has been honoured, so returning from a job page
+  // restores the visitor's own scroll position instead of jumping back to the
+  // section named in the URL.
+  const deepLinked = useRef(false);
+
+  useEffect(() => {
+    // Custom event = an in-page navigation from a card or a Back button.
+    // popstate = the browser's own back/forward.
+    const sync = () => setRoleSlug(readRoleSlug());
+    window.addEventListener(ROUTE_EVENT, sync);
+    window.addEventListener('popstate', sync);
+
+    // Scroll position is restored below, per view. Left on 'auto' the browser
+    // would also try, and the two fight on back/forward.
+    const previous = window.history.scrollRestoration;
+    if (previous) window.history.scrollRestoration = 'manual';
+
+    return () => {
+      window.removeEventListener(ROUTE_EVENT, sync);
+      window.removeEventListener('popstate', sync);
+      if (previous) window.history.scrollRestoration = previous;
+    };
+  }, []);
 
   useEffect(() => {
     const wrap  = wrapRef.current;
@@ -80,7 +118,80 @@ function App() {
       resizeObserver.disconnect();
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+    // roleSlug: while a job page is mounted the three refs are null and this
+    // effect bails out, so it has to run again when the site comes back.
+  }, [roleSlug]);
+
+  // ── Scroll position across a view change ──
+  // Declared after the overlap effect on purpose: that one sets the wrapper's
+  // explicit height, and without it the document is too short for the target
+  // scroll offset to be reachable.
+  useEffect(() => {
+    if (roleSlug) {
+      jumpTo(0);
+      return;
+    }
+
+    // Put the visitor back on the card they came from. null means we
+    // never left the site (a first load), so there is nothing to restore.
+    const y = lastHomeScroll();
+    if (y !== null) jumpTo(y);
+  }, [roleSlug]);
+
+  // ── Deep link into a section ──
+  // /careers (linked from Stroke-AI) and /#careers both land on the Careers
+  // heading. Declared after the two effects above so the wrapper already has
+  // its explicit height and scrollTargetFor can measure the real document.
+  useEffect(() => {
+    if (roleSlug || deepLinked.current) return;
+    const id = readSectionRoute();
+    if (!id) return;
+    deepLinked.current = true;
+
+    // Web fonts and late images change section offsets, so the first landing
+    // can be a few hundred pixels out. Land immediately, then correct once the
+    // layout has settled.
+    let cancelled = false;
+    let landedAt = null;
+
+    const land = () => {
+      const top = scrollTargetFor(id);
+      if (top === null) return;
+      landedAt = top;
+      jumpTo(top);
+    };
+
+    // The correction must never fight someone who has taken over. Gestures
+    // cover the obvious cases; the scroll check also covers the ones that are
+    // not gestures at all — a nav link clicked during the window, or a smooth
+    // scroll already in flight. The dead band is wide enough that a small
+    // layout shift settling underneath us does not read as a visitor.
+    const stop = () => { cancelled = true; };
+    const onScroll = () => {
+      if (landedAt !== null && Math.abs(window.scrollY - landedAt) > 40) cancelled = true;
+    };
+    const opts = { passive: true };
+    window.addEventListener('wheel', stop, opts);
+    window.addEventListener('touchstart', stop, opts);
+    window.addEventListener('keydown', stop, opts);
+    window.addEventListener('scroll', onScroll, opts);
+
+    land();
+    document.fonts.ready.then(() => {
+      if (!cancelled) requestAnimationFrame(() => { if (!cancelled) land(); });
+    });
+
+    return () => {
+      window.removeEventListener('wheel', stop, opts);
+      window.removeEventListener('touchstart', stop, opts);
+      window.removeEventListener('keydown', stop, opts);
+      window.removeEventListener('scroll', onScroll, opts);
+    };
+  }, [roleSlug]);
+
+  if (roleSlug) {
+    return <JobDetail job={getRoleBySlug(roleSlug)} />;
+  }
 
   return (
     <div className="min-h-screen bg-white">
