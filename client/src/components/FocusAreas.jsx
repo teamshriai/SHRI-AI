@@ -36,6 +36,26 @@ const FocusAreas = () => {
     {
       icon: (
         <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <path d="M20 5 C13 5 8 11 8 18 C8 24 12 28 12 32 L12 34 L28 34 L28 32 C28 28 32 24 32 18 C32 11 27 5 20 5 Z" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M14 19 L18 19 L20 14 L23 24 L25 19 L28 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M15 34 L15 36 M25 34 L25 36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      ),
+      accent: '#c0392b',
+      accentRgb: '192,57,43',
+      number: '02',
+      title: 'Stroke AI & Neurovascular Imaging',
+      subtitle: 'Early Detection, Faster Response',
+      description: 'Apply AI to medical imaging for earlier stroke detection, risk assessment, and time-critical clinical decision support.',
+      features: [
+        'AI-assisted analysis of CT and MRI neuroimaging',
+        'Risk stratification and early-warning models',
+        'Decision support for time-critical stroke care',
+      ],
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
           <rect x="6" y="12" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
           <path d="M13 22 L16 18 L19 23 L22 16 L25 22 L28 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           <circle cx="20" cy="8" r="3" stroke="currentColor" strokeWidth="1.5" />
@@ -45,7 +65,7 @@ const FocusAreas = () => {
       ),
       accent: '#3A82C4',
       accentRgb: '58,130,196',
-      number: '02',
+      number: '03',
       title: 'AI in Healthcare',
       subtitle: 'Intelligent Diagnostics',
       description: 'Accelerate diagnostic accuracy and personalise treatment across disease areas using artificial intelligence.',
@@ -74,7 +94,7 @@ const FocusAreas = () => {
       ),
       accent: '#D4891E',
       accentRgb: '212,137,30',
-      number: '03',
+      number: '04',
       title: 'Translational Research',
       subtitle: 'Bench to Bedside',
       description: 'Bridge the gap between scientific discovery and patient care through strategic clinical partnerships.',
@@ -96,7 +116,7 @@ const FocusAreas = () => {
       ),
       accent: '#2aaa72',
       accentRgb: '42,170,114',
-      number: '04',
+      number: '05',
       title: 'Global Health & Access',
       subtitle: 'Democratising Care',
       description: 'Democratise access to advanced diagnostics globally and reduce disparities in how care is delivered.',

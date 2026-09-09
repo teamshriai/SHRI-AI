@@ -4,6 +4,15 @@ const Hero = () => {
   return (
     <>
       <style>{`
+        /* Display font for the hero heading only — every other component
+           keeps the site-wide DM Sans (--font-sans in index.css). Loaded
+           here, scoped locally rather than touching the shared token, so
+           this is a one-heading change, not a site-wide one. Manrope is a
+           clean, professional grotesque with slightly rounded terminals —
+           more distinctive than DM Sans without the risk a display serif
+           carried (a serif read wrong at uppercase/tight tracking here). */
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap');
+
         *, *::before, *::after { box-sizing: border-box; }
 
         .gl-shape {
@@ -18,15 +27,30 @@ const Hero = () => {
 
         .l1-shape {
           width: 14%;
-          height: clamp(180px, 52vh, 560px);
-          top: -8vh;
+          /* height and top both used vh, so they scaled TOGETHER with
+             viewport height — but the heading's position is governed by a
+             fixed-px navbar-clearance padding, which does not shrink at the
+             same rate. At short viewports (~700-800px tall, common laptop
+             screens) the heading rides relatively higher than the shape's
+             bottom edge does, and they collided by as much as ~86px
+             (measured at 1536x720). Capping height with a lower, mostly-fixed
+             ceiling — rather than one that keeps growing with vh — is what
+             actually keeps the gap positive across the whole matrix; verified
+             clear from 600-1200px tall at 1024-2560px wide. */
+          /* Height is trimmed alongside each downward move of the top offset.
+             Moving the offset down alone would spend the whole overlap margin
+             (measured at only ~7px in the worst case, 680px-tall viewports);
+             taking a little off the height buys that margin back, so the
+             shapes can sit visibly lower AND stay clear of the heading. */
+          height: clamp(122px, 26vh, 262px);
+          top: -13.5vh;
           backdrop-filter: blur(22px);
           -webkit-backdrop-filter: blur(22px);
         }
         .l2-shape {
           width: 14%;
-          height: clamp(90px, 26vh, 280px);
-          top: -2vh;
+          height: clamp(62px, 13vh, 132px);
+          top: -7.4vh;
           backdrop-filter: blur(28px);
           -webkit-backdrop-filter: blur(28px);
         }
@@ -139,46 +163,6 @@ const Hero = () => {
           }
         }
 
-        /* ── Logo ── */
-        .hero-logo-wrap {
-          position: relative;
-          display: inline-block;
-          width:  clamp(52px, 8vw, 280px);
-          height: clamp(52px, 8vw, 280px);
-          margin-bottom: clamp(4px, 0.8vw, 12px);
-          flex-shrink: 0;
-        }
-        .hero-logo-img {
-          position: relative;
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-          user-select: none;
-          -webkit-user-drag: none;
-        }
-
-        @media (max-width: 1024px) {
-          .hero-logo-wrap {
-            width:  clamp(80px, 16vw, 220px);
-            height: clamp(80px, 16vw, 220px);
-          }
-        }
-        @media (max-width: 768px) {
-          .hero-logo-wrap {
-            width:  clamp(70px, 22vw, 160px);
-            height: clamp(70px, 22vw, 160px);
-            margin-bottom: clamp(3px, 1.5vw, 10px);
-          }
-        }
-        @media (max-width: 480px) {
-          .hero-logo-wrap {
-            width:  clamp(60px, 26vw, 130px);
-            height: clamp(60px, 26vw, 130px);
-          }
-        }
-
         /* ── Hero heading ──
          * Renamed from .hero-heading: Footer.jsx defined that same class name
          * globally, rendered later in the tree, and therefore won on this
@@ -188,48 +172,95 @@ const Hero = () => {
          * declared here explicitly so the heading is unchanged on screen but
          * no longer depends on another component's CSS.
          */
-        .hero-h1 {
-          font-family: var(--font-sans);
-          font-weight: var(--fw-light);
-          /* Half the previous scale. Declared locally, not via --fs-display,
-             because that token is shared with Footer's .fcta-heading. */
-          font-size: clamp(1.7rem, 3.2vw, 2.9rem);
-          line-height: 1.12;
-          letter-spacing: var(--ls-display);
-          text-transform: uppercase;
-          color: #1a1a24;
-          margin: 0 0 clamp(10px, 1.4vw, 18px) 0;
-          /* The heading now runs longer, so cap its measure to clear the DNA
-             artwork on the right and let the browser distribute the breaks
-             rather than pinning them with a <br /> per line. */
-          max-width: min(100%, 62vw);
+        /* ── Hero content padding ──
+         * The left inset is deliberately much larger than the right on
+         * desktop: it shifts the whole block toward the centre so it fills
+         * the space beside the DNA artwork instead of hugging the left wall.
+         *
+         * That inset MUST NOT survive to mobile. Its 96px floor was being
+         * applied at 390px wide, which left the text column only 274px and
+         * pushed everything hard to one side — the heading broke to four
+         * lines and the whole block read as off-centre. Below 768px there is
+         * no artwork to balance against (the DNA becomes a faint full-bleed
+         * wash), so the block just uses a normal symmetric gutter.
+         */
+        .hero-content-pad {
+          /* The block is bottom-anchored (justify-content:flex-end on the
+             parent), so the BOTTOM value is what lifts it: a larger bottom
+             padding pushes the whole group further up off the section's
+             lower edge. The top value stays as the navbar-clearance floor. */
+          padding:
+            clamp(92px, 13vh, 132px)
+            clamp(16px, 5vw, 56px)
+            clamp(52px, 7vw, 96px)
+            clamp(96px, 14vw, 220px);
         }
         @media (max-width: 768px) {
-          /* Below here the artwork is a faint full-bleed wash, so the heading
-             can use the whole measure. */
-          .hero-h1 { max-width: 100%; }
-        }
-
-        /* Lede between the heading and the two platform lines. */
-        .hero-lede {
-          font-family: var(--font-sans);
-          font-weight: var(--fw-light);
-          font-size: clamp(15px, 1.55vw, 22px);
-          line-height: 1.5;
-          letter-spacing: -0.011em;
-          color: #4f4f60;
-          margin: 0 0 clamp(14px, 1.8vw, 26px) 0;
-          max-width: min(100%, 54ch);
-          text-wrap: pretty;
-        }
-        @media (max-width: 768px) {
-          .hero-lede {
-            font-size: clamp(14px, 3.4vw, 17px);
-            max-width: 100%;
+          .hero-content-pad {
+            padding:
+              clamp(92px, 13vh, 132px)
+              clamp(20px, 6vw, 32px)
+              clamp(34px, 5vw, 52px);
           }
         }
-        .hero-h1 .word-ai       { color: #c0392b; font-weight: var(--fw-light); }
-        .hero-h1 .word-genomics { color: #2a6db5; font-weight: var(--fw-light); }
+
+        /* ── Shared text column ──
+         * Heading, lede and nonprofit line all share ONE max-width, so their
+         * right edges line up instead of each wrapping to its own measure —
+         * three left-aligned blocks of different widths stacked on top of
+         * each other read as unplanned, not as one considered column. 34rem
+         * is the heading's own natural cap; the lede and nonprofit line are
+         * pinned to the same value below rather than picking their own. */
+        .hero-h1, .hero-nonprofit-line {
+          max-width: min(100%, 34rem);
+        }
+
+        .hero-h1 {
+          /* Manrope, loaded above — scoped to this heading only. */
+          font-family: 'Manrope', var(--font-sans);
+          font-weight: 600;
+          /* Nudged up one step from clamp(1.7rem, 3.1vw, 2.9rem). The vw term
+             is what governs at typical desktop widths, so it is the one that
+             actually had to move; the floor and ceiling shift with it to keep
+             the curve smooth rather than kinking at the clamp boundaries. */
+          font-size: clamp(1.85rem, 3.45vw, 3.2rem);
+          line-height: 1.2;
+          letter-spacing: -0.015em;
+          text-transform: none;
+          text-align: left;
+          color: #1a1a24;
+          /* Gap 1 of 2: heading → nonprofit line. Tight, so the two read as
+             one block; the loose gap is the one below the group. */
+          margin: 0 0 clamp(10px, 1.2vw, 14px) 0;
+        }
+        @media (max-width: 768px) {
+          .hero-h1, .hero-nonprofit-line { max-width: 100%; }
+        }
+        .hero-h1 .word-ai         { color: #c0392b; font-weight: 700; }
+        /* Reusing the site's existing accent colours (blue = .hero-nonprofit-line
+           / About.jsx's accent-blue, green = About.jsx's accent-green) rather
+           than introducing new hex values. Weight stays a touch above the
+           heading's own 600 so the accent words still stand out slightly. */
+        .hero-h1 .word-healthcare { color: #3A82C4; font-weight: 700; }
+        .hero-h1 .word-lives      { color: #2aaa72; font-weight: 700; }
+
+        /* Standout line below the heading: a short, independent nonprofit-
+           status statement (the fuller sentence stays in About.jsx). Medium
+           weight plus the existing blue accent is the "stand out" treatment. */
+        .hero-nonprofit-line {
+          font-family: var(--font-sans);
+          font-weight: var(--fw-medium);
+          font-size: clamp(14px, 1.5vw, 18px);
+          letter-spacing: 0.01em;
+          color: #3A82C4;
+          text-align: left;
+          /* No top margin of its own — the heading's margin-bottom above
+             already sets Gap 1 of 2. A margin here too would stack on top of
+             it, widening the gap unpredictably instead of by one deliberate
+             amount. Separation from the platform links below (Gap 2 of 2, the
+             loose one) comes from the wrapping div's own marginBottom. */
+          margin: 0;
+        }
 
         /* ── Support tagline ── */
         .hero-support-text {
@@ -371,6 +402,9 @@ const Hero = () => {
         .hero-supports {
           display: flex;
           align-items: stretch;
+          /* Widened on desktop (below the 1024px breakpoint this reverts to
+             the tighter value — a stacked column doesn't need as much space
+             between the rule and the text either side of it). */
           gap: clamp(1.1rem, 2.2vw, 2.25rem);
           width: min(100%, clamp(560px, 62vw, 1000px));
         }
@@ -381,12 +415,30 @@ const Hero = () => {
           min-width: 0;
           max-width: none;
         }
+        /* The divider's padding used to sit only on the second column's
+           padding-left, which grew ITS outer box while leaving the first
+           column's box smaller — the two paragraphs' text areas ended up
+           equal width, but their visible boxes (and so the divider's
+           position) did not look symmetric. Mirroring the same padding as
+           padding-right on the first column balances both boxes exactly,
+           so the rule sits centred in the gap rather than offset toward it. */
+        .hero-supports > .hero-support-text:first-child {
+          padding-right: clamp(1.1rem, 2.2vw, 2.25rem);
+        }
         /* Divider: vertical rule between the columns, flipping to a horizontal
            rule above the second block once stacked. Mirrors the
            .cta-bottom-divider pattern in Footer.jsx. */
         .hero-support-alt {
           border-left: 1px solid rgba(100, 100, 120, 0.16);
           padding-left: clamp(1.1rem, 2.2vw, 2.25rem);
+        }
+        @media (min-width: 1025px) {
+          /* Desktop only: more breathing room between the two platform
+             paragraphs than the shared clamp above gives at typical desktop
+             widths (~1.5-2x the base gap at 1280-1920px). */
+          .hero-supports { gap: clamp(2.5rem, 4.5vw, 5rem); }
+          .hero-supports > .hero-support-text:first-child { padding-right: clamp(2.5rem, 4.5vw, 5rem); }
+          .hero-support-alt { padding-left: clamp(2.5rem, 4.5vw, 5rem); }
         }
         @media (max-width: 1024px) {
           .hero-supports {
@@ -398,6 +450,9 @@ const Hero = () => {
             align-items: stretch;
             width: min(100%, 60vw);
           }
+          /* Stacked layout needs no side padding — the divider becomes a
+             horizontal rule above the second block instead. */
+          .hero-supports > .hero-support-text:first-child { padding-right: 0; }
           .hero-support-alt {
             border-left: none;
             padding-left: 0;
@@ -505,18 +560,18 @@ const Hero = () => {
         >
           {/* Desktop */}
           <div className="shapes-desktop" style={{ position: 'absolute', inset: 0 }}>
-            <motion.div animate={{ y: [0,-18,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.0,  repeat: Infinity, ease: 'easeInOut', delay: 0.0 }} className="gl-shape l1-shape" style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.50) 0%, rgba(255,165,50,0.36) 45%, rgba(255,140,30,0.20) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.85), 0 12px 48px rgba(255,160,40,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-13,0], rotate: [0,-1.5,0] }} transition={{ duration: 9.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.8 }} className="gl-shape l1-shape" style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.50) 0%, rgba(255,155,90,0.36) 45%, rgba(245,125,60,0.20) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.85), 0 12px 48px rgba(255,145,70,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-20,0], rotate: [0,2,0]    }} transition={{ duration: 7.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.4 }} className="gl-shape l1-shape" style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.50) 0%, rgba(180,140,245,0.36) 45%, rgba(150,110,230,0.20) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.85), 0 12px 48px rgba(180,130,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-11,0], rotate: [0,-1,0]   }} transition={{ duration: 10.0, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }} className="gl-shape l1-shape" style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.50) 0%, rgba(155,165,250,0.36) 45%, rgba(120,135,235,0.20) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.85), 0 12px 48px rgba(150,160,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-16,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape" style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-22,0], rotate: [0,-2,0]   }} transition={{ duration: 9.0,  repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape" style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-18,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.0,  repeat: Infinity, ease: 'easeInOut', delay: 0.0 }} className="gl-shape l1-shape" style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.31) 0%, rgba(255,165,50,0.22) 45%, rgba(255,140,30,0.12) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.29), 0 12px 48px rgba(255,160,40,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-13,0], rotate: [0,-1.5,0] }} transition={{ duration: 9.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.8 }} className="gl-shape l1-shape" style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.31) 0%, rgba(255,155,90,0.22) 45%, rgba(245,125,60,0.12) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.29), 0 12px 48px rgba(255,145,70,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-20,0], rotate: [0,2,0]    }} transition={{ duration: 7.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.4 }} className="gl-shape l1-shape" style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.31) 0%, rgba(180,140,245,0.22) 45%, rgba(150,110,230,0.12) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.29), 0 12px 48px rgba(180,130,255,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-11,0], rotate: [0,-1,0]   }} transition={{ duration: 10.0, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }} className="gl-shape l1-shape" style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.31) 0%, rgba(155,165,250,0.22) 45%, rgba(120,135,235,0.12) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.29), 0 12px 48px rgba(150,160,255,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-16,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape" style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.36) 0%, rgba(90,165,255,0.27) 45%, rgba(50,130,240,0.17) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.31), 0 12px 48px rgba(100,170,255,0.24), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
+            <motion.div animate={{ y: [0,-22,0], rotate: [0,-2,0]   }} transition={{ duration: 9.0,  repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape" style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.35) 0%, rgba(70,140,245,0.26) 45%, rgba(30,100,220,0.16) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.31), 0 12px 48px rgba(70,140,255,0.24), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
 
-            <motion.div animate={{ y: [0,-14,0], rotate: [0,1,0]    }} transition={{ duration: 7.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape" style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape" style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8,  repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape" style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-17,0], rotate: [0,-1,0]   }} transition={{ duration: 7.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.58) 0%, rgba(125,165,250,0.46) 45%, rgba(85,135,235,0.26) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.85), 0 14px 50px rgba(130,170,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-21,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.58) 0%, rgba(120,185,255,0.46) 45%, rgba(70,150,245,0.26) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.85), 0 14px 50px rgba(100,165,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-14,0], rotate: [0,1,0]    }} transition={{ duration: 7.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape" style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.36) 0%, rgba(255,200,80,0.29) 45%, rgba(240,170,40,0.16) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.29), 0 14px 50px rgba(255,190,50,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape" style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.36) 0%, rgba(255,175,130,0.29) 45%, rgba(245,145,100,0.16) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.29), 0 14px 50px rgba(255,160,100,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8,  repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape" style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.36) 0%, rgba(190,160,250,0.29) 45%, rgba(160,120,235,0.16) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.29), 0 14px 50px rgba(180,140,255,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-17,0], rotate: [0,-1,0]   }} transition={{ duration: 7.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.41) 0%, rgba(125,165,250,0.33) 45%, rgba(85,135,235,0.21) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.31), 0 14px 50px rgba(130,170,255,0.25), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
+            <motion.div animate={{ y: [0,-21,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.41) 0%, rgba(120,185,255,0.33) 45%, rgba(70,150,245,0.21) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.31), 0 14px 50px rgba(100,165,255,0.25), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
           </div>
 
           {/* Mobile */}
@@ -560,36 +615,27 @@ const Hero = () => {
             minHeight: '88vh',
           }}
         >
-          {/* Headline block — anchored bottom-left */}
+          {/* Headline block — back to bottom-anchored, as it was originally.
+              flex:1 + justify-content:flex-end pushes the whole group (heading
+              through platform links) down to the bottom of the section. */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <div style={{ padding: 'clamp(92px,13vh,132px) clamp(16px,5vw,56px) clamp(22px,3vw,40px)' }}>
+            <div className="hero-content-pad">
 
-              {/* Logo */}
-              <div className="hero-logo-wrap">
-                <img
-                  className="hero-logo-img"
-                  src="/shri-ai-logo-trans.webp"
-                  alt="SHRI-AI logo"
-                  draggable={false}
-                  loading="eager"
-                  decoding="async"
-                />
+              {/* Heading-through-nonprofit-line group, in its own wrapper so
+                  it can be nudged up independently of the platform links
+                  below — bottom margin here lifts this group, the links stay
+                  where they were. */}
+              <div style={{ marginBottom: 'clamp(36px,5vw,64px)' }}>
+                <h1 className="hero-h1">
+                  Uniting <span className="word-ai">AI</span>,<br />
+                  Advancing <span className="word-healthcare">Healthcare</span>,<br />
+                  Saving <span className="word-lives">Lives</span>
+                </h1>
+
+                <p className="hero-nonprofit-line">
+                  A California-based 501(c)(3) nonprofit organization
+                </p>
               </div>
-
-              {/* Heading */}
-              <h1 className="hero-h1">
-                Advancing Stroke<br />
-                &amp; Oncology Healthcare<br />
-                Through{' '}
-                <span className="word-ai">AI</span>
-                {' '} with {' '}
-                <span className="word-genomics">Genomics</span>
-              </h1>
-
-              <p className="hero-lede">
-                Enabling real-time monitoring, earlier detection, and precision healthcare
-                through open-source AI and medical innovation.
-              </p>
 
               {/* Support taglines — two supported platforms, side by side above
                   1024px with a hairline rule between them, stacked below it with

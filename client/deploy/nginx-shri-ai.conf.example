@@ -1,0 +1,29 @@
+# nginx for shri-ai.org — the server-side half of clean URLs.
+#
+# The build already writes dist/careers/index.html, so /careers works on a
+# plain static nginx with no change at all. This snippet is the general fix:
+# it makes EVERY unknown path render the single page, so future clean URLs
+# need no build entry, and /careers resolves without the trailing-slash
+# redirect nginx would otherwise issue for a directory.
+#
+# Add try_files to the existing server block, then: nginx -t && systemctl reload nginx
+
+server {
+    listen 80;
+    server_name shri-ai.org www.shri-ai.org;
+
+    root /var/www/shri-ai.org;   # the directory holding the built index.html
+    index index.html;
+
+    # Hashed bundles are immutable; everything else must be revalidated so a
+    # deploy is picked up straight away.
+    location /assets/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    # THE LINE THAT MATTERS: serve the file, else the directory, else the app.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

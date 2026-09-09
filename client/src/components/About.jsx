@@ -139,10 +139,10 @@ const About = () => {
               >
                 →
               </span>
-              SHRI-AI is a California-based 501(c)(3) nonprofit, working alongside clinicians, researchers, and innovators to advance <span className="accent-purple" style={{ fontWeight: 400 }}>earlier detection</span> and <span className="accent-gold" style={{ fontWeight: 400 }}>precision care</span> across <span className="accent-blue" style={{ fontWeight: 400 }}>oncology and stroke</span>.
+              SHRI-AI is a California-based 501(c)(3) nonprofit advancing <span className="accent-purple" style={{ fontWeight: 400 }}>earlier detection</span> and <span className="accent-gold" style={{ fontWeight: 400 }}>precision care</span> across <span className="accent-blue" style={{ fontWeight: 400 }}>oncology and stroke</span>.
             </p>
             <p className="text-center max-w-[1400px] mx-auto">
-              We build and fund <span className="accent-green" style={{ fontWeight: 400 }}>open-source AI</span>, pairing <span className="accent-blue" style={{ fontWeight: 400 }}>genomics and liquid biopsy</span> with medical imaging, so precision healthcare reaches hospitals, laboratories, and communities everywhere — not only the largest medical centres.
+              We build and fund <span className="accent-green" style={{ fontWeight: 400 }}>open-source AI</span>, pairing <span className="accent-blue" style={{ fontWeight: 400 }}>genomics and liquid biopsy</span> with medical imaging — reaching hospitals and communities everywhere.
             </p>
 
           </div>
