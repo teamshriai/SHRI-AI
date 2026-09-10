@@ -698,8 +698,8 @@ const Hero = () => {
                   where they were. */}
               <div style={{ marginBottom: 'clamp(36px,5vw,64px)' }}>
                 <h1 className="hero-h1">
-                  Uniting <span className="word-ai">AI</span>,<br />
-                  Advancing <span className="word-healthcare">Healthcare</span>,<br />
+                  Uniting <span className="word-ai">AI</span><br />
+                  Advancing <span className="word-healthcare">Healthcare</span><br />
                   Saving <span className="word-lives">Lives</span>
                 </h1>
 
