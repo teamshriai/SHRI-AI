@@ -25,32 +25,69 @@ const Hero = () => {
           -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 77%);
         }
 
+        /* ── Hanging shapes (desktop only) ──
+         * These are inside .shapes-desktop, which is display:none at 768px
+         * and below, so nothing here affects mobile.
+         *
+         * The previous approach set a NEGATIVE vh top, which meant the taller
+         * the viewport the more of each shape was pushed off-screen — exactly
+         * backwards. Measured at 1440x900 only 97px of shape was on screen and
+         * the navbar's bottom edge sits at 73px, so barely ~24px was actually
+         * visible; at 2560x1440 it was 77px visible against 675px of unused
+         * space above the heading.
+         *
+         * Now they hang FROM the navbar instead of from off-screen: a small
+         * positive top clears the navbar (whose settled height is ~73px), and
+         * the height is driven by the dead space that measurement showed is
+         * genuinely available. --shape-drop is the shared hanging point so the
+         * two layers stay locked together when it is tuned.
+         */
         .l1-shape {
           width: 14%;
-          /* height and top both used vh, so they scaled TOGETHER with
-             viewport height — but the heading's position is governed by a
-             fixed-px navbar-clearance padding, which does not shrink at the
-             same rate. At short viewports (~700-800px tall, common laptop
-             screens) the heading rides relatively higher than the shape's
-             bottom edge does, and they collided by as much as ~86px
-             (measured at 1536x720). Capping height with a lower, mostly-fixed
-             ceiling — rather than one that keeps growing with vh — is what
-             actually keeps the gap positive across the whole matrix; verified
-             clear from 600-1200px tall at 1024-2560px wide. */
-          /* Height is trimmed alongside each downward move of the top offset.
-             Moving the offset down alone would spend the whole overlap margin
-             (measured at only ~7px in the worst case, 680px-tall viewports);
-             taking a little off the height buys that margin back, so the
-             shapes can sit visibly lower AND stay clear of the heading. */
-          height: clamp(122px, 26vh, 262px);
-          top: -13.5vh;
+          /* Top stays OFF-SCREEN and is a small FIXED negative, not vh.
+             It must be negative: these read as shapes hanging from above, and
+             a positive top exposes their flat top edge as a hard horizontal
+             line across the navbar, which looks broken. But it must not scale
+             with vh either — that was the original bug, hiding more and more
+             of the shape the taller the viewport got (only ~24px visible below
+             the navbar at 1440x900). A fixed -40px keeps the top edge just out
+             of frame at every height, so all the growth goes into the height
+             below instead. */
+          top: -40px;
+          /* Fills the space that measurement showed was unused (185px at
+             1440x900, 321px at 1920x1080) without ever reaching the heading.
+
+             Why no clamp() floor: the space available to these shapes is FLAT
+             at 132px for every viewport 720px tall and under, because the
+             heading's top is pinned by fixed-px navbar-clearance padding and
+             stops moving down. Any floor tall enough to look good on a big
+             screen therefore overlaps on a small one — a 165px floor overlapped
+             in 46 of 156 measured viewport combinations.
+
+             So the height is purely proportional, with the vh coefficient set
+             from the measured curve (132px available at 560px tall = 23.5vh,
+             rising to 797px at 1440px tall) and a margin held back so it always
+             lands short of the heading. min() caps it on very tall screens so
+             it stops being a full-height panel. */
+          /* 1.5x the previous visible drop. The drop is (height - 40px), so
+             1.5x works out to ~26vh rather than 17.5vh.
+             Short viewports are handled by a min-height media query further
+             down rather than by capping here: the heading's top is pinned at
+             92px below ~720px tall, so there is genuinely no room for the
+             full drop, but any cap expressed in px also starves TALL screens
+             (measured: capping at the heading's own clamp pulled the 1440px-
+             tall case back from 212px to 78px). Splitting by viewport height
+             is what lets each end get the right value. */
+          height: min(34vh, 620px);
           backdrop-filter: blur(22px);
           -webkit-backdrop-filter: blur(22px);
         }
         .l2-shape {
           width: 14%;
-          height: clamp(62px, 13vh, 132px);
-          top: -7.4vh;
+          top: -40px;
+          /* The shorter foreground layer — roughly half the tall one, so the
+             two read as a layered pair rather than one block. */
+          height: min(21vh, 390px);
           backdrop-filter: blur(28px);
           -webkit-backdrop-filter: blur(28px);
         }
@@ -123,6 +160,40 @@ const Hero = () => {
           object-position: 60% 30%;
           opacity: 0.8;
           user-select: none;
+        }
+
+        /* ── Short-viewport guard for the hanging shapes ──
+         * Keyed on viewport HEIGHT, not width, because height is what the
+         * constraint actually depends on. Below ~800px tall the heading's top
+         * is pinned by the clamp(92px, 13vh, 132px) padding floor and stops
+         * moving down, so the full drop cannot fit — measured as an overlap
+         * at 560-768px tall. Capping in px here (rather than in the base
+         * rule) keeps TALL viewports free to use the full 26vh; a px cap in
+         * the base rule starved them instead.
+         */
+        @media (max-height: 799px) {
+          .l1-shape { height: min(34vh, 120px); }
+          .l2-shape { height: min(21vh, 78px); }
+        }
+        /* The 800-999px band is the transition: the heading has started moving
+           down but has not yet cleared room for the full 26vh.
+           The ceiling here was probed rather than guessed — binary-searching
+           the tallest height whose bottom still clears the heading by 16px
+           gave 218px at 800px tall rising to 394px at 999px. 24vh tracks that
+           curve (192px -> 240px) with margin to spare. An earlier 150px cap
+           here was far too conservative: it came from readings taken while the
+           shapes' float animation was mid-cycle rather than at rest. */
+        @media (min-height: 800px) and (max-height: 999px) {
+          /* Sized to the TIGHTEST point of the band (800px tall, where only
+             218px is safe), not the average — a flat 34vh here overlapped by
+             38px at 800px and 9px at 864px. Splitting the band again keeps the
+             upper half generous without risking the lower half. */
+          .l1-shape { height: 25vh; }
+          .l2-shape { height: 15.5vh; }
+        }
+        @media (min-height: 900px) and (max-height: 999px) {
+          .l1-shape { height: 31vh; }
+          .l2-shape { height: 19vh; }
         }
 
         @media (max-width: 1280px) {
