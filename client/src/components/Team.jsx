@@ -10,7 +10,7 @@ const TEAM_MEMBERS = [
     role: 'Founder & Technology Leader',
     bio: 'Open-source healthcare technology · Ex-Chairman of OpenEMR',
     image: '/Sena-Palanisami.webp',
-    cardSummary: 'Open-source healthcare technology and AI for precision medicine.',
+    cardSummary: 'Open-source healthcare technology and AI.',
     objectPosition: '50% 22%',
     accent: '#7B6FCD',
     accentSoft: 'rgba(123, 111, 205, 0.12)',
@@ -64,7 +64,7 @@ const TEAM_MEMBERS = [
     role: 'Group Vice President, FP&A — Gartner',
     bio: 'Finance leader specializing in FP&A, M&A, and corporate growth strategy.',
     image: '/manoj.webp',
-    cardSummary: 'Group Vice President, FP&A at Gartner, with expertise in corporate strategy.',
+    cardSummary: 'Group Vice President, FP&A at Gartner.',
     objectPosition: '50% 30%',
     accent: '#D4891E',
     accentSoft: 'rgba(212, 137, 30, 0.12)',
@@ -116,10 +116,11 @@ const TEAM_MEMBERS = [
     role: 'MD, DABR, CAQ(NR), CAST(EVN)',
     bio: 'MD, DABR, CAQ(NR), CAST(EVN)',
     image: '/Rajesh-Rangaswamy.webp',
-    cardSummary: 'NeuroIntervention, Neuroradiology, and Interventional Radiology.',
+    cardSummary: 'Founder of Indostates Health · Neuroradiology.',
     objectPosition: '50% 20%',
     accent: '#3A82C4',
     accentSoft: 'rgba(58, 130, 196, 0.12)',
+    tag: 'Founder of Indostates Health',
     summary:
       'Clinical expertise spans NeuroIntervention, Neuroradiology, and Vascular & Interventional Radiology, with extensive experience across clinical practice, academic medicine, teaching, and specialized interventional care.',
     sections: [
@@ -160,6 +161,71 @@ const TEAM_MEMBERS = [
           'Society of Neuro-Interventional Surgery — Senior Member',
           'American Society of Neuroradiology — Senior Member',
           'American Medical Association',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'balasubramaniam',
+    initials: 'BA',
+    name: 'Dr. Balasubramaniam A V',
+    role: 'MBBS, MD (PGI, Chandigarh), DNB, FRCR (UK)',
+    bio: 'MBBS, MD (PGI, Chandigarh), DNB, FRCR (UK)',
+    image: '/Balasubramaniam-AV.webp',
+    cardSummary: 'Diagnostic Radiology and stroke imaging AI.',
+    // Portrait is landscape (1200x1010) and the subject sits slightly left of
+    // centre, so the 5:8 card crop is nudged left and up to keep the face
+    // framed without cutting the forehead.
+    objectPosition: '44% 6%',
+    accent: '#2aaa72',
+    accentSoft: 'rgba(42, 170, 114, 0.12)',
+    summary:
+      'Diagnostic Radiologist with more than 15 years of experience interpreting a broad range of medical imaging subspecialities, and a strong interest in integrating AI and machine learning into diagnostic radiology.',
+    sections: [
+      {
+        heading: 'Clinical Focus',
+        paragraphs: [
+          'Dr. Balasubramaniam applies clinical and imaging expertise to support the development, validation, and refinement of AI-driven solutions for medical imaging.',
+          'His work includes stroke imaging protocols and imaging-based decision support, contributing to the assessment of findings relevant to acute ischemic stroke, intracranial hemorrhage, large-vessel occlusion, and treatment planning — with a particular interest in optimising imaging workflows for timely diagnosis in emergency neurological care.',
+        ],
+      },
+      {
+        heading: 'Artificial Intelligence Projects',
+        paragraphs: [
+          'More than five years of experience across AI projects, collaborating with AI researchers, data scientists, software engineers, and healthcare technology teams to provide clinical and radiological expertise in the development, evaluation, and clinical application of AI-driven medical imaging solutions.',
+        ],
+        list: [
+          'Defining clinically relevant use cases',
+          'Reviewing imaging datasets, and supporting annotation and validation',
+          'Evaluating algorithm performance',
+          'Providing expert feedback to improve the clinical relevance and usability of AI products',
+        ],
+      },
+      {
+        heading: 'Medical Education & Training',
+        list: [
+          'MBBS — Madras Medical College, Chennai',
+          'MD — PGIMER, Chandigarh',
+          'DNB — PGIMER, Chandigarh',
+          'FRCR — Royal College of Radiologists, UK',
+        ],
+      },
+      {
+        heading: 'Professional Experience',
+        list: [
+          'Senior Resident — PGIMER, Chandigarh',
+          'Consultant Radiologist — Anderson Diagnostics and Labs, Chennai',
+          'Consultant Radiologist — Avitis Superspeciality Hospital, Palakkad, Kerala',
+          'Senior Consultant Radiologist — Gleneagles Hospital (Fortis Network), Chennai',
+        ],
+      },
+      {
+        heading: 'Professional Memberships',
+        list: [
+          'Indian Medical Association',
+          'Indian Radiological and Imaging Association',
+          'Radiological Society of North America',
+          'Indian Academy of Cardiac Imaging',
         ],
       },
     ],
@@ -261,6 +327,11 @@ const TeamModal = ({ member, onClose }) => {
             >
               {member.role}
             </span>
+            {member.tag && (
+              <p className="team-modal-tag" style={{ color: member.accent }}>
+                {member.tag}
+              </p>
+            )}
           </div>
 
           <p className="team-modal-summary">{member.summary}</p>
@@ -428,26 +499,54 @@ const Team = () => {
            graphite tint, so one treatment reads identically over a light, a
            cream and a near-black backdrop. The mask fades the blur itself out
            toward the top, avoiding a hard edge where the effect stops. */
+        /* Shorter than it used to be (42% vs 56%): at 56% the panel reached far
+           enough up the portrait to sit over chins and faces on the cards whose
+           copy runs to three lines.
+           The fade is built from many closely-spaced stops rather than a few.
+           A 3-4 stop gradient over this distance produces a visible "edge"
+           where the ramp starts — the thing that makes a scrim read as a bar
+           pasted onto the photo. Easing the alpha gradually (and masking the
+           blur out on the same curve, so the blur never stops abruptly either)
+           is what keeps the transition invisible. */
         .team-card-scrim {
           position: absolute;
           left: 0;
           right: 0;
           bottom: 0;
-          height: 56%;
+          height: 42%;
           pointer-events: none;
-          backdrop-filter: blur(18px) saturate(135%);
-          -webkit-backdrop-filter: blur(26px) saturate(135%);
+          backdrop-filter: blur(14px) saturate(130%);
+          -webkit-backdrop-filter: blur(14px) saturate(130%);
           background: linear-gradient(
             to top,
-            rgba(16, 16, 24, 0.74) 0%,
-            rgba(16, 16, 24, 0.66) 34%,
-            rgba(16, 16, 24, 0.48) 58%,
-            rgba(16, 16, 24, 0.26) 78%,
-            rgba(16, 16, 24, 0.08) 92%,
-            rgba(16, 16, 24, 0) 100%
+            rgba(14, 14, 22, 0.82) 0%,
+            rgba(14, 14, 22, 0.80) 12%,
+            rgba(14, 14, 22, 0.74) 24%,
+            rgba(14, 14, 22, 0.64) 36%,
+            rgba(14, 14, 22, 0.52) 48%,
+            rgba(14, 14, 22, 0.39) 60%,
+            rgba(14, 14, 22, 0.26) 72%,
+            rgba(14, 14, 22, 0.15) 82%,
+            rgba(14, 14, 22, 0.07) 90%,
+            rgba(14, 14, 22, 0.02) 96%,
+            rgba(14, 14, 22, 0) 100%
           );
-          -webkit-mask-image: linear-gradient(to top, #000 0%, #000 46%, rgba(0, 0, 0, 0.72) 72%, rgba(0, 0, 0, 0.28) 90%, transparent 100%);
-          mask-image: linear-gradient(to top, #000 0%, #000 46%, rgba(0, 0, 0, 0.72) 72%, rgba(0, 0, 0, 0.28) 90%, transparent 100%);
+          -webkit-mask-image: linear-gradient(
+            to top,
+            #000 0%, #000 30%,
+            rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.78) 58%,
+            rgba(0,0,0,0.58) 70%, rgba(0,0,0,0.36) 80%,
+            rgba(0,0,0,0.18) 88%, rgba(0,0,0,0.06) 95%,
+            transparent 100%
+          );
+          mask-image: linear-gradient(
+            to top,
+            #000 0%, #000 30%,
+            rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.78) 58%,
+            rgba(0,0,0,0.58) 70%, rgba(0,0,0,0.36) 80%,
+            rgba(0,0,0,0.18) 88%, rgba(0,0,0,0.06) 95%,
+            transparent 100%
+          );
         }
 
         .team-card-content {
@@ -460,16 +559,26 @@ const Team = () => {
 
         .team-name {
           display: flex;
-          align-items: center;
+          /* baseline-ish alignment via a small offset on the badge instead of
+             align-items:center: with a two-line name, centring drops the badge
+             to the middle of the block, away from the name's first line. */
+          align-items: flex-start;
           gap: 0.4rem;
           font-family: var(--font-sans);
           font-weight: var(--fw-medium);
-          /* Fixed, not vw-based: the card's width is capped by the 1200px
-             container, so viewport-scaled type would overflow its own box. */
-          font-size: 1rem;
+          /* Scales with the CARD, not the viewport. The card width swings from
+             196px (4-up at 1024, 2-up at 600) to 300px (2-up at 900), so a
+             single fixed size cannot work: at 14.7px the longest name
+             ("Dr. Balasubramaniam A V") ran to three lines on the narrow
+             cards, pushing that card's text up over the face. Deriving the
+             size from --team-card-w keeps the name at two lines at every
+             card width. cqi would be the modern tool here, but the card is
+             not a container, and adding containment would change how the
+             absolutely-positioned scrim and content resolve. */
+          font-size: clamp(0.78rem, calc(var(--team-card-w, 232px) * 0.062), 0.95rem);
           color: #ffffff;
-          letter-spacing: -0.014em;
-          line-height: 1.25;
+          letter-spacing: -0.02em;
+          line-height: 1.28;
           margin: 0 0 0.28rem;
         }
 
@@ -477,6 +586,9 @@ const Team = () => {
           width: 15px;
           height: 15px;
           flex-shrink: 0;
+          /* Nudged down to sit optically on the first line's cap-height now
+             that the row is top-aligned for two-line names. */
+          margin-top: 0.12em;
         }
 
         .team-card-summary {
@@ -490,8 +602,11 @@ const Team = () => {
           text-wrap: pretty;
           /* Reserve two lines so names share a baseline across a row. No clamp:
              at narrow widths the copy may run to a third line, and cards are
-             single-column there, so growing is preferable to truncating. */
-          min-height: 3em;
+             single-column there, so growing is preferable to truncating.
+             Kept at two lines rather than trimmed to one: the summaries now
+             fit in two at every width, and a shared reserve is what keeps the
+             names aligned across the row. */
+          min-height: 2.9em;
         }
 
         .team-role {
@@ -507,6 +622,19 @@ const Team = () => {
 
         /* Between ~641 and ~830px auto-fit yielded 2 columns and an orphaned
            third card; hold a single centred column until 3 genuinely fit. */
+        /* With four cards the natural flex wrap produces a 3/1 split between
+           ~730 and ~1000px — three across with a single orphan beneath. Capping
+           the card width here forces a balanced 2/2 instead, which is why this
+           range is pinned rather than left to wrap on its own. */
+        @media (min-width: 640px) and (max-width: 1000px) {
+          .team-grid {
+            /* 38vw (not 30vw) is what actually forces 2-up: at 900px wide a
+               30vw card still resolved to 230px, so three fit and the fourth
+               orphaned. Two cards plus the gap must exceed half the row for
+               the third to be pushed down. */
+            --team-card-w: clamp(200px, 38vw, 300px);
+          }
+        }
         /* On phones give the card a little more room, since it is the only one
            on the row. Flex handles the wrapping itself. */
         @media (max-width: 520px) {
@@ -637,6 +765,18 @@ const Team = () => {
           margin: 0;
         }
 
+        /* Founder/affiliation credential, sat under the qualifications pill.
+           Inherits the member's accent so it reads as part of the identity
+           block rather than as body copy. */
+        .team-modal-tag {
+          font-family: var(--font-sans);
+          font-weight: var(--fw-medium);
+          font-size: clamp(0.82rem, 1vw, 0.9rem);
+          letter-spacing: 0.01em;
+          margin: 0.6rem 0 0;
+          line-height: 1.4;
+        }
+
         .team-modal-summary {
           font-family: var(--font-sans);
           font-weight: 400;
@@ -747,7 +887,7 @@ const Team = () => {
             <p className="team-label">Our Team</p>
             <h2 className="team-heading">Leadership</h2>
             <p className="team-subtext">
-              Guided by experienced leaders in healthcare, technology, and finance, committed to advancing equitable precision healthcare worldwide.
+              Guided by experienced leaders in medicine, radiology, technology, and finance, committed to advancing equitable precision healthcare worldwide.
             </p>
           </div>
 
