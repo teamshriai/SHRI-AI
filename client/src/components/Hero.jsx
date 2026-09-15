@@ -282,8 +282,8 @@ const Hero = () => {
          * each other read as unplanned, not as one considered column. 34rem
          * is the heading's own natural cap; the lede and nonprofit line are
          * pinned to the same value below rather than picking their own. */
-        .hero-h1, .hero-nonprofit-line {
-          max-width: min(100%, 34rem);
+        .hero-h1, .hero-subline, .hero-nonprofit-line {
+          max-width: min(100%, 46rem);
         }
 
         .hero-h1 {
@@ -300,20 +300,42 @@ const Hero = () => {
           text-transform: none;
           text-align: left;
           color: #1a1a24;
-          /* Gap 1 of 2: heading → nonprofit line. Tight, so the two read as
-             one block; the loose gap is the one below the group. */
+          /* Gap 1 of 3: heading → subline. Tight, so heading, subline and
+             nonprofit line read as one block; the loose gap is below the
+             group. .hero-subline supplies gap 2 (subline → nonprofit line). */
           margin: 0 0 clamp(10px, 1.2vw, 14px) 0;
         }
         @media (max-width: 768px) {
-          .hero-h1, .hero-nonprofit-line { max-width: 100%; }
+          .hero-h1, .hero-subline, .hero-nonprofit-line { max-width: 100%; }
         }
-        .hero-h1 .word-ai         { color: #c0392b; font-weight: 700; }
-        /* Reusing the site's existing accent colours (blue = .hero-nonprofit-line
-           / About.jsx's accent-blue, green = About.jsx's accent-green) rather
-           than introducing new hex values. Weight stays a touch above the
+        /* Each clause is its own inline-block so a clause never breaks
+           mid-phrase: the line wraps BETWEEN clauses at narrow widths and
+           sits on one or two lines when there is room. The {' '} separators
+           in the markup are the only break opportunities. */
+        .hero-h1-line { display: inline-block; }
+
+        /* One accent word per clause, carrying the condition it names.
+           Reusing the site's existing accent colours (red, blue = About.jsx's
+           accent-blue, green = About.jsx's accent-green) rather than
+           introducing new hex values. Weight stays a touch above the
            heading's own 600 so the accent words still stand out slightly. */
+        .hero-h1 .word-ai         { color: #c0392b; font-weight: 700; }
         .hero-h1 .word-healthcare { color: #3A82C4; font-weight: 700; }
         .hero-h1 .word-lives      { color: #2aaa72; font-weight: 700; }
+
+        /* Subline: the scope statement under the headline. Sits between the
+           heading and the nonprofit line in both hierarchy and size — larger
+           and darker than the blue nonprofit line, well below the h1. */
+        .hero-subline {
+          font-family: var(--font-sans);
+          font-weight: var(--fw-medium);
+          font-size: clamp(15px, 1.7vw, 21px);
+          line-height: 1.45;
+          letter-spacing: -0.005em;
+          color: #4a4a58;
+          text-align: left;
+          margin: 0 0 clamp(8px, 1vw, 12px) 0;
+        }
 
         /* Standout line below the heading: a short, independent nonprofit-
            status statement (the fuller sentence stays in About.jsx). Medium
@@ -698,10 +720,14 @@ const Hero = () => {
                   where they were. */}
               <div style={{ marginBottom: 'clamp(36px,5vw,64px)' }}>
                 <h1 className="hero-h1">
-                  Uniting <span className="word-ai">AI</span><br />
-                  Advancing <span className="word-healthcare">Healthcare</span><br />
-                  Saving <span className="word-lives">Lives</span>
+                  <span className="hero-h1-line">AI to Fight <span className="word-ai">Cancer</span>.</span>{' '}
+                  <span className="hero-h1-line">Detect <span className="word-healthcare">Stroke</span> Earlier.</span>{' '}
+                  <span className="hero-h1-line">Advance <span className="word-lives">Heart</span> Care.</span>
                 </h1>
+
+                <p className="hero-subline">
+                  From Early Detection to Treatment and Monitoring.
+                </p>
 
                 <p className="hero-nonprofit-line">
                   A California-based 501(c)(3) nonprofit organization
