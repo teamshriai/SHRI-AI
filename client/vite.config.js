@@ -9,12 +9,13 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 /**
  * Clean URLs that must resolve on a plain static host.
  *
- * https://shri-ai.org/careers is linked from Stroke-AI. The site is served by
- * nginx with no SPA fallback, so that path returned 404: public/_redirects and
- * public/.htaccess only cover Netlify-style and Apache hosts, and nginx reads
- * neither. Rather than depend on a server change, the build writes a real
- * dist/careers/index.html — nginx then serves it as the directory index, and
- * App reads the path and lands on the Careers heading.
+ * https://shri-ai.org/careers and https://shri-ai.org/team are linked from
+ * Stroke-AI. The site is served by nginx with no SPA fallback, so those paths
+ * returned 404: public/_redirects and public/.htaccess only cover
+ * Netlify-style and Apache hosts, and nginx reads neither. Rather than depend
+ * on a server change, the build writes a real dist/<path>/index.html — nginx
+ * then serves it as the directory index, and App reads the path and lands on
+ * the matching heading.
  *
  * It is a copy of the generated index.html, made after the bundle is written,
  * so the hashed asset URLs inside it can never go stale. Asset paths are
@@ -23,7 +24,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
  * Adding a clean URL is one entry here plus one in SECTION_ROUTES
  * (src/lib/careersRoute.js).
  */
-const CLEAN_PATHS = ['careers']
+const CLEAN_PATHS = ['careers', 'team']
 
 function cleanPathCopies() {
   let outDir

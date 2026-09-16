@@ -27,8 +27,9 @@ const SITE_ROOT = import.meta.env.BASE_URL || '/';
 /**
  * Clean paths that deep-link into a section of the single page.
  *
- * https://shri-ai.org/careers is linked from Stroke-AI, so it has to land on
- * the Careers heading rather than 404. Two halves make that work:
+ * https://shri-ai.org/careers and https://shri-ai.org/team are both linked
+ * from Stroke-AI, so each has to land on its heading rather than 404. Two
+ * halves make that work:
  *
  *   1. the host must serve index.html for the path — see public/_redirects
  *      and public/.htaccess, which cover Netlify-style and Apache hosts;
@@ -39,6 +40,7 @@ const SITE_ROOT = import.meta.env.BASE_URL || '/';
  */
 export const SECTION_ROUTES = {
   '/careers': 'careers',
+  '/team': 'team',
 };
 
 /** App listens for this to re-read the URL after an in-page navigation. */
