@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
-import FocusAreas from './components/FocusAreas';
+import Services from './components/Services';
 import Team from './components/Team';
 import Careers from './components/Careers';
 import Footer from './components/Footer';
@@ -72,7 +72,7 @@ function App() {
       }
     };
 
-    // ── Reposition FocusAreas based on scroll ──
+    // ── Reposition Services based on scroll ──
     const tick = () => {
       raf = null;
       // Re-measure every tick so accordion changes are picked up
@@ -94,7 +94,7 @@ function App() {
       tick();
     };
 
-    // ── Watch FocusAreas DOM for height changes (accordion expand/collapse) ──
+    // ── Watch Services DOM for height changes (accordion expand/collapse) ──
     const resizeObserver = new ResizeObserver(() => {
       // Don't call tick() here directly — schedule via rAF to avoid
       // "ResizeObserver loop limit exceeded" warnings
@@ -222,7 +222,7 @@ function App() {
           <About />
         </div>
 
-        {/* FocusAreas — slides up over About as user scrolls */}
+        {/* Services — slides up over About as user scrolls */}
         <div
           ref={focusRef}
           id="focus"
@@ -236,7 +236,7 @@ function App() {
             minHeight: 'max-content',
           }}
         >
-          <FocusAreas />
+          <Services />
         </div>
       </div>
 

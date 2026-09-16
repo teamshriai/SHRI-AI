@@ -5,7 +5,7 @@ import { scrollToSection, documentTop, navbarOffset } from '../lib/scrollToSecti
 const navLinks = [
   { name: 'Home', href: '#hero' },
   { name: 'About SHRI-AI', href: '#about' },
-  { name: 'Focus Area', href: '#focus' },
+  { name: 'Services', href: '#focus' },
   { name: 'Collaborating Organizations', href: '#partnership' },
   { name: 'Team', href: '#team' },
   { name: 'Careers', href: '#careers' },

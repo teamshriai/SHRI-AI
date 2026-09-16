@@ -6,7 +6,7 @@
  * 1. The navbar is `position: fixed`, so a raw anchor jump or `scrollIntoView()`
  *    leaves the target's heading hidden underneath it.
  *
- * 2. About and FocusAreas carry a `translateY()` scroll-overlap transform (see
+ * 2. About and Services carry a `translateY()` scroll-overlap transform (see
  *    App.jsx). `getBoundingClientRect()` therefore reports where they are
  *    *pinned on screen*, not where they sit in the document.
  *

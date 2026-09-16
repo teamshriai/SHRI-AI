@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollToSection } from '../lib/scrollToSection';
 
-const FocusAreas = () => {
+const Services = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const areas = [
@@ -24,13 +24,13 @@ const FocusAreas = () => {
       accent: '#7B6FCD',
       accentRgb: '123,111,205',
       number: '01',
-      title: 'Precision Oncology Research',
-      subtitle: 'Genomic Intelligence',
-      description: 'Enable early cancer detection, treatment stratification, and longitudinal monitoring through genomic precision.',
+      title: 'Precision Oncology & Genomics',
+      subtitle: 'From Sequence to Treatment Decision',
+      description: 'Turning genomic and molecular data into decisions clinicians can act on — earlier detection, better-matched treatment, and monitoring that continues through the course of care.',
       features: [
-        'Next-Generation Sequencing (NGS) for cancer profiling',
-        'Liquid biopsy technologies (ctDNA, exosomes)',
-        'Biomarker discovery for early detection and monitoring',
+        'Next-generation sequencing and multi-omic interpretation',
+        'Liquid biopsy and ctDNA for non-invasive monitoring',
+        'Biomarker discovery and treatment-response modelling',
       ],
     },
     {
@@ -44,13 +44,13 @@ const FocusAreas = () => {
       accent: '#c0392b',
       accentRgb: '192,57,43',
       number: '02',
-      title: 'Stroke AI & Neurovascular Imaging',
-      subtitle: 'Early Detection, Faster Response',
-      description: 'Apply AI to medical imaging for earlier stroke detection, risk assessment, and time-critical clinical decision support.',
+      title: 'Medical Imaging & Stroke AI',
+      subtitle: 'Reading Scans at the Speed of Care',
+      description: 'Imaging AI built for the clock that actually governs outcomes. Stroke is where we prove it, and the same methods extend to any diagnosis where minutes and subtle findings decide the result.',
       features: [
-        'AI-assisted analysis of CT and MRI neuroimaging',
+        'AI-assisted CT and MRI interpretation',
         'Risk stratification and early-warning models',
-        'Decision support for time-critical stroke care',
+        'Decision support for time-critical pathways',
       ],
     },
     {
@@ -66,13 +66,14 @@ const FocusAreas = () => {
       accent: '#3A82C4',
       accentRgb: '58,130,196',
       number: '03',
-      title: 'AI in Healthcare',
-      subtitle: 'Intelligent Diagnostics',
-      description: 'Accelerate diagnostic accuracy and personalise treatment across disease areas using artificial intelligence.',
+      title: 'AI Across the Care Continuum',
+      subtitle: 'Prediction, Diagnosis, Monitoring',
+      description: 'AI applied wherever clinical data is generated — not a single condition, but the whole arc from risk prediction and screening through diagnosis, treatment selection, and long-term monitoring.',
       features: [
-        'Predictive models for cancer and stroke risk',
-        'Clinical decision support systems',
-        'Real-world data analytics platforms',
+        'Predictive and risk-stratification models across conditions',
+        'Clinical decision support embedded in real workflows',
+        'Multimodal learning across imaging, genomics, and records',
+        'Foundation models adapted to clinical and biomedical data',
       ],
     },
     {
@@ -95,13 +96,14 @@ const FocusAreas = () => {
       accent: '#D4891E',
       accentRgb: '212,137,30',
       number: '04',
-      title: 'Translational Research',
-      subtitle: 'Bench to Bedside',
-      description: 'Bridge the gap between scientific discovery and patient care through strategic clinical partnerships.',
+      title: 'Translation & Clinical Validation',
+      subtitle: 'From Promising to Proven',
+      description: 'Most health AI never reaches a patient. We treat the path from model to bedside as part of the research itself — validated on real populations, evaluated for bias, and built to survive clinical reality.',
       features: [
-        'Collaborate with hospitals, diagnostic labs, and academic centers',
-        'Support clinical trials and validation studies',
-        'Fast-track innovations from bench to bedside',
+        'Prospective validation with hospitals, labs, and academic centres',
+        'Evaluation across diverse populations and care settings',
+        'Regulatory, safety, and clinical-evidence pathways',
+        'Integration with existing clinical systems and workflows',
       ],
     },
     {
@@ -117,13 +119,14 @@ const FocusAreas = () => {
       accent: '#2aaa72',
       accentRgb: '42,170,114',
       number: '05',
-      title: 'Global Health & Access',
-      subtitle: 'Democratising Care',
-      description: 'Democratise access to advanced diagnostics globally and reduce disparities in how care is delivered.',
+      title: 'Open Infrastructure & Global Access',
+      subtitle: 'Built to Be Adopted, Not Licensed',
+      description: 'Advanced diagnostics are worth little if only well-funded systems can run them. We build in the open so hospitals, labs, and researchers anywhere can deploy, inspect, and extend the work themselves.',
       features: [
-        'Develop affordable diagnostic solutions',
-        'Build research capacity in India, Southeast Asia, and Africa',
-        'Reduce disparities in care delivery',
+        'Open-source tooling hospitals and labs can adopt directly',
+        'Solutions designed for constrained infrastructure and budgets',
+        'Research capacity building in India, Southeast Asia, and Africa',
+        'Transparent, auditable models rather than closed black boxes',
       ],
     },
   ];
@@ -155,6 +158,147 @@ const FocusAreas = () => {
           font-family: var(--font-sans);
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Sponsor band (ViSolve) ──
+         * Opens the section, above the "Services" heading. Deliberately
+         * quiet: a hairline-ruled strip rather than a card, so it reads as an
+         * acknowledgement and never competes with the research content below.
+         *
+         * Spacing is symmetrical by construction. The section wrapper already
+         * contributes its own generous padding above, so this band cancels it
+         * with a negative top margin and then sets its OWN equal padding on
+         * both sides — the optical gap above the logo and below the text (to
+         * the rule) are the same value, --fa2-sponsor-pad, at every width.
+         */
+        .fa2-sponsor {
+          --fa2-sponsor-pad: clamp(2.25rem, 4vw, 3.25rem);
+
+          display: flex;
+          align-items: center;
+          gap: clamp(1.5rem, 3.5vw, 3rem);
+
+          /* Pull up out of the wrapper's padding so the top gap is ours to
+             set, not the wrapper's much larger one (measured 115px vs 49px
+             before this — visibly lopsided). */
+          margin-top: calc(var(--fa2-sponsor-pad) - clamp(4rem, 8vw, 8rem));
+          margin-bottom: clamp(3rem, 6vw, 5rem);
+
+          /* The two values that must match. */
+          padding-top: var(--fa2-sponsor-pad);
+          padding-bottom: var(--fa2-sponsor-pad);
+
+          border-bottom: 1px solid rgba(10, 10, 10, 0.07);
+        }
+
+        /* The logo sits directly on the section — no plate, no frame. The
+           asset's own rounded corners are its only edge treatment. */
+        .fa2-sponsor-logo-link {
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 0;
+          border-radius: 10px;
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                      opacity 0.35s ease;
+        }
+
+        .fa2-sponsor-logo-link:hover {
+          transform: translateY(-2px);
+          opacity: 0.9;
+        }
+
+        .fa2-sponsor-logo-link:focus-visible {
+          outline: 2px solid #3A82C4;
+          outline-offset: 4px;
+        }
+
+        /* width+height on the <img> match the asset's intrinsic 201x110, so the
+           plate holds its size from first paint, before the file arrives. */
+        .fa2-sponsor-logo {
+          display: block;
+          width: clamp(116px, 12.5vw, 156px);
+          height: auto;
+        }
+
+        /* Eyebrow. The rule after the words is what separates this from the
+           other all-caps labels in the section and stops the short line from
+           floating unanchored above the paragraph. */
+        .fa2-sponsor-label {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          letter-spacing: 0.2em;
+          font-size: 0.65rem;
+          text-transform: uppercase;
+          color: #8a8a92;
+          font-weight: 400;
+          margin: 0 0 0.9rem 0;
+        }
+
+        .fa2-sponsor-label::after {
+          content: '';
+          flex: 0 0 auto;
+          width: clamp(1.5rem, 4vw, 2.75rem);
+          height: 1px;
+          background: rgba(10, 10, 10, 0.12);
+        }
+
+        /* Measure capped in ch so the paragraph breaks into even lines rather
+           than running the full 1600px container width on a wide screen. */
+        .fa2-sponsor-text {
+          font-size: clamp(0.9rem, 1.05vw, 1rem);
+          line-height: 1.75;
+          color: #3d3d45;
+          font-weight: 300;
+          margin: 0;
+          max-width: 68ch;
+          text-wrap: pretty;
+        }
+
+        /* The company name, and SHRI-AI, lifted out of the grey run of text —
+           the two proper nouns the sentence exists to connect. */
+        .fa2-sponsor-name {
+          color: #0a0a0a;
+          font-weight: 500;
+        }
+
+        /* ViSolve as a link. Matches .fa2-sponsor-name's weight and colour so
+           the pair still reads as one set, with an underline that firms up on
+           hover rather than a colour change — the orange logo is already the
+           band's only strong colour and a blue link would fight it. */
+        .fa2-sponsor-link {
+          color: #0a0a0a;
+          font-weight: 500;
+          text-decoration: underline;
+          text-decoration-color: rgba(10, 10, 10, 0.28);
+          text-underline-offset: 3px;
+          text-decoration-thickness: 1px;
+          transition: text-decoration-color 0.25s ease;
+        }
+
+        .fa2-sponsor-link:hover {
+          text-decoration-color: rgba(10, 10, 10, 0.75);
+        }
+
+        .fa2-sponsor-link:focus-visible {
+          outline: 2px solid #3A82C4;
+          outline-offset: 2px;
+          border-radius: 2px;
+        }
+
+        @media (max-width: 640px) {
+          .fa2-sponsor {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .fa2-sponsor-logo-link { transition: none; }
+          .fa2-sponsor-logo-link:hover { transform: none; }
         }
 
         .fa2-hero-title {
@@ -444,6 +588,61 @@ const FocusAreas = () => {
         >
 
           {/* ═══════════════════════════════════
+              SPONSOR — ViSolve
+          ═══════════════════════════════════ */}
+          {/* Opens the section so the sponsorship is acknowledged before the
+              research content, not buried under it. The logo is decorative
+              here — the company is named in the text beside it — so alt is
+              empty rather than a duplicate of the adjacent sentence. */}
+          <motion.div
+            className="fa2-sponsor"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <a
+              href="https://visolve.com/portfolio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fa2-sponsor-logo-link"
+              aria-label="ViSolve portfolio (opens in a new tab)"
+            >
+              <img
+                src="/visolve-logo.webp"
+                alt="ViSolve"
+                className="fa2-sponsor-logo"
+                width="201"
+                height="110"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <div>
+              <p style={dmSans} className="fa2-sponsor-label">
+                Sponsored by
+              </p>
+              <p style={dmSans} className="fa2-sponsor-text">
+                Founded in 1995 and headquartered in San Jose, California,{' '}
+                <a
+                  href="https://visolve.com/portfolio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="fa2-sponsor-link"
+                >
+                  ViSolve
+                </a>{' '}
+                is a product development, software services, and consulting firm
+                focused on Healthcare IT and Enterprise IT using open source and
+                leading-edge technologies. ViSolve sponsors{' '}
+                <span className="fa2-sponsor-name">SHRI-AI</span>, supporting the
+                research and engineering behind our work in precision oncology,
+                stroke imaging, and AI for healthcare.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* ═══════════════════════════════════
               SECTION 1 — FOCUS AREAS
           ═══════════════════════════════════ */}
           <div className="fa2-focus-grid">
@@ -465,7 +664,7 @@ const FocusAreas = () => {
                 color: '#999',
                 marginBottom: '2rem',
               }}>
-                Research Focus
+                Services
               </p>
 
               <h2
@@ -797,4 +996,4 @@ const FocusAreas = () => {
   );
 };
 
-export default FocusAreas;
+export default Services;
