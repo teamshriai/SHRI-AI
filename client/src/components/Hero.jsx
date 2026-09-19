@@ -559,12 +559,35 @@ const Hero = () => {
           .hero-supports { width: 100%; }
         }
 
-        /* Stroke-AI link — same three-span structure as OncoTrace, but a static
-           accent instead of a shimmer, so the two do not compete. */
+        /* Stroke-AI link — same shimmer-and-glow treatment as OncoTrace-AI,
+           in blue instead of pink so the two stay visually distinct while both
+           glow. Same structure: gradient gliding across the text via
+           background-position, a drop-shadow halo (not just on hover — hover
+           only brightens it), and a matching underline. */
         .strokeai-text {
           display: inline-block;
           position: relative;
-          color: #2a6db5;
+          background: linear-gradient(
+            90deg,
+            #123c66  0%,
+            #1c5490  20%,
+            #2a6db5  38%,
+            #4f96db  48%,
+            #7ab8f2  50%,
+            #4f96db  52%,
+            #2a6db5  62%,
+            #1c5490  80%,
+            #123c66  100%
+          );
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          will-change: background-position;
+          animation: shimmer-text 9s linear infinite;
+          filter: drop-shadow(0 0 4px rgba(42,109,181,0.24))
+                  drop-shadow(0 0 8px rgba(42,109,181,0.12));
+          transition: filter 0.35s ease;
         }
         .strokeai-underline {
           display: block;
@@ -575,11 +598,32 @@ const Hero = () => {
           height: 2px;
           border-radius: 2px;
           pointer-events: none;
-          background: linear-gradient(90deg, rgba(42,109,181,0.30) 0%, rgba(42,109,181,0.85) 50%, rgba(42,109,181,0.30) 100%);
-          transition: background 0.35s ease;
+          background: linear-gradient(
+            90deg,
+            rgba(18,60,102,0.08)   0%,
+            rgba(28,84,144,0.45)   20%,
+            rgba(42,109,181,0.82)  38%,
+            rgba(79,150,219,0.92)  48%,
+            rgba(122,184,242,1.0)  50%,
+            rgba(79,150,219,0.92)  52%,
+            rgba(42,109,181,0.82)  62%,
+            rgba(28,84,144,0.45)   80%,
+            rgba(18,60,102,0.08)   100%
+          );
+          background-size: 220% auto;
+          will-change: background-position;
+          animation: shimmer-line 9s linear infinite;
+          filter: drop-shadow(0 0 2px rgba(79,150,219,0.36))
+                  drop-shadow(0 0 5px rgba(79,150,219,0.16));
+          transition: filter 0.35s ease;
+        }
+        .strokeai-link:hover .strokeai-text {
+          filter: drop-shadow(0 0 6px rgba(79,150,219,0.44))
+                  drop-shadow(0 0 12px rgba(79,150,219,0.22));
         }
         .strokeai-link:hover .strokeai-underline {
-          background: linear-gradient(90deg, rgba(42,109,181,0.55) 0%, rgba(42,109,181,1) 50%, rgba(42,109,181,0.55) 100%);
+          filter: drop-shadow(0 0 4px rgba(122,184,242,0.60))
+                  drop-shadow(0 0 8px rgba(79,150,219,0.28));
         }
 
         @keyframes shimmer-text {
@@ -610,7 +654,9 @@ const Hero = () => {
         /* ── Reduced motion — pause animations, static mid-gradient ── */
         @media (prefers-reduced-motion: reduce) {
           .oncotrace-text,
-          .oncotrace-underline {
+          .oncotrace-underline,
+          .strokeai-text,
+          .strokeai-underline {
             animation: none;
             background-position: 50% center;
             will-change: auto;
@@ -744,8 +790,8 @@ const Hero = () => {
                     Crash-safe link structure:
                     - .oncotrace-wrap  → inline-block spacing container
                     - .oncotrace-link  → inline-block anchor (no filter here)
-                    - .strokeai-text   → colour lives here, static: a second
-                      shimmer would compete with OncoTrace-AI for attention
+                    - .strokeai-text   → same shimmer+glow treatment as
+                      OncoTrace-AI below, in blue instead of pink
                     - .strokeai-underline → sibling span, not ::after
                   */}
                   <span className="oncotrace-wrap">

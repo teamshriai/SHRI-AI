@@ -288,6 +288,43 @@ const Services = () => {
           border-radius: 2px;
         }
 
+        /* Dedicated portfolio button. Outline rather than solid — this band
+           sits on the page's own light background (not a dark CTA block like
+           .fa2-btn-primary below), so the same sharp, no-radius shape is kept
+           but inverted: transparent fill, dark ink border, filling solid on
+           hover. A clear, separate action from the inline "ViSolve" link
+           above it, not a restatement of it. */
+        .fa2-sponsor-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.6rem;
+          margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+          padding: 0.75rem 1.5rem;
+          min-height: 44px;
+          background: transparent;
+          color: #0a0a0a;
+          font-weight: 500;
+          font-size: 0.8rem;
+          letter-spacing: 0.01em;
+          font-family: var(--font-sans);
+          border: 1px solid rgba(10, 10, 10, 0.22);
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .fa2-sponsor-btn svg {
+          transition: transform 0.25s ease;
+        }
+
+        .fa2-sponsor-btn:hover svg {
+          transform: translateX(3px);
+        }
+
+        .fa2-sponsor-btn:focus-visible {
+          outline: 2px solid #3A82C4;
+          outline-offset: 2px;
+        }
+
         @media (max-width: 640px) {
           .fa2-sponsor {
             flex-direction: column;
@@ -639,6 +676,21 @@ const Services = () => {
                 research and engineering behind our work in precision oncology,
                 stroke imaging, and AI for healthcare.
               </p>
+
+              <motion.a
+                href="https://visolve.com/portfolio/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fa2-sponsor-btn"
+                whileHover={{ backgroundColor: '#0a0a0a', color: '#fff' }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+              >
+                View ViSolve&rsquo;s Portfolio
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </motion.a>
             </div>
           </motion.div>
 

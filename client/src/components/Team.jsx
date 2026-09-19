@@ -230,6 +230,56 @@ const TEAM_MEMBERS = [
       },
     ],
   },
+  {
+    id: 'muruganand',
+    initials: 'SM',
+    name: 'Dr. S. K. Muruganand',
+    role: 'MBBS, DMRD',
+    bio: 'MBBS, DMRD',
+    image: '/SK-Muruganand.webp',
+    // Source is a square 1:1 portrait, unlike the others' varied crops. The
+    // card's 5:8 frame crops width only (face is horizontally centred, so
+    // 50% suffices there); the mobile modal's 16:10 frame crops height, so a
+    // low Y keeps the top-anchored hair/face and trims from the bottom.
+    objectPosition: '50% 15%',
+    accent: '#1F8A8A',
+    accentSoft: 'rgba(31, 138, 138, 0.12)',
+    tag: 'Founder of The Scan Point',
+    cardSummary: 'Founder of The Scan Point \u00b7 Diagnostic Radiology.',
+    summary:
+      'Diagnostic radiologist with three decades in radiology, and founder of The Scan Point, a diagnostic imaging centre offering X-ray, ultrasound, and CT services. His career spans academic radiology as faculty and independent practice building and running a full-service imaging centre.',
+    sections: [
+      {
+        heading: 'Medical Education & Training',
+        paragraphs: [
+          'Dr. Muruganand completed his MBBS (Bachelor of Medicine, Bachelor of Surgery) before going on to specialise in diagnostic imaging with a DMRD (Diploma in Medical Radio-Diagnosis).',
+        ],
+        list: [
+          'MBBS \u2014 PSG Medical College',
+          'DMRD \u2014 JJM Medical College, Davangere, Karnataka',
+        ],
+      },
+      {
+        heading: 'Professional Experience',
+        paragraphs: [
+          'Dr. Muruganand began his career in academic radiology, working as an Assistant Professor at SRMC, Chennai, from 1996 to 1998.',
+          'In 1998, he moved from academic practice to independent practice, founding his own diagnostic imaging centre, The Scan Point \u2014 a step that shifted his focus from teaching radiology to building and running a diagnostic imaging service of his own.',
+        ],
+      },
+      {
+        heading: 'The Scan Point \u2014 Diagnostic Imaging Centre',
+        paragraphs: [
+          'The Scan Point provides diagnostic imaging services built around X-ray, ultrasound, and CT technology.',
+          'Together, this equipment allows the centre to offer radiography, ultrasonography, and cross-sectional CT imaging under one roof, supporting a broad range of everyday diagnostic imaging needs.',
+        ],
+        list: [
+          '500mA X-ray unit',
+          'Three ultrasound machines',
+          'Multi-slice CT scanner',
+        ],
+      },
+    ],
+  },
 ];
 
 const TeamModal = ({ member, onClose }) => {
@@ -433,14 +483,20 @@ const Team = () => {
            single token so the padding and type below scale from one number.
            Flex rather than grid auto-fit: auto-fit sizes a whole row of tracks
            to the container, so with only three cards the leftover tracks pushed
-           the set off-centre. Flex wrap + centre stays centred at any count. */
+           the set off-centre. Flex wrap + centre stays centred at any count.
+           Card width and gap re-tuned for five members: the previous ceiling
+           (232px card, 1.6rem gap) fit only four across the 1200px container,
+           orphaning the fifth onto its own row. Both ends of the clamp came
+           down so all five sit on one row from just above the 900px
+           breakpoint (where the tuning below deliberately switches to 2-up)
+           up through wide desktop. */
         .team-grid {
-          --team-card-w: clamp(196px, 17vw, 232px);
+          --team-card-w: clamp(150px, 15vw, 200px);
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
           align-items: stretch;
-          gap: clamp(1rem, 2.2vw, 1.6rem);
+          gap: clamp(0.75rem, 1.8vw, 1.25rem);
         }
         .team-grid > * {
           flex: 0 0 var(--team-card-w);

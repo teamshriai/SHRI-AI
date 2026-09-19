@@ -18,7 +18,6 @@ const Footer = () => {
   const year = new Date().getFullYear();
   const [formVisible, setFormVisible] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
   const [copied, setCopied] = useState(false);
   const firstInputRef = useRef(null);
 
@@ -521,7 +520,7 @@ const Footer = () => {
                   <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <h3 style={{ fontSize: 'var(--fs-h4)', fontWeight: 400, margin: '0 0 16px' }}>Message Sent!</h3>
-                <p style={{ fontSize: 'var(--fs-sm)', color: '#6b6b80' }}>We'll get back to you within 24 hours</p>
+                <p style={{ fontSize: 'var(--fs-sm)', color: '#6b6b80' }}>We&apos;ll get back to you within 24 hours</p>
               </div>
             )}
           </div>

@@ -1,0 +1,28 @@
+# Dependencies — installed by `npm install`/`npm ci` from package-lock.json,
+# never hand-edited, and enormous (client/node_modules alone was 20,955
+# files, ~190MB of this repo's .git history). Committing it means every
+# clone pays that cost, every dependency bump is a multi-thousand-file diff
+# (see the last commit before this .gitignore for a live example — a
+# 7-package `npm uninstall` touched thousands of tracked files), and nothing
+# about it is reviewable as a diff anyway. Keep the lockfile committed; drop
+# the tree it generates.
+node_modules/
+
+# Local environment files. May hold real credentials depending on what a
+# future .env adds — even where today's values are low-sensitivity, secrets
+# shouldn't be trained into the habit of going through git. .env.example
+# stays committed as the template.
+.env
+.env.local
+.env.*.local
+
+# OS and editor cruft.
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# NOTE: client/dist/ is intentionally committed, not an oversight — see the
+# comment in client/vite.config.js. The site is deployed by copying that
+# built output directly (no build step on the server), so it has to be in
+# version control for that workflow to work.
