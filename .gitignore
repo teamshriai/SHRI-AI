@@ -1,28 +1,64 @@
-# Dependencies — installed by `npm install`/`npm ci` from package-lock.json,
-# never hand-edited, and enormous (client/node_modules alone was 20,955
-# files, ~190MB of this repo's .git history). Committing it means every
-# clone pays that cost, every dependency bump is a multi-thousand-file diff
-# (see the last commit before this .gitignore for a live example — a
-# 7-package `npm uninstall` touched thousands of tracked files), and nothing
-# about it is reviewable as a diff anyway. Keep the lockfile committed; drop
-# the tree it generates.
-node_modules/
+# ─────────────────────────────────────────────────────────────────────────
+# Covers both client/ and server/ — one root .gitignore rather than a
+# per-folder one, since every pattern below is one that should apply no
+# matter which side of the repo it appears under (client/node_modules today,
+# server/node_modules the day server/ gets real dependencies).
+# ─────────────────────────────────────────────────────────────────────────
 
-# Local environment files. May hold real credentials depending on what a
-# future .env adds — even where today's values are low-sensitivity, secrets
-# shouldn't be trained into the habit of going through git. .env.example
-# stays committed as the template.
+# ── Dependencies ──
+# Installed by `npm install`/`npm ci` from package-lock.json, never
+# hand-edited, and enormous (client/node_modules alone was 20,955 files,
+# ~190MB of this repo's .git history before this file existed). Committing it
+# means every clone pays that cost, every dependency bump is a
+# multi-thousand-file diff (a 7-package `npm uninstall` touched thousands of
+# tracked files the day this was fixed), and none of it is a reviewable diff
+# anyway. Keep the lockfile committed; drop the tree it generates. Matches at
+# any depth, so this also covers server/node_modules once server/ has any.
+node_modules/
+jspm_packages/
+
+# ── Environment files ──
+# May hold real credentials depending on what a future .env adds — even
+# where today's client/.env values are low-sensitivity, secrets shouldn't be
+# trained into the habit of going through git. Applies equally to a future
+# server/.env. The matching *.env.example (client/.env.example today) stays
+# committed as the template documenting which variables exist.
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# OS and editor cruft.
+# ── Build output ──
+# General rule: build output is generated, not authored, so it doesn't
+# belong in git. client/dist/ is the deliberate, documented exception — see
+# the comment in client/vite.config.js — because this site is deployed by
+# copying that built output directly, with no build step on the server. If
+# server/ ever gets a compiled-output directory (a `build/` or `out/` from a
+# TypeScript or bundler setup), it should be ignored the normal way; add its
+# name here explicitly rather than a repo-wide `dist/` that would also catch
+# client's intentionally-tracked one.
+server/dist/
+server/build/
+*.tsbuildinfo
+
+# ── Logs, caches, and coverage ──
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+.npm/
+.eslintcache
+.cache/
+coverage/
+.nyc_output/
+
+# ── Editor and OS cruft ──
 .DS_Store
 Thumbs.db
-*.log
-npm-debug.log*
-
-# NOTE: client/dist/ is intentionally committed, not an oversight — see the
-# comment in client/vite.config.js. The site is deployed by copying that
-# built output directly (no build step on the server), so it has to be in
-# version control for that workflow to work.
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*~

@@ -1535,12 +1535,21 @@ Error generating stack: `+e.message+`
            the set off-centre. Flex wrap + centre stays centred at any count.
            Card width and gap re-tuned for five members: the previous ceiling
            (232px card, 1.6rem gap) fit only four across the 1200px container,
-           orphaning the fifth onto its own row. Both ends of the clamp came
-           down so all five sit on one row from just above the 900px
-           breakpoint (where the tuning below deliberately switches to 2-up)
-           up through wide desktop. */
+           orphaning the fifth onto its own row.
+           The floor came down only to 180px, not further — the name's
+           font-size is driven by this same --team-card-w (see .team-name
+           below), but actually renders inside .team-card-media, which is
+           inset from the flex item by the card's own frame padding. That
+           fixed-pixel inset eats a bigger share of a narrower card, so past
+           roughly 180px "Dr. Balasubramaniam A V" and "Dr. S. K. Muruganand"
+           overflowed the scrim's fixed 42% height — measured directly in a
+           real browser (not assumed) down to a 136px rendered card at 1016px
+           wide, well past where clamp()'s own floor should have stopped it.
+           Below the width where 180px still fits five across, the 2-up
+           tier's breakpoint (below) is extended to cover the gap instead of
+           letting five cramp into an unsafe width. */
         .team-grid {
-          --team-card-w: clamp(150px, 15vw, 200px);
+          --team-card-w: clamp(180px, 15vw, 200px);
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
@@ -1731,12 +1740,17 @@ Error generating stack: `+e.message+`
            ~730 and ~1000px — three across with a single orphan beneath. Capping
            the card width here forces a balanced 2/2 instead, which is why this
            range is pinned rather than left to wrap on its own. */
-        @media (min-width: 640px) and (max-width: 1000px) {
+        @media (min-width: 640px) and (max-width: 1249px) {
           .team-grid {
             /* 38vw (not 30vw) is what actually forces 2-up: at 900px wide a
                30vw card still resolved to 230px, so three fit and the fourth
                orphaned. Two cards plus the gap must exceed half the row for
-               the third to be pushed down. */
+               the third to be pushed down.
+               Upper bound raised from 1000px to 1249px: the five-card base
+               tier above is only safe (see the comment on .team-grid) from
+               roughly 1250px up, where 15vw first clears the 180px floor with
+               enough margin. Below that, this wider, already-proven-safe 2-up
+               sizing takes over instead of a cramped five-across row. */
             --team-card-w: clamp(200px, 38vw, 300px);
           }
         }
