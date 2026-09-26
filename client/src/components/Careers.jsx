@@ -88,7 +88,11 @@ const Careers = () => {
            gets pushed off-centre by the leftover tracks. Card width is a single
            token, so each breakpoint is one reassignment. */
         .careers-grid {
-          --careers-card-w: clamp(260px, 29vw, 344px);
+          /* Ceiling brought down from 344px to 272px so all 8 open roles sit
+             as 4 columns / 2 rows inside the 1200px container: 4*272 + 3*24
+             (gap ceiling) = 1160px, comfortably under the cap. At 344px only
+             3 fit per row, orphaning a lopsided 3/3/2 split. */
+          --careers-card-w: clamp(260px, 24vw, 272px);
           display: flex;
           flex-wrap: wrap;
           justify-content: center;

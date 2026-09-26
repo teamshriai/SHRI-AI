@@ -280,6 +280,69 @@ const TEAM_MEMBERS = [
       },
     ],
   },
+  {
+    id: 'gowrishankar',
+    initials: 'GP',
+    name: 'Dr. Gowrishankar Palaniswamy',
+    role: 'Internal Medicine Resident — MUSC Health',
+    bio: 'Physician-researcher advancing AI-driven oncology diagnostics and equitable cancer care.',
+    image: '/Gowrishankar-Palaniswamy.webp',
+    // Square 1:1 source: the card's 5:8 crop trims width only (face reads
+    // centred, so 50% suffices there); the mobile modal's 16:10/3:2 crops
+    // trim height instead, so a low Y keeps the hair/face and trims below —
+    // same reasoning as Muruganand's square source.
+    objectPosition: '50% 15%',
+    // Red, distinct from all five existing accents (purple, orange, blue,
+    // green, teal) and deliberately the same red used for "Cancer" in the
+    // Hero headline — a visual echo of his oncology focus rather than an
+    // arbitrary sixth colour.
+    accent: '#c0392b',
+    accentSoft: 'rgba(192, 57, 43, 0.12)',
+    cardSummary: 'Oncology AI Research & Healthcare Equity.',
+    summary:
+      'Internal Medicine resident at MUSC Health Lancaster Medical Center and an emerging physician-researcher at the intersection of oncology, artificial intelligence, and healthcare equity. His research spans AI-assisted cancer detection, leukemia imaging, circulating tumour DNA (ctDNA) and minimal residual disease, and emerging cancer therapies, with presentations at ASH, SOHO, Rice University, and other major scientific forums, and multiple peer-reviewed publications. He also has direct experience providing healthcare to underserved rural communities in India. At SHRI-AI, he contributes clinical and research expertise to our precision oncology and equitable healthcare initiatives.',
+    sections: [
+      {
+        heading: 'Medical Education & Training',
+        list: [
+          'MBBS — Saveetha Medical College and Hospital, India',
+          'Internal Medicine Residency (PGY-2) — Medical University of South Carolina, MUSC Health Lancaster Medical Center',
+        ],
+      },
+      {
+        heading: 'Oncology & AI Research',
+        paragraphs: [
+          "Dr. Palaniswamy's research applies artificial intelligence to some of oncology's hardest diagnostic problems — leukemia imaging, ctDNA for minimal residual disease, and emerging cancer therapies including CAR-T cell therapy.",
+        ],
+        list: [
+          'LIVE — an AI-powered virtual examiner for rapid, accurate diagnosis of acute lymphoblastic leukemia',
+          'RADIANT — a residual-network-assisted diagnostic and analytic tool for acute lymphoblastic leukemia',
+          'Deep learning models (EfficientNetB1, ResNet18) for leukemia diagnosis and prognosis through computer vision',
+          'ctDNA as a biomarker for minimal residual disease and relapse detection in diffuse large B-cell lymphoma',
+        ],
+      },
+      {
+        heading: 'Presentations & Publications',
+        paragraphs: [
+          "He has presented at the American Society of Hematology (ASH), the Society of Hematology and Oncology (SOHO), the Ken Kennedy Institute at Rice University, and the Endocrine Society's Annual Meeting, with an Oral Podium & Achievement Award at ASH and multiple peer-reviewed publications, including in Blood Journal.",
+        ],
+      },
+      {
+        heading: 'Community & Global Health',
+        paragraphs: [
+          'Alongside his research, Dr. Palaniswamy has provided direct medical care to underserved rural communities in India — delivering free consultations and vaccination drives as a Voluntary Duty Medical Officer, and supporting COVID-19 relief efforts as a medical student intern.',
+        ],
+      },
+      {
+        heading: 'Honors & Recognition',
+        list: [
+          'Resident of the Quarter — MUSC Health network',
+          'Excellence in Research Award — MUSC Health Lancaster Medical Center',
+          'Top 20 Best Outgoing Medical Student — Saveetha Medical College',
+        ],
+      },
+    ],
+  },
 ];
 
 const TeamModal = ({ member, onClose }) => {
@@ -484,37 +547,61 @@ const Team = () => {
            Flex rather than grid auto-fit: auto-fit sizes a whole row of tracks
            to the container, so with only three cards the leftover tracks pushed
            the set off-centre. Flex wrap + centre stays centred at any count.
-           Card width and gap re-tuned for five members: the previous ceiling
-           (232px card, 1.6rem gap) fit only four across the 1200px container,
-           orphaning the fifth onto its own row.
-           The floor came down only to 180px, not further — the name's
-           font-size is driven by this same --team-card-w (see .team-name
-           below), but actually renders inside .team-card-media, which is
-           inset from the flex item by the card's own frame padding. That
-           fixed-pixel inset eats a bigger share of a narrower card, so past
-           roughly 180px "Dr. Balasubramaniam A V" and "Dr. S. K. Muruganand"
-           overflowed the scrim's fixed 42% height — measured directly in a
-           real browser (not assumed) down to a 136px rendered card at 1016px
-           wide, well past where clamp()'s own floor should have stopped it.
-           Below the width where 180px still fits five across, the 2-up
-           tier's breakpoint (below) is extended to cover the gap instead of
-           letting five cramp into an unsafe width. */
+
+           Six members now need to fit the same 1200px container in one row.
+           The text-safety floor was re-measured directly in the browser for
+           the current longest name ("Dr. Gowrishankar Palaniswamy"): zero
+           scrim overflow starts at a 175px flex width, so 178px is used as
+           the floor with a small margin, not the bare minimum.
+
+           That floor leaves very little room to also fit six cards plus five
+           gaps inside 1200px: at the OLD gap (1.25rem = 20px ceiling), even
+           the width-fit ceiling math (6*C + 5*20 <= 1200 -> C <= 183) barely
+           clears the text-safety floor (178) — a 5px window. So this tier
+           gets its own tighter gap (see below) instead of sharing the wider
+           one the 2-up tier still uses, buying real margin: 6*183 + 5*14.4 =
+           1170, leaving 30px of slack inside the 1200px cap rather than 2-9px.
+
+           The activation breakpoint (below) was moved from 1249 to 1299 for
+           the same reason: at 1250px viewport the container hasn't yet
+           reached its full 1200px cap (measured ~1171px there), which was
+           too tight even with the smaller gap. By 1300px the container is
+           already fully capped, so the six-across tier only ever turns on
+           where it's been verified to fit with margin. */
         .team-grid {
-          --team-card-w: clamp(180px, 15vw, 200px);
+          --team-card-w: clamp(178px, 15vw, 183px);
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
+          /* Vestigial now that the caption is an overlay again: every card's
+             height is padding + aspect-ratio(width), identical by
+             construction, so there's nothing left for stretch to reconcile.
+             Left in rather than removed — harmless, and cheap insurance if a
+             future child ever needs it again. */
           align-items: stretch;
-          gap: clamp(0.75rem, 1.8vw, 1.25rem);
+          gap: clamp(0.6rem, 1vw, 0.9rem);
         }
         .team-grid > * {
           flex: 0 0 var(--team-card-w);
           max-width: 100%;
+          /* Flex items default to min-width:auto, letting an unbreakable word
+             (e.g. "Balasubramaniam") widen the box past its flex-basis — one
+             card silently rendered 9px wider than the rest, which is both a
+             same-size violation and, with less margin, what pushed a sixth
+             card into an orphaned second row. min-width:0 forces every card
+             to honour --team-card-w exactly; overflow-wrap below lets a long
+             word break instead of bleeding past the now-fixed box. */
+          min-width: 0;
         }
 
         /* ── Card: light "gallery mat" frame around a full-bleed portrait,
               identity typeset over the photo as it fades into the mat ── */
         .team-card {
+          /* Single child now (.team-card-media) — the caption lives inside
+             it as an overlay again, not as a normal-flow sibling below it,
+             so this can be plain block layout. Every card's height is now
+             purely padding + aspect-ratio(width), which is what makes all
+             six cards structurally identical, not just visually tuned. */
           display: block;
           width: 100%;
           padding: clamp(6px, 0.7vw, 8px);
@@ -560,118 +647,106 @@ const Team = () => {
           transform: scale(1.035);
         }
 
-        /* Frosted glass panel: the portrait stays visible but blurred behind a
-           graphite tint, so one treatment reads identically over a light, a
-           cream and a near-black backdrop. The mask fades the blur itself out
-           toward the top, avoiding a hard edge where the effect stops. */
-        /* Shorter than it used to be (42% vs 56%): at 56% the panel reached far
-           enough up the portrait to sit over chins and faces on the cards whose
-           copy runs to three lines.
-           The fade is built from many closely-spaced stops rather than a few.
-           A 3-4 stop gradient over this distance produces a visible "edge"
-           where the ramp starts — the thing that makes a scrim read as a bar
-           pasted onto the photo. Easing the alpha gradually (and masking the
-           blur out on the same curve, so the blur never stops abruptly either)
-           is what keeps the transition invisible. */
-        .team-card-scrim {
+        /* ── Overlay: name + summary sit directly on the photo again, inside
+         * a fixed-height band pinned to the bottom of .team-card-media — the
+         * look the team asked to bring back (a black bar dissolving into the
+         * image), rebuilt so it can't reproduce the bug that broke it three
+         * times before. That bug was two independently-varying quantities
+         * (font-size tied to card width, scrim tied to a fixed PERCENT of
+         * the photo) drifting out of sync. The fix here is to tie neither
+         * dimension of the band to anything variable:
+         *   - height is a fixed rem value, not a percentage — the text it
+         *     holds is sized off the viewport (see .team-name), not off
+         *     card width, so the pixels it actually needs stay ~constant
+         *     across every breakpoint tier. A fixed height can therefore
+         *     track that constant need everywhere, where a percentage of
+         *     the (width-driven) media box cannot.
+         *   - overflow:hidden here is the actual safety net: combined with
+         *     line-clamp on both the name and the summary below, text can
+         *     only ever truncate with an ellipsis inside this fixed box —
+         *     it can never grow past it and reach up into the photo. */
+        .team-card-overlay {
           position: absolute;
           left: 0;
           right: 0;
           bottom: 0;
-          height: 42%;
+          /* Sized for the worst case: the longest current name ("Dr.
+             Gowrishankar Palaniswamy") wrapped to 2 lines plus a 1-line
+             summary, at the narrowest (six-across, ~178-183px) card width —
+             verified directly in the browser, not guessed. Kept deliberately
+             compact (not tall) — a band that reaches too far up the photo
+             reads as a mistake, not a design choice. */
+          height: 5rem;
+          padding: clamp(0.55rem, 1vw, 0.75rem) clamp(0.6rem, 1vw, 0.8rem);
+          overflow: hidden;
           pointer-events: none;
-          backdrop-filter: blur(14px) saturate(130%);
-          -webkit-backdrop-filter: blur(14px) saturate(130%);
+          /* Mostly opaque flat black, not a long translucent dissolve: a
+             frosted/translucent band's contrast depends on how light the
+             photo underneath is (risky over Rajesh's and Muruganand's
+             lighter crops); a near-opaque fill reads the same regardless of
+             the photo, and only needs a short blend at the very top where
+             it meets the image. */
           background: linear-gradient(
             to top,
-            rgba(14, 14, 22, 0.82) 0%,
-            rgba(14, 14, 22, 0.80) 12%,
-            rgba(14, 14, 22, 0.74) 24%,
-            rgba(14, 14, 22, 0.64) 36%,
-            rgba(14, 14, 22, 0.52) 48%,
-            rgba(14, 14, 22, 0.39) 60%,
-            rgba(14, 14, 22, 0.26) 72%,
-            rgba(14, 14, 22, 0.15) 82%,
-            rgba(14, 14, 22, 0.07) 90%,
-            rgba(14, 14, 22, 0.02) 96%,
-            rgba(14, 14, 22, 0) 100%
+            rgba(10, 10, 16, 0.94) 0%,
+            rgba(10, 10, 16, 0.94) 72%,
+            rgba(10, 10, 16, 0.55) 86%,
+            rgba(10, 10, 16, 0) 100%
           );
-          -webkit-mask-image: linear-gradient(
-            to top,
-            #000 0%, #000 30%,
-            rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.78) 58%,
-            rgba(0,0,0,0.58) 70%, rgba(0,0,0,0.36) 80%,
-            rgba(0,0,0,0.18) 88%, rgba(0,0,0,0.06) 95%,
-            transparent 100%
-          );
-          mask-image: linear-gradient(
-            to top,
-            #000 0%, #000 30%,
-            rgba(0,0,0,0.92) 46%, rgba(0,0,0,0.78) 58%,
-            rgba(0,0,0,0.58) 70%, rgba(0,0,0,0.36) 80%,
-            rgba(0,0,0,0.18) 88%, rgba(0,0,0,0.06) 95%,
-            transparent 100%
-          );
-        }
-
-        .team-card-content {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          padding: 0 clamp(0.7rem, 1.1vw, 0.9rem) clamp(0.8rem, 1.3vw, 1rem);
         }
 
         .team-name {
           display: flex;
-          /* baseline-ish alignment via a small offset on the badge instead of
-             align-items:center: with a two-line name, centring drops the badge
-             to the middle of the block, away from the name's first line. */
           align-items: flex-start;
-          gap: 0.4rem;
+          gap: 0.35rem;
           font-family: var(--font-sans);
           font-weight: var(--fw-medium);
-          /* Scales with the CARD, not the viewport. The card width swings from
-             196px (4-up at 1024, 2-up at 600) to 300px (2-up at 900), so a
-             single fixed size cannot work: at 14.7px the longest name
-             ("Dr. Balasubramaniam A V") ran to three lines on the narrow
-             cards, pushing that card's text up over the face. Deriving the
-             size from --team-card-w keeps the name at two lines at every
-             card width. cqi would be the modern tool here, but the card is
-             not a container, and adding containment would change how the
-             absolutely-positioned scrim and content resolve. */
-          font-size: clamp(0.78rem, calc(var(--team-card-w, 232px) * 0.062), 0.95rem);
+          /* Viewport-driven, like the rest of the site's type — not derived
+             from the card's own width. Sized down from an earlier pass that
+             read too large against the now-compact band. */
+          font-size: clamp(0.72rem, 0.95vw, 0.82rem);
           color: #ffffff;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.01em;
           line-height: 1.28;
-          margin: 0 0 0.28rem;
+          margin: 0 0 0.2rem;
+        }
+
+        .team-name > span {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          overflow-wrap: anywhere;
+          /* .team-name is itself a flex row (name + badge); without this,
+             the same min-width:auto default that once let a card silently
+             overgrow its flex-basis (fixed via min-width:0 on the grid
+             item) applies one level deeper to this nested flex child too. */
+          min-width: 0;
         }
 
         .team-badge {
-          width: 15px;
-          height: 15px;
+          width: 13px;
+          height: 13px;
           flex-shrink: 0;
-          /* Nudged down to sit optically on the first line's cap-height now
-             that the row is top-aligned for two-line names. */
-          margin-top: 0.12em;
+          margin-top: 0.15em;
         }
 
         .team-card-summary {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          /* One line, not two — this is most of what makes the compact band
+             above possible: a second line roughly doubles the summary's own
+             height requirement for comparatively little information. */
+          -webkit-line-clamp: 1;
+          overflow: hidden;
           font-family: var(--font-sans);
           font-weight: 400;
-          font-size: 0.76rem;
-          color: rgba(255, 255, 255, 0.8);
-          line-height: 1.45;
+          font-size: 0.68rem;
+          color: rgba(255, 255, 255, 0.85);
+          line-height: 1.4;
           letter-spacing: -0.003em;
           margin: 0;
           text-wrap: pretty;
-          /* Reserve two lines so names share a baseline across a row. No clamp:
-             at narrow widths the copy may run to a third line, and cards are
-             single-column there, so growing is preferable to truncating.
-             Kept at two lines rather than trimmed to one: the summaries now
-             fit in two at every width, and a shared reserve is what keeps the
-             names aligned across the row. */
-          min-height: 2.9em;
         }
 
         .team-role {
@@ -691,25 +766,34 @@ const Team = () => {
            ~730 and ~1000px — three across with a single orphan beneath. Capping
            the card width here forces a balanced 2/2 instead, which is why this
            range is pinned rather than left to wrap on its own. */
-        @media (min-width: 640px) and (max-width: 1249px) {
+        @media (min-width: 640px) and (max-width: 1299px) {
           .team-grid {
             /* 38vw (not 30vw) is what actually forces 2-up: at 900px wide a
                30vw card still resolved to 230px, so three fit and the fourth
                orphaned. Two cards plus the gap must exceed half the row for
                the third to be pushed down.
-               Upper bound raised from 1000px to 1249px: the five-card base
-               tier above is only safe (see the comment on .team-grid) from
-               roughly 1250px up, where 15vw first clears the 180px floor with
-               enough margin. Below that, this wider, already-proven-safe 2-up
-               sizing takes over instead of a cramped five-across row. */
+               Upper bound raised again, 1249px -> 1299px: the six-card base
+               tier above only fits with real margin from ~1300px up, where
+               the 1200px container has fully reached its cap (measured
+               ~1171px at 1250px viewport, not yet capped — too tight for six
+               cards even at the tighter gap). Below 1300px, this wider,
+               already-proven-safe 2-up sizing takes over instead of a
+               cramped six-across row. Restores its own, wider gap below —
+               the base rule's gap is now tuned tight specifically for the
+               six-across fit and would pinch these larger 2-up cards for no
+               reason. */
             --team-card-w: clamp(200px, 38vw, 300px);
+            gap: clamp(0.75rem, 1.8vw, 1.25rem);
           }
         }
         /* On phones give the card a little more room, since it is the only one
-           on the row. Flex handles the wrapping itself. */
+           on the row. Flex handles the wrapping itself. Also restores the
+           wider gap for the same reason as the 2-up tier above — this tier
+           stacks a single column, so it never needs the six-across squeeze. */
         @media (max-width: 520px) {
           .team-grid {
             --team-card-w: min(260px, 100%);
+            gap: clamp(0.75rem, 1.8vw, 1.25rem);
           }
         }
 
@@ -979,8 +1063,7 @@ const Team = () => {
                     style={{ objectPosition: member.objectPosition }}
                     loading="lazy"
                   />
-                  <div className="team-card-scrim" aria-hidden="true" />
-                  <div className="team-card-content">
+                  <div className="team-card-overlay" aria-hidden="true">
                     <h3 className="team-name">
                       <span>{member.name}</span>
                       <svg
@@ -991,13 +1074,13 @@ const Team = () => {
                       >
                         <path
                           transform="translate(0.5, -0.5)"
-                          fill="#ffffff"
+                          fill="#3A82C4"
                           d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.79-4-4-4-.494 0-.964.084-1.4.238C14.545 2.472 13.17 1.5 11.5 1.5s-3.045.972-3.69 2.238C7.374 3.584 6.904 3.5 6.41 3.5c-2.21 0-4 1.79-4 4 0 .495.084.965.238 1.4C1.375 9.55.5 10.92.5 12.5c0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.79 4 4 4 .494 0 .964-.084 1.4-.238.645 1.266 2.02 2.238 3.69 2.238s3.045-.972 3.69-2.238c.436.154.906.238 1.4.238 2.21 0 4-1.79 4-4 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6z"
                         />
                         <path
                           d="M8.3 12.3l2.6 2.6 4.9-5.1"
                           fill="none"
-                          stroke="#12121a"
+                          stroke="#ffffff"
                           strokeWidth="2.1"
                           strokeLinecap="round"
                           strokeLinejoin="round"
