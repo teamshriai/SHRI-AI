@@ -43,6 +43,27 @@ export const SECTION_ROUTES = {
   '/team': 'team',
 };
 
+/**
+ * Clean paths that render a standalone page instead of the site. Reached by a
+ * normal link (a full page load), so App only needs to read this once. The
+ * host side is the same as SECTION_ROUTES: CLEAN_PATHS in vite.config.js plus
+ * the SPA fallbacks in public/.
+ */
+const PAGE_ROUTES = {
+  '/shri-health': 'shri-health',
+};
+
+/** Standalone page this URL asks for, or null. */
+export function readPageRoute() {
+  try {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    const segment = path.slice(path.lastIndexOf('/')) || '/';
+    return PAGE_ROUTES[segment] || null;
+  } catch {
+    return null;
+  }
+}
+
 /** App listens for this to re-read the URL after an in-page navigation. */
 export const ROUTE_EVENT = 'shri:route';
 

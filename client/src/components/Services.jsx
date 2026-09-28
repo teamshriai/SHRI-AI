@@ -1,6 +1,43 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BrainCircuit, Stethoscope, Microscope, Dna } from 'lucide-react';
 import { scrollToSection } from '../lib/scrollToSection';
+
+// ViSolve's own AI capability areas, worded as on visolve.com.
+const VISOLVE_AI = [
+  {
+    Icon: BrainCircuit,
+    title: 'Agentic AI Systems',
+    desc: 'Developing autonomous, reasoning-capable agents and complex LLM architectures.',
+    items: ['LLM-Powered Applications', 'Multi-Agent Architectures', 'Intelligent Process Automation', 'Conversational AI Assistants'],
+    accent: '#7B6FCD',
+    accentRgb: '123, 111, 205',
+  },
+  {
+    Icon: Stethoscope,
+    title: 'Healthcare AI',
+    desc: 'Translating high-volume clinical data into precise, actionable decision support.',
+    items: ['Clinical Decision Support Systems', 'Predictive Health Analytics', 'AI-Powered Diagnostic Support', 'Automated Risk Stratification'],
+    accent: '#3A82C4',
+    accentRgb: '58, 130, 196',
+  },
+  {
+    Icon: Microscope,
+    title: 'Precision Oncology',
+    desc: 'Architecting robust pipelines for variant analysis and molecular monitoring.',
+    items: ['Liquid Biopsy Data Pipelines', 'ctDNA Detection & Analysis', 'Next-Gen Sequencing (NGS) Pipelines', 'Molecular Response Monitoring'],
+    accent: '#c0392b',
+    accentRgb: '192, 57, 43',
+  },
+  {
+    Icon: Dna,
+    title: 'Genomics',
+    desc: 'Processing massive-scale sequencing data into accessible, annotated structures.',
+    items: ['FASTQ & BAM Processing', 'VCF Variant Analysis', 'Biomarker Discovery Pipelines', 'Automated Variant Annotation'],
+    accent: '#2aaa72',
+    accentRgb: '42, 170, 114',
+  },
+];
 
 const Services = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -174,10 +211,6 @@ const Services = () => {
         .fa2-sponsor {
           --fa2-sponsor-pad: clamp(2.25rem, 4vw, 3.25rem);
 
-          display: flex;
-          align-items: center;
-          gap: clamp(1.5rem, 3.5vw, 3rem);
-
           /* Pull up out of the wrapper's padding so the top gap is ours to
              set, not the wrapper's much larger one (measured 115px vs 49px
              before this — visibly lopsided). */
@@ -189,6 +222,143 @@ const Services = () => {
           padding-bottom: var(--fa2-sponsor-pad);
 
           border-bottom: 1px solid rgba(10, 10, 10, 0.07);
+        }
+
+        /* Logo + text row. Lives on an inner wrapper so the AI-services grid
+           below can span the band's full width instead of squeezing into the
+           text column. */
+        .fa2-sponsor-main {
+          display: flex;
+          align-items: center;
+          gap: clamp(1.5rem, 3.5vw, 3rem);
+        }
+
+        /* ── ViSolve AI services ──
+           Titles, taglines and items are ViSolve's own, from visolve.com.
+           Light cards, each carrying its accent in three places at once — a
+           solid top strip, a faint wash and the service chips — so the four
+           areas read as distinct at a glance without leaving the page's
+           white palette. */
+        .fa2-ai {
+          margin-top: clamp(2.25rem, 4vw, 3.25rem);
+        }
+        .fa2-ai-headline {
+          font-family: var(--font-sans);
+          font-size: clamp(1.4rem, 2.4vw, 2rem);
+          font-weight: 300;
+          letter-spacing: -0.025em;
+          line-height: 1.2;
+          color: #0a0a0a;
+          margin: 0 0 clamp(1.5rem, 2.8vw, 2.25rem);
+          max-width: 34ch;
+          text-wrap: balance;
+        }
+        .fa2-ai-headline strong { font-weight: 500; }
+        .fa2-ai-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: clamp(0.9rem, 1.6vw, 1.25rem);
+        }
+        .fa2-ai-card {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          overflow: hidden;
+          padding: calc(clamp(1.4rem, 2.2vw, 1.8rem) + 6px) clamp(1.25rem, 2vw, 1.6rem) clamp(1.4rem, 2.2vw, 1.8rem);
+          background:
+            linear-gradient(to bottom, rgba(var(--ai-accent-rgb), 0.07), rgba(var(--ai-accent-rgb), 0) 45%),
+            #fff;
+          border: 1px solid rgba(10, 10, 10, 0.07);
+          border-radius: 16px;
+          box-shadow: 0 1px 2px rgba(10, 10, 20, 0.04), 0 10px 28px rgba(10, 10, 20, 0.05);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+        }
+        .fa2-ai-card::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          height: 6px;
+          background: var(--ai-accent);
+        }
+        .fa2-ai-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 1px 2px rgba(10, 10, 20, 0.04), 0 20px 44px rgba(var(--ai-accent-rgb), 0.16);
+        }
+        .fa2-ai-head {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 0.75rem;
+          margin-bottom: 1.15rem;
+        }
+        .fa2-ai-icon {
+          width: 48px;
+          height: 48px;
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 14px;
+          color: var(--ai-accent);
+          background: rgba(var(--ai-accent-rgb), 0.12);
+        }
+        .fa2-ai-index {
+          font-family: var(--font-sans);
+          font-size: 2.4rem;
+          font-weight: 300;
+          line-height: 1;
+          letter-spacing: -0.04em;
+          color: var(--ai-accent);
+          opacity: 0.28;
+          font-variant-numeric: tabular-nums;
+        }
+        .fa2-ai-title {
+          font-family: var(--font-sans);
+          font-size: clamp(1.1rem, 1.35vw, 1.25rem);
+          font-weight: 500;
+          letter-spacing: -0.015em;
+          line-height: 1.25;
+          color: #0a0a0a;
+          margin: 0 0 0.5rem;
+        }
+        .fa2-ai-desc {
+          font-family: var(--font-sans);
+          font-size: 0.82rem;
+          font-weight: 300;
+          line-height: 1.6;
+          color: #5e5e66;
+          margin: 0 0 1.25rem;
+          text-wrap: pretty;
+        }
+        .fa2-ai-list {
+          list-style: none;
+          margin: auto 0 0;
+          padding: 0;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+        }
+        .fa2-ai-list li {
+          font-family: var(--font-sans);
+          font-size: 0.72rem;
+          font-weight: 500;
+          line-height: 1.3;
+          padding: 0.34rem 0.65rem;
+          border-radius: 999px;
+          color: color-mix(in srgb, var(--ai-accent) 72%, #000);
+          background: rgba(var(--ai-accent-rgb), 0.09);
+          border: 1px solid rgba(var(--ai-accent-rgb), 0.16);
+          max-width: 100%;
+          overflow-wrap: anywhere;
+        }
+        @media (max-width: 1100px) {
+          .fa2-ai-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 560px) {
+          .fa2-ai-grid { grid-template-columns: minmax(0, 1fr); }
         }
 
         /* The logo sits directly on the section — no plate, no frame. The
@@ -326,7 +496,7 @@ const Services = () => {
         }
 
         @media (max-width: 640px) {
-          .fa2-sponsor {
+          .fa2-sponsor-main {
             flex-direction: column;
             align-items: flex-start;
             gap: 1.5rem;
@@ -336,6 +506,8 @@ const Services = () => {
         @media (prefers-reduced-motion: reduce) {
           .fa2-sponsor-logo-link { transition: none; }
           .fa2-sponsor-logo-link:hover { transform: none; }
+          .fa2-ai-card { transition: none; }
+          .fa2-ai-card:hover { transform: none; }
         }
 
         .fa2-hero-title {
@@ -635,62 +807,105 @@ const Services = () => {
             className="fa2-sponsor"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
+            // Low threshold: with the AI-services grid the band runs taller
+            // than a phone screen, where 30% could never be in view at once.
+            viewport={{ once: false, amount: 0.08 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <a
-              href="https://visolve.com/portfolio/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="fa2-sponsor-logo-link"
-              aria-label="ViSolve portfolio (opens in a new tab)"
-            >
-              <img
-                src="/visolve-logo.webp"
-                alt="ViSolve"
-                className="fa2-sponsor-logo"
-                width="201"
-                height="110"
-                loading="lazy"
-                decoding="async"
-              />
-            </a>
-            <div>
-              <p style={dmSans} className="fa2-sponsor-label">
-                Sponsored by
-              </p>
-              <p style={dmSans} className="fa2-sponsor-text">
-                Founded in 1995 and headquartered in San Jose, California,{' '}
-                <a
-                  href="https://visolve.com/portfolio/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="fa2-sponsor-link"
-                >
-                  ViSolve
-                </a>{' '}
-                is a product development, software services, and consulting firm
-                focused on Healthcare IT and Enterprise IT using open source and
-                leading-edge technologies. ViSolve sponsors{' '}
-                <span className="fa2-sponsor-name">SHRI-AI</span>, supporting the
-                research and engineering behind our work in precision oncology,
-                stroke imaging, and AI for healthcare.
-              </p>
-
-              <motion.a
+            <div className="fa2-sponsor-main">
+              <a
                 href="https://visolve.com/portfolio/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fa2-sponsor-btn"
-                whileHover={{ backgroundColor: '#0a0a0a', color: '#fff' }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.18 }}
+                className="fa2-sponsor-logo-link"
+                aria-label="ViSolve portfolio (opens in a new tab)"
               >
-                View ViSolve&rsquo;s Portfolio
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </motion.a>
+                <img
+                  src="/visolve-logo.webp"
+                  alt="ViSolve"
+                  className="fa2-sponsor-logo"
+                  width="201"
+                  height="110"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div>
+                <p style={dmSans} className="fa2-sponsor-label">
+                  Sponsored by
+                </p>
+                <p style={dmSans} className="fa2-sponsor-text">
+                  Founded in 1995 and headquartered in San Jose, California,{' '}
+                  <a
+                    href="https://visolve.com/portfolio/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fa2-sponsor-link"
+                  >
+                    ViSolve
+                  </a>{' '}
+                  is a product development, software services, and consulting firm
+                  focused on Healthcare IT and Enterprise IT using open source and
+                  leading-edge technologies. ViSolve sponsors{' '}
+                  <span className="fa2-sponsor-name">SHRI-AI</span>, supporting the
+                  research and engineering behind our work in precision oncology,
+                  stroke imaging, and AI for healthcare.
+                </p>
+
+                <motion.a
+                  href="https://visolve.com/portfolio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="fa2-sponsor-btn"
+                  whileHover={{ backgroundColor: '#0a0a0a', color: '#fff' }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  View ViSolve&rsquo;s Portfolio
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </motion.a>
+              </div>
+            </div>
+
+            <div className="fa2-ai">
+              <p style={dmSans} className="fa2-sponsor-label">
+                ViSolve AI Services
+              </p>
+              <p className="fa2-ai-headline">
+                AI engineered for <strong>healthcare</strong>,{' '}
+                <strong>precision oncology</strong> and <strong>genomics</strong>.
+              </p>
+              <div className="fa2-ai-grid">
+                {VISOLVE_AI.map(({ Icon, title, desc, items, accent, accentRgb }, i) => (
+                  <motion.article
+                    key={title}
+                    className="fa2-ai-card"
+                    style={{ '--ai-accent': accent, '--ai-accent-rgb': accentRgb }}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <div className="fa2-ai-head">
+                      <span className="fa2-ai-icon" aria-hidden="true">
+                        <Icon size={22} strokeWidth={1.6} />
+                      </span>
+                      <span className="fa2-ai-index" aria-hidden="true">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h3 className="fa2-ai-title">{title}</h3>
+                    <p className="fa2-ai-desc">{desc}</p>
+                    <ul className="fa2-ai-list">
+                      {items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </motion.article>
+                ))}
+              </div>
             </div>
           </motion.div>
 

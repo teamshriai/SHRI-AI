@@ -7,11 +7,13 @@ import Team from './components/Team';
 import Careers from './components/Careers';
 import Footer from './components/Footer';
 import JobDetail from './components/JobDetail';
+import ShriHealth from './components/ShriHealth';
 import { getRoleBySlug } from './data/roles';
 import {
   ROUTE_EVENT,
   jumpTo,
   lastHomeScroll,
+  readPageRoute,
   readRoleSlug,
   readSectionRoute,
 } from './lib/careersRoute';
@@ -26,6 +28,9 @@ function App() {
   // null = the site; a slug = that job's own page. See lib/careersRoute.js for
   // why this is a query parameter and not a path.
   const [roleSlug, setRoleSlug] = useState(readRoleSlug);
+  // A standalone page (e.g. /shri-health). Reached by a full page load, so it
+  // is read once rather than subscribed to.
+  const [page] = useState(readPageRoute);
   // Set once the deep link has been honoured, so returning from a job page
   // restores the visitor's own scroll position instead of jumping back to the
   // section named in the URL.
@@ -188,6 +193,10 @@ function App() {
       window.removeEventListener('scroll', onScroll, opts);
     };
   }, [roleSlug]);
+
+  if (page === 'shri-health') {
+    return <ShriHealth />;
+  }
 
   if (roleSlug) {
     return <JobDetail job={getRoleBySlug(roleSlug)} />;

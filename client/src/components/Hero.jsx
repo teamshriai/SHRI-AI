@@ -492,14 +492,23 @@ const Hero = () => {
            the second. Width is viewport-relative so the row never runs under
            the DNA artwork's opaque region on the right (the artwork is
            clamp(320px, 44vw, 740px) wide and its left 42% is mask-faded). */
+        /* Three-up support row: Stroke-AI, OncoTrace-AI, SHRI-Health. Width
+           is viewport-relative and deliberately short of the old two-up 62vw:
+           at 62vw the third column landed on the DNA strand itself and was
+           hard to read. 52vw ends the row in the artwork's faded left edge,
+           before the strand (measured at 1281-2560px). Type steps down a
+           little here so three narrower columns don't run too tall. */
         .hero-supports {
+          --hero-rule-pad: clamp(0.9rem, 1.6vw, 1.75rem);
           display: flex;
           align-items: stretch;
-          /* Widened on desktop (below the 1024px breakpoint this reverts to
-             the tighter value — a stacked column doesn't need as much space
-             between the rule and the text either side of it). */
-          gap: clamp(1.1rem, 2.2vw, 2.25rem);
-          width: min(100%, clamp(560px, 62vw, 1000px));
+          width: min(100%, clamp(560px, 52vw, 1000px));
+        }
+        @media (min-width: 1281px) {
+          .hero-supports > .hero-support-text {
+            font-size: clamp(14px, 1.12vw, 18px);
+            line-height: 1.65;
+          }
         }
         /* Equal columns regardless of which paragraph is longer, and
            min-width:0 so a long link cannot push a column past its share. */
@@ -508,32 +517,21 @@ const Hero = () => {
           min-width: 0;
           max-width: none;
         }
-        /* The divider's padding used to sit only on the second column's
-           padding-left, which grew ITS outer box while leaving the first
-           column's box smaller — the two paragraphs' text areas ended up
-           equal width, but their visible boxes (and so the divider's
-           position) did not look symmetric. Mirroring the same padding as
-           padding-right on the first column balances both boxes exactly,
-           so the rule sits centred in the gap rather than offset toward it. */
-        .hero-supports > .hero-support-text:first-child {
-          padding-right: clamp(1.1rem, 2.2vw, 2.25rem);
+        /* Every divider gets the SAME padding on both of its sides — the
+           column before it pads right, the column after it pads left — so
+           each rule sits centred between its two paragraphs and all three
+           boxes stay symmetric. No flex gap on top of that: with three
+           columns a gap plus both paddings left too little room for text. */
+        .hero-supports > .hero-support-text:not(:last-child) {
+          padding-right: var(--hero-rule-pad);
         }
-        /* Divider: vertical rule between the columns, flipping to a horizontal
-           rule above the second block once stacked. Mirrors the
-           .cta-bottom-divider pattern in Footer.jsx. */
-        .hero-support-alt {
+        .hero-supports > .hero-support-text + .hero-support-text {
           border-left: 1px solid rgba(100, 100, 120, 0.16);
-          padding-left: clamp(1.1rem, 2.2vw, 2.25rem);
+          padding-left: var(--hero-rule-pad);
         }
-        @media (min-width: 1025px) {
-          /* Desktop only: more breathing room between the two platform
-             paragraphs than the shared clamp above gives at typical desktop
-             widths (~1.5-2x the base gap at 1280-1920px). */
-          .hero-supports { gap: clamp(2.5rem, 4.5vw, 5rem); }
-          .hero-supports > .hero-support-text:first-child { padding-right: clamp(2.5rem, 4.5vw, 5rem); }
-          .hero-support-alt { padding-left: clamp(2.5rem, 4.5vw, 5rem); }
-        }
-        @media (max-width: 1024px) {
+        /* Stacks below 1281px (not 1024px as the two-up row did): three
+           columns in the room left of the artwork get too narrow to read. */
+        @media (max-width: 1280px) {
           .hero-supports {
             flex-direction: column;
             /* align-items:stretch matters in both directions here: in column
@@ -543,15 +541,23 @@ const Hero = () => {
             align-items: stretch;
             width: min(100%, 60vw);
           }
-          /* Stacked layout needs no side padding — the divider becomes a
-             horizontal rule above the second block instead. */
-          .hero-supports > .hero-support-text:first-child { padding-right: 0; }
-          .hero-support-alt {
+          /* Stacked: no side padding, the dividers become horizontal rules
+             above the second and third blocks. */
+          .hero-supports > .hero-support-text:not(:last-child) {
+            padding-right: 0;
+            padding-bottom: clamp(0.7rem, 2vw, 1rem);
+          }
+          .hero-supports > .hero-support-text + .hero-support-text {
             border-left: none;
             padding-left: 0;
             border-top: 1px solid rgba(100, 100, 120, 0.16);
             padding-top: clamp(0.7rem, 2vw, 1rem);
           }
+        }
+        /* 1025-1280px: the artwork is still full-size here, and at 60vw the
+           stacked lines ran into the strand. */
+        @media (min-width: 1025px) and (max-width: 1280px) {
+          .hero-supports { width: min(100%, 48vw); }
         }
         @media (max-width: 768px) {
           /* Below here the DNA becomes a faint full-bleed wash (opacity 0.12),
@@ -626,6 +632,70 @@ const Hero = () => {
                   drop-shadow(0 0 8px rgba(79,150,219,0.28));
         }
 
+        /* SHRI-Health link — same treatment again, in green, so all three
+           platforms glow but stay distinguishable at a glance. */
+        .shrihealth-text {
+          display: inline-block;
+          position: relative;
+          background: linear-gradient(
+            90deg,
+            #0d4f35  0%,
+            #13704a  20%,
+            #1f9163  38%,
+            #3dbb86  48%,
+            #7ee0b4  50%,
+            #3dbb86  52%,
+            #1f9163  62%,
+            #13704a  80%,
+            #0d4f35  100%
+          );
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          will-change: background-position;
+          animation: shimmer-text 9s linear infinite;
+          filter: drop-shadow(0 0 4px rgba(31,145,99,0.24))
+                  drop-shadow(0 0 8px rgba(31,145,99,0.12));
+          transition: filter 0.35s ease;
+        }
+        .shrihealth-underline {
+          display: block;
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 100%;
+          height: 2px;
+          border-radius: 2px;
+          pointer-events: none;
+          background: linear-gradient(
+            90deg,
+            rgba(13,79,53,0.08)    0%,
+            rgba(19,112,74,0.45)   20%,
+            rgba(31,145,99,0.82)   38%,
+            rgba(61,187,134,0.92)  48%,
+            rgba(126,224,180,1.0)  50%,
+            rgba(61,187,134,0.92)  52%,
+            rgba(31,145,99,0.82)   62%,
+            rgba(19,112,74,0.45)   80%,
+            rgba(13,79,53,0.08)    100%
+          );
+          background-size: 220% auto;
+          will-change: background-position;
+          animation: shimmer-line 9s linear infinite;
+          filter: drop-shadow(0 0 2px rgba(61,187,134,0.36))
+                  drop-shadow(0 0 5px rgba(61,187,134,0.16));
+          transition: filter 0.35s ease;
+        }
+        .shrihealth-link:hover .shrihealth-text {
+          filter: drop-shadow(0 0 6px rgba(61,187,134,0.44))
+                  drop-shadow(0 0 12px rgba(61,187,134,0.22));
+        }
+        .shrihealth-link:hover .shrihealth-underline {
+          filter: drop-shadow(0 0 4px rgba(126,224,180,0.60))
+                  drop-shadow(0 0 8px rgba(61,187,134,0.28));
+        }
+
         @keyframes shimmer-text {
           0%   { background-position: 220% center; }
           100% { background-position: -220% center; }
@@ -656,7 +726,9 @@ const Hero = () => {
           .oncotrace-text,
           .oncotrace-underline,
           .strokeai-text,
-          .strokeai-underline {
+          .strokeai-underline,
+          .shrihealth-text,
+          .shrihealth-underline {
             animation: none;
             background-position: 50% center;
             will-change: auto;
@@ -780,9 +852,9 @@ const Hero = () => {
                 </p>
               </div>
 
-              {/* Support taglines — two supported platforms, side by side above
-                  1024px with a hairline rule between them, stacked below it with
-                  the rule flipping to horizontal (Stroke-AI underneath). */}
+              {/* Support taglines — three platforms, side by side above 1024px
+                  with hairline rules between them, stacked below it with the
+                  rules flipping to horizontal. */}
               <div className="hero-supports">
                 <p className="hero-support-text">
                   SHRI-AI proudly supports{' '}
@@ -810,7 +882,7 @@ const Hero = () => {
                   detection, and risk assessment.
                 </p>
 
-                <p className="hero-support-text hero-support-alt">
+                <p className="hero-support-text">
                   SHRI-AI also proudly supports{' '}
                   {/* Same three-span structure, with the shimmer gradient. */}
                   <span className="oncotrace-wrap">
@@ -827,6 +899,23 @@ const Hero = () => {
                   </span>
                   {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and
                   precision oncology.
+                </p>
+
+                <p className="hero-support-text">
+                  {/* Same three-span structure. SHRI-Health is part of this
+                      site, so it opens in the same tab. */}
+                  <span className="oncotrace-wrap">
+                    <a
+                      href="/shri-health"
+                      className="oncotrace-link shrihealth-link"
+                      aria-label="Visit SHRI-Health"
+                    >
+                      <span className="shrihealth-text">SHRI-Health</span>
+                      <span className="shrihealth-underline" aria-hidden="true" />
+                    </a>
+                  </span>
+                  {' '}is a product of SHRI-AI — a connected care platform for
+                  doctors, pharma, procurement, and laboratory management.
                 </p>
               </div>
 

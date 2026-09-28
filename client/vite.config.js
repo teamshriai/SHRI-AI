@@ -21,10 +21,10 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
  * so the hashed asset URLs inside it can never go stale. Asset paths are
  * absolute (base '/'), so the copy works from a nested directory.
  *
- * Adding a clean URL is one entry here plus one in SECTION_ROUTES
- * (src/lib/careersRoute.js).
+ * Adding a clean URL is one entry here plus one in SECTION_ROUTES or
+ * PAGE_ROUTES (src/lib/careersRoute.js).
  */
-const CLEAN_PATHS = ['careers', 'team']
+const CLEAN_PATHS = ['careers', 'team', 'shri-health']
 
 function cleanPathCopies() {
   let outDir
