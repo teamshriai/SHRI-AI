@@ -1,934 +1,746 @@
-import { motion } from 'framer-motion';
+import { useId } from 'react';
+import { motion, MotionConfig } from 'framer-motion';
+import {
+  Activity, ArrowRight, Brain, ChartColumn, ChevronRight, ClipboardList,
+  Crosshair, Dna, HeartPulse, Radar, Scan, ScanLine, Users,
+} from 'lucide-react';
+
+/**
+ * Home page hero.
+ *
+ * Content and structure come from the Claude Design mockup in
+ * assets-src/design/Shri Health homepage mockup/ ("Shri Health Home.dc.html",
+ * uploads/reference.png). The look is the site's own: a white ground, DM Sans
+ * at the three system weights and the index.css
+ * tokens. Card accents are the brand colours the old hero gave each
+ * platform's link.
+ *
+ * Every illustration has its own box and never sits behind text: each card's
+ * art is its own grid column beside the feature list (the reference layout),
+ * and the banner's building is its own column (dropped on phones rather than
+ * layered under text). Images are crops of reference.png exported at 2x
+ * (public/shri-health-*.webp) and are always shown whole: object-fit contain,
+ * with only a soft fade at the outer edges.
+ */
+
+/* ── Emblems ──
+   Fine line art with a two-stop accent gradient. The gradient lives in a
+   zero-size sibling <svg> so it can also colour lucide icons (their stroke is
+   the `color` prop). userSpaceOnUse keeps the gradient continuous across a
+   drawing's separate paths instead of restarting on each path's own box. */
+
+const RibbonArt = ({ paint }) => (
+  <svg viewBox="4.5 1.5 15 21" width="46" height="46" fill="none" aria-hidden="true">
+    <path
+      d="M12 2.6C9.3 2.6 8.1 4.8 8.1 6.75c0 2.05 1.3 4.05 2.55 5.95L6.3 19.95l2.55 1.25L12 15.75l3.15 5.45 2.55-1.25-4.35-7.25c1.25-1.9 2.55-3.9 2.55-5.95C15.9 4.8 14.7 2.6 12 2.6Zm0 2.5c1.2 0 1.8.9 1.8 1.9 0 1.2-.75 2.6-1.8 4.1-1.05-1.5-1.8-2.9-1.8-4.1 0-1 .6-1.9 1.8-1.9Z"
+      fill={paint}
+      fillOpacity="0.18"
+      fillRule="evenodd"
+      stroke={paint}
+      strokeWidth="1.35"
+      strokeLinejoin="round"
+    />
+    {/* The fold where the two tails cross. */}
+    <path d="M10.65 12.7l2.4 4.1" stroke={paint} strokeWidth="1.35" strokeLinecap="round" />
+  </svg>
+);
+
+/* Hospital management: the building with a cross on its roof sign, a window
+   grid and entrance — the SHRI HEALTH platform's mark. */
+const HospitalArt = ({ paint }) => (
+  <svg viewBox="1.5 1.5 21 21" width="46" height="46" fill="none" aria-hidden="true">
+    <g stroke={paint} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path
+        d="M4.5 21V10.5A1.5 1.5 0 0 1 6 9h12a1.5 1.5 0 0 1 1.5 1.5V21"
+        fill={paint}
+        fillOpacity="0.14"
+      />
+      <rect x="8.5" y="2.75" width="7" height="6.25" rx="1.3" fill="#fff" />
+      <path d="M12 4.1v3.5M10.25 5.85h3.5" />
+      <path d="M7.25 12.25h2M14.75 12.25h2M7.25 15.25h2M14.75 15.25h2" />
+      <path d="M10.4 21v-2.9a1.6 1.6 0 0 1 3.2 0V21" />
+      <path d="M2.5 21h19" />
+    </g>
+  </svg>
+);
+
+const Emblem = ({ kind, className = '' }) => {
+  const id = useId().replace(/:/g, '');
+  const paint = `url(#${id})`;
+  const art = {
+    brain: <Brain size={46} strokeWidth={1.2} color={paint} aria-hidden="true" />,
+    ribbon: <RibbonArt paint={paint} />,
+    hospital: <HospitalArt paint={paint} />,
+  }[kind];
+  return (
+    <span className={`hh-emblem ${className}`} aria-hidden="true">
+      <svg width="0" height="0" style={{ position: 'absolute' }} focusable="false">
+        <defs>
+          <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="3" y1="2" x2="21" y2="22">
+            <stop offset="0" style={{ stopColor: 'var(--c-accent-2)' }} />
+            <stop offset="1" style={{ stopColor: 'var(--c-accent)' }} />
+          </linearGradient>
+        </defs>
+      </svg>
+      {art}
+    </span>
+  );
+};
+
+/* Accent set: stroke/fill colour, a lighter partner for gradients, the RGB
+   triplet for alpha tints, and a button colour dark enough for white text. */
+const accentVars = (accent, accent2, rgb, btn = accent) => ({
+  '--c-accent': accent,
+  '--c-accent-2': accent2,
+  '--c-accent-rgb': rgb,
+  '--c-btn': btn,
+});
+
+const PALETTE = [
+  accentVars('#7B6FCD', '#a99ff0', '123, 111, 205'),
+  accentVars('#3A82C4', '#7fb3e6', '58, 130, 196'),
+  accentVars('#2aaa72', '#6fd1a4', '42, 170, 114'),
+  accentVars('#D4891E', '#f0b866', '212, 137, 30'),
+  accentVars('#b52a6b', '#e67aa6', '181, 42, 107'),
+];
+
+const HERO_POINTS = [
+  { Icon: Crosshair, label: 'Early Detection', vars: PALETTE[1] },
+  { Icon: Dna, label: 'Precision Diagnosis', vars: PALETTE[0] },
+  { Icon: ChartColumn, label: 'Genomic Insights', vars: PALETTE[2] },
+  { Icon: HeartPulse, label: 'Better Outcomes', vars: PALETTE[4] },
+  { Icon: Users, label: 'Accessible to All', vars: PALETTE[3] },
+];
+
+const MODULE_CARDS = [
+  {
+    id: 'stroke',
+    title: 'Stroke AI',
+    tagline: 'AI for Faster Detection and Better Outcomes',
+    emblem: 'brain',
+    image: '/stroke-brain.webp',
+    imageSize: [425, 460],
+    // A transparent cut-out: shown as-is, with no edge fade.
+    cutout: true,
+    features: [
+      { Icon: ScanLine, label: 'CT / MRI Analysis' },
+      { Icon: Crosshair, label: 'Stroke Detection' },
+      { Icon: ClipboardList, label: 'AI Assessment' },
+      { Icon: ChartColumn, label: 'Monitoring & Follow-up' },
+    ],
+    cta: 'Open Stroke AI Module',
+    href: 'https://stroke-ai.org',
+    external: true,
+    vars: { ...accentVars('#2a6db5', '#6aa6e8', '42, 109, 181'), '--c-tint-1': '#dbe8fb', '--c-tint-2': '#f1f6ff' },
+  },
+  {
+    id: 'oncotrace',
+    title: 'OncoTrace AI',
+    tagline: 'AI Imaging + NGS for Early Detection and Personalized Care',
+    emblem: 'ribbon',
+    image: '/oncotrace-breast.webp',
+    imageSize: [358, 460],
+    cutout: true,
+    features: [
+      { Icon: Radar, label: 'AI MRI Analysis' },
+      { Icon: Scan, label: 'Mammography AI' },
+      { Icon: Dna, label: 'NGS & Molecular Profiling' },
+      { Icon: Activity, label: 'Risk Assessment' },
+    ],
+    cta: 'Open OncoTrace AI',
+    href: 'https://oncotrace-ai.org',
+    external: true,
+    vars: { ...accentVars('#b52a6b', '#e67aa6', '181, 42, 107'), '--c-tint-1': '#fbe1ee', '--c-tint-2': '#f5ecfc' },
+  },
+  {
+    id: 'shri-health',
+    title: 'SHRI HEALTH',
+    tagline: 'AI Imaging + NGS for Precision Oncology',
+    emblem: 'hospital',
+    image: '/shri-health-lung.webp',
+    imageSize: [376, 406],
+    features: [
+      { Icon: ScanLine, label: 'CT Imaging AI' },
+      { Icon: Dna, label: 'NGS & Molecular Profiling' },
+      { Icon: Activity, label: 'Biomarker Analysis' },
+      { Icon: ClipboardList, label: 'Treatment Monitoring' },
+    ],
+    cta: 'Open SHRI Health Module',
+    href: '/dev',
+    vars: { ...accentVars('#1f9163', '#5cc79a', '31, 145, 99', '#167a52'), '--c-tint-1': '#dcf2e8', '--c-tint-2': '#eef8f6' },
+  },
+];
+
+const EASE = [0.22, 1, 0.36, 1];
+const rise = (i = 0) => ({
+  initial: { opacity: 0, y: 26 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.15 },
+  transition: { duration: 0.75, delay: i * 0.09, ease: EASE },
+});
 
 const Hero = () => {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <style>{`
-        /* Display font for the hero heading only — every other component
-           keeps the site-wide DM Sans (--font-sans in index.css). Loaded
-           here, scoped locally rather than touching the shared token, so
-           this is a one-heading change, not a site-wide one. Manrope is a
-           clean, professional grotesque with slightly rounded terminals —
-           more distinctive than DM Sans without the risk a display serif
-           carried (a serif read wrong at uppercase/tight tracking here). */
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap');
-
-        *, *::before, *::after { box-sizing: border-box; }
-
-        .gl-shape {
-          position: absolute;
-          -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-          transform: translateZ(0);
-          will-change: transform;
-          clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 77%);
-          -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 77%);
-        }
-
-        /* ── Hanging shapes (desktop only) ──
-         * These are inside .shapes-desktop, which is display:none at 768px
-         * and below, so nothing here affects mobile.
-         *
-         * The previous approach set a NEGATIVE vh top, which meant the taller
-         * the viewport the more of each shape was pushed off-screen — exactly
-         * backwards. Measured at 1440x900 only 97px of shape was on screen and
-         * the navbar's bottom edge sits at 73px, so barely ~24px was actually
-         * visible; at 2560x1440 it was 77px visible against 675px of unused
-         * space above the heading.
-         *
-         * Now they hang FROM the navbar instead of from off-screen: a small
-         * positive top clears the navbar (whose settled height is ~73px), and
-         * the height is driven by the dead space that measurement showed is
-         * genuinely available. --shape-drop is the shared hanging point so the
-         * two layers stay locked together when it is tuned.
-         */
-        .l1-shape {
-          width: 14%;
-          /* Top stays OFF-SCREEN and is a small FIXED negative, not vh.
-             It must be negative: these read as shapes hanging from above, and
-             a positive top exposes their flat top edge as a hard horizontal
-             line across the navbar, which looks broken. But it must not scale
-             with vh either — that was the original bug, hiding more and more
-             of the shape the taller the viewport got (only ~24px visible below
-             the navbar at 1440x900). A fixed -40px keeps the top edge just out
-             of frame at every height, so all the growth goes into the height
-             below instead. */
-          top: -40px;
-          /* Fills the space that measurement showed was unused (185px at
-             1440x900, 321px at 1920x1080) without ever reaching the heading.
-
-             Why no clamp() floor: the space available to these shapes is FLAT
-             at 132px for every viewport 720px tall and under, because the
-             heading's top is pinned by fixed-px navbar-clearance padding and
-             stops moving down. Any floor tall enough to look good on a big
-             screen therefore overlaps on a small one — a 165px floor overlapped
-             in 46 of 156 measured viewport combinations.
-
-             So the height is purely proportional, with the vh coefficient set
-             from the measured curve (132px available at 560px tall = 23.5vh,
-             rising to 797px at 1440px tall) and a margin held back so it always
-             lands short of the heading. min() caps it on very tall screens so
-             it stops being a full-height panel. */
-          /* 1.5x the previous visible drop. The drop is (height - 40px), so
-             1.5x works out to ~26vh rather than 17.5vh.
-             Short viewports are handled by a min-height media query further
-             down rather than by capping here: the heading's top is pinned at
-             92px below ~720px tall, so there is genuinely no room for the
-             full drop, but any cap expressed in px also starves TALL screens
-             (measured: capping at the heading's own clamp pulled the 1440px-
-             tall case back from 212px to 78px). Splitting by viewport height
-             is what lets each end get the right value. */
-          height: min(34vh, 620px);
-          backdrop-filter: blur(22px);
-          -webkit-backdrop-filter: blur(22px);
-        }
-        .l2-shape {
-          width: 14%;
-          top: -40px;
-          /* The shorter foreground layer — roughly half the tall one, so the
-             two read as a layered pair rather than one block. */
-          height: min(21vh, 390px);
-          backdrop-filter: blur(28px);
-          -webkit-backdrop-filter: blur(28px);
-        }
-        .l1-shape-mob {
-          width: 29%;
-          height: clamp(160px, 48vh, 400px);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-        }
-        .l2-shape-mob {
-          width: 29%;
-          height: clamp(80px, 24vh, 200px);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-        }
-
-        .shapes-desktop { display: block; }
-        .shapes-mobile  { display: none;  }
-
-        @media (max-width: 768px) {
-          .shapes-desktop { display: none;  }
-          .shapes-mobile  { display: block; }
-        }
-
-        /* ── DNA clip box ──
-         * Sized top-to-bottom of the hero rather than 100vh: the hero is only
-         * min-height 88vh, so a 100vh box overshot it and the section's
-         * overflow:hidden sliced the strand off with a hard horizontal edge —
-         * worse the further you zoomed out, because the overshoot grows.
-         * The mask then fades the artwork out at top, bottom and left, so no
-         * boundary of the image is ever visible at any zoom level.
-         */
-        .dna-clip-box {
-          position: absolute;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          width: clamp(320px, 44vw, 740px);
+        .hh-root {
+          position: relative;
           overflow: hidden;
-          pointer-events: none;
-          z-index: 5;
+          background: #ffffff;
+          font-family: var(--font-sans);
+          color: var(--ink);
+          padding: clamp(96px, 9vw, 124px) 0 var(--section-pad-y);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        .hh-root *, .hh-root *::before, .hh-root *::after { box-sizing: border-box; }
+
+        .hh-wrap {
+          position: relative;
+          z-index: 1;
+          /* Near full width like the reference layout, with a gutter wide
+             enough that the containers breathe against the viewport edge. */
+          margin: 0 auto;
+          padding-inline: clamp(18px, 4.5vw, 84px);
+        }
+
+        /* Shared frosted surface. */
+        .hh-surface {
+          background: rgba(255, 255, 255, 0.66);
+          -webkit-backdrop-filter: blur(14px) saturate(125%);
+          backdrop-filter: blur(14px) saturate(125%);
+          border: 1px solid rgba(20, 20, 40, 0.07);
+          border-radius: 22px;
+          box-shadow:
+            inset 0 0 0 1px rgba(20, 20, 40, 0.03),
+            0 1px 2px rgba(20, 20, 40, 0.04),
+            0 26px 50px -30px rgba(40, 40, 90, 0.25);
+        }
+
+        /* ── Banner (reference layout) ──
+           A rounded card the width of the card row, not full-bleed: heading
+           left, the building in its own middle column fading at both sides,
+           the five points right. */
+        .hh-banner {
+          --bpad: clamp(1.25rem, 2vw, 1.9rem);
+          position: relative;
+          overflow: hidden;
+          border-radius: 22px;
+          border: 1px solid rgba(20, 20, 40, 0.07);
+          background: linear-gradient(90deg, rgba(221, 234, 251, 0.92) 0%, rgba(233, 242, 253, 0.84) 45%, rgba(242, 238, 252, 0.8) 100%);
+          -webkit-backdrop-filter: blur(14px) saturate(125%);
+          backdrop-filter: blur(14px) saturate(125%);
+          box-shadow:
+            inset 0 0 0 1px rgba(20, 20, 40, 0.03),
+            0 1px 2px rgba(20, 20, 40, 0.04),
+            0 26px 50px -30px rgba(40, 60, 120, 0.3);
+        }
+        /* Animated brand hairline along the banner's lower edge. */
+        .hh-banner::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 2px;
+          background: linear-gradient(90deg, #7B6FCD, #3A82C4, #2aaa72, #D4891E, #b52a6b, #7B6FCD);
+          background-size: 200% 100%;
+          animation: hhSlide 10s linear infinite;
+          opacity: 0.55;
+        }
+        @keyframes hhSlide { to { background-position: 200% 0; } }
+
+        .hh-banner-inner {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) auto;
+          align-items: center;
+          gap: clamp(1rem, 2vw, 2rem);
+          min-height: clamp(170px, 11.5vw, 205px);
+          padding: var(--bpad) clamp(1.5rem, 3vw, 3rem);
+        }
+        .hh-banner-text { min-width: 0; }
+        .hh-title {
+          margin: 0;
+          font-size: var(--fs-h2);
+          font-weight: var(--fw-light);
+          letter-spacing: var(--ls-display);
+          line-height: var(--lh-display);
+          color: var(--ink);
+        }
+        .hh-title-em {
+          font-weight: var(--fw-regular);
+          background: linear-gradient(135deg, #7B6FCD 0%, #3A82C4 50%, #D4891E 100%);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: hhGradient 8s ease infinite;
+        }
+        @keyframes hhGradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        .hh-sub {
+          margin: 0.75rem 0 0;
+          font-size: var(--fs-lead);
+          font-weight: var(--fw-light);
+          line-height: var(--lh-body);
+          color: var(--ink-soft);
+        }
+        /* Organisation status: stands out through weight, ink colour and the
+           gradient on 501(c)(3), not a box. */
+        .hh-org {
+          margin: clamp(0.9rem, 1.4vw, 1.25rem) 0 0;
+          font-size: var(--fs-body);
+          font-weight: var(--fw-medium);
+          line-height: 1.4;
+          letter-spacing: -0.005em;
+          color: var(--ink);
+        }
+        .hh-org-em {
+          background: linear-gradient(135deg, #7B6FCD 0%, #3A82C4 55%, #D4891E 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        /* The building is its own column — never under the heading. It
+           runs the banner's full height and fades out at both sides. */
+        .hh-banner-media {
+          position: relative;
+          align-self: stretch;
+          min-height: 170px;
+          margin-block: calc(-1 * var(--bpad));
+        }
+        /* contain, not cover: the whole building always shows. The render is
+           a cut-out with a clear sky, so it fades out at the left and right
+           and only along the bottom, where the road is cut straight; the
+           roofline stays crisp. The two fades are intersected, and the whole
+           image sits slightly translucent so it reads as part of the banner. */
+        .hh-banner-media img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          /* Sits on the banner's bottom edge, not centred in it. */
+          object-position: 50% 100%;
+          opacity: 0.85;
           -webkit-mask-image:
-            linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%),
-            linear-gradient(to left, #000 0%, #000 58%, transparent 100%);
+            linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
+            linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
           -webkit-mask-composite: source-in;
           mask-image:
-            linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%),
-            linear-gradient(to left, #000 0%, #000 58%, transparent 100%);
+            linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
+            linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
           mask-composite: intersect;
         }
-        /* Negative insets on all four sides, so the artwork always overflows the
-         * clip box and its own edges can never enter frame. The previous
-         * left:10% + width:100% put the image's left edge 10% INSIDE the box,
-         * which showed as a vertical seam at every zoom level. */
-        .dna-img {
-          position: absolute;
-          /* Explicit width/height, not inset: an <img> is a replaced element, so
-             width/height:auto resolves to its INTRINSIC size and the right/bottom
-             insets are ignored — which collapsed it instead of bleeding it. */
-          top: -9%;
-          left: -7%;
-          width: 114%;
-          height: 118%;
-          /* Tailwind preflight sets img { max-width: 100% }, which silently
-             capped the width and is why the original could only ever reach
-             100% and had to shift with left:10% instead of bleeding. */
-          max-width: none;
-          display: block;
-          object-fit: cover;
-          object-position: 60% 30%;
-          opacity: 0.8;
-          user-select: none;
-        }
 
-        /* ── Short-viewport guard for the hanging shapes ──
-         * Keyed on viewport HEIGHT, not width, because height is what the
-         * constraint actually depends on. Below ~800px tall the heading's top
-         * is pinned by the clamp(92px, 13vh, 132px) padding floor and stops
-         * moving down, so the full drop cannot fit — measured as an overlap
-         * at 560-768px tall. Capping in px here (rather than in the base
-         * rule) keeps TALL viewports free to use the full 26vh; a px cap in
-         * the base rule starved them instead.
-         */
-        @media (max-height: 799px) {
-          .l1-shape { height: min(34vh, 120px); }
-          .l2-shape { height: min(21vh, 78px); }
-        }
-        /* The 800-999px band is the transition: the heading has started moving
-           down but has not yet cleared room for the full 26vh.
-           The ceiling here was probed rather than guessed — binary-searching
-           the tallest height whose bottom still clears the heading by 16px
-           gave 218px at 800px tall rising to 394px at 999px. 24vh tracks that
-           curve (192px -> 240px) with margin to spare. An earlier 150px cap
-           here was far too conservative: it came from readings taken while the
-           shapes' float animation was mid-cycle rather than at rest. */
-        @media (min-height: 800px) and (max-height: 999px) {
-          /* Sized to the TIGHTEST point of the band (800px tall, where only
-             218px is safe), not the average — a flat 34vh here overlapped by
-             38px at 800px and 9px at 864px. Splitting the band again keeps the
-             upper half generous without risking the lower half. */
-          .l1-shape { height: 25vh; }
-          .l2-shape { height: 15.5vh; }
-        }
-        @media (min-height: 900px) and (max-height: 999px) {
-          .l1-shape { height: 31vh; }
-          .l2-shape { height: 19vh; }
-        }
-
-        @media (max-width: 1280px) {
-          .l1-shape     { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
-          .l2-shape     { backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); }
-          .dna-clip-box { width: clamp(280px, 42vw, 660px); }
-        }
-        @media (max-width: 1024px) {
-          .l1-shape     { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-          .l2-shape     { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
-          .dna-clip-box { width: clamp(240px, 40vw, 560px); }
-        }
-        @media (max-width: 768px) {
-          .dna-clip-box {
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100%;
-            clip-path: none;
-            -webkit-clip-path: none;
-            z-index: 2;
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%);
-            -webkit-mask-composite: source-in;
-            mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%);
-            mask-composite: intersect;
-          }
-          .dna-img {
-            top: -8%; left: -6%;
-            width: 112%; height: 116%;
-            object-position: 55% 50%;
-            opacity: 0.12;
-          }
-        }
-        @media (max-width: 480px) {
-          .dna-img {
-            top: -6%; left: -10%;
-            width: 120%; height: 112%;
-            object-position: 52% 50%;
-            opacity: 0.1;
-          }
-        }
-
-        /* ── Hero heading ──
-         * Renamed from .hero-heading: Footer.jsx defined that same class name
-         * globally, rendered later in the tree, and therefore won on this
-         * element — its values (below) are what has actually been shipping,
-         * while the six media queries that used to live here were dead code
-         * (media queries add no specificity). Those winning values are now
-         * declared here explicitly so the heading is unchanged on screen but
-         * no longer depends on another component's CSS.
-         */
-        /* ── Hero content padding ──
-         * The left inset is deliberately much larger than the right on
-         * desktop: it shifts the whole block toward the centre so it fills
-         * the space beside the DNA artwork instead of hugging the left wall.
-         *
-         * That inset MUST NOT survive to mobile. Its 96px floor was being
-         * applied at 390px wide, which left the text column only 274px and
-         * pushed everything hard to one side — the heading broke to four
-         * lines and the whole block read as off-centre. Below 768px there is
-         * no artwork to balance against (the DNA becomes a faint full-bleed
-         * wash), so the block just uses a normal symmetric gutter.
-         */
-        .hero-content-pad {
-          /* The block is bottom-anchored (justify-content:flex-end on the
-             parent), so the BOTTOM value is what lifts it: a larger bottom
-             padding pushes the whole group further up off the section's
-             lower edge. The top value stays as the navbar-clearance floor. */
-          padding:
-            clamp(92px, 13vh, 132px)
-            clamp(16px, 5vw, 56px)
-            clamp(52px, 7vw, 96px)
-            clamp(96px, 14vw, 220px);
-        }
-        @media (max-width: 768px) {
-          .hero-content-pad {
-            padding:
-              clamp(92px, 13vh, 132px)
-              clamp(20px, 6vw, 32px)
-              clamp(34px, 5vw, 52px);
-          }
-        }
-
-        /* ── Shared text column ──
-         * Heading, lede and nonprofit line all share ONE max-width, so their
-         * right edges line up instead of each wrapping to its own measure —
-         * three left-aligned blocks of different widths stacked on top of
-         * each other read as unplanned, not as one considered column. 34rem
-         * is the heading's own natural cap; the lede and nonprofit line are
-         * pinned to the same value below rather than picking their own. */
-        .hero-h1, .hero-subline, .hero-nonprofit-line {
-          max-width: min(100%, 46rem);
-        }
-
-        .hero-h1 {
-          /* Manrope, loaded above — scoped to this heading only. */
-          font-family: 'Manrope', var(--font-sans);
-          font-weight: 600;
-          /* Nudged up one step from clamp(1.7rem, 3.1vw, 2.9rem). The vw term
-             is what governs at typical desktop widths, so it is the one that
-             actually had to move; the floor and ceiling shift with it to keep
-             the curve smooth rather than kinking at the clamp boundaries. */
-          font-size: clamp(1.85rem, 3.45vw, 3.2rem);
-          line-height: 1.2;
-          letter-spacing: -0.015em;
-          text-transform: none;
-          text-align: left;
-          color: #1a1a24;
-          /* Gap 1 of 3: heading → subline. Tight, so heading, subline and
-             nonprofit line read as one block; the loose gap is below the
-             group. .hero-subline supplies gap 2 (subline → nonprofit line). */
-          margin: 0 0 clamp(10px, 1.2vw, 14px) 0;
-        }
-        @media (max-width: 768px) {
-          .hero-h1, .hero-subline, .hero-nonprofit-line { max-width: 100%; }
-        }
-        /* Each clause is its own inline-block so a clause never breaks
-           mid-phrase: the line wraps BETWEEN clauses at narrow widths and
-           sits on one or two lines when there is room. The {' '} separators
-           in the markup are the only break opportunities. */
-        .hero-h1-line { display: inline-block; }
-
-        /* One accent word per clause, carrying the condition it names.
-           Reusing the site's existing accent colours (red, blue = About.jsx's
-           accent-blue, green = About.jsx's accent-green) rather than
-           introducing new hex values. Weight stays a touch above the
-           heading's own 600 so the accent words still stand out slightly. */
-        .hero-h1 .word-ai         { color: #c0392b; font-weight: 700; }
-        .hero-h1 .word-healthcare { color: #3A82C4; font-weight: 700; }
-        .hero-h1 .word-lives      { color: #2aaa72; font-weight: 700; }
-
-        /* Subline: the scope statement under the headline. Sits between the
-           heading and the nonprofit line in both hierarchy and size — larger
-           and darker than the blue nonprofit line, well below the h1. */
-        .hero-subline {
-          font-family: var(--font-sans);
-          font-weight: var(--fw-medium);
-          font-size: clamp(15px, 1.7vw, 21px);
-          line-height: 1.45;
-          letter-spacing: -0.005em;
-          color: #4a4a58;
-          text-align: left;
-          margin: 0 0 clamp(8px, 1vw, 12px) 0;
-        }
-
-        /* Standout line below the heading: a short, independent nonprofit-
-           status statement (the fuller sentence stays in About.jsx). Medium
-           weight plus the existing blue accent is the "stand out" treatment. */
-        .hero-nonprofit-line {
-          font-family: var(--font-sans);
-          font-weight: var(--fw-medium);
-          font-size: clamp(14px, 1.5vw, 18px);
-          letter-spacing: 0.01em;
-          color: #3A82C4;
-          text-align: left;
-          /* No top margin of its own — the heading's margin-bottom above
-             already sets Gap 1 of 2. A margin here too would stack on top of
-             it, widening the gap unpredictably instead of by one deliberate
-             amount. Separation from the platform links below (Gap 2 of 2, the
-             loose one) comes from the wrapping div's own marginBottom. */
+        .hh-points {
+          list-style: none;
           margin: 0;
-        }
-
-        /* ── Support tagline ── */
-        .hero-support-text {
-          font-family: var(--font-sans);
-          font-weight: 300;
-          font-size: clamp(13px, 1.35vw, 19px);
-          color: #6a6a7e;
-          line-height: 1.7;
-          margin: 0;
-          max-width: clamp(300px, 50vw, 720px);
-        }
-
-        @media (max-width: 1280px) {
-          .hero-support-text {
-            font-size: clamp(13px, 1.28vw, 18px);
-            max-width: clamp(280px, 52vw, 660px);
-          }
-        }
-        @media (max-width: 1024px) {
-          .hero-support-text {
-            font-size: clamp(13px, 1.55vw, 17px);
-            max-width: clamp(260px, 60vw, 580px);
-          }
-        }
-        @media (max-width: 768px) {
-          .hero-support-text {
-            font-size: clamp(13px, 3.2vw, 16px);
-            max-width: 100%;
-          }
-        }
-        @media (max-width: 480px) {
-          .hero-support-text { font-size: clamp(12.5px, 3.5vw, 15px); }
-        }
-        @media (max-width: 360px) {
-          .hero-support-text { font-size: clamp(12px, 3.8vw, 14px); }
-        }
-
-        /*
-         * ── OncoTrace link ──
-         * Stable, crash-free implementation:
-         * - <a> is inline-block so pseudo-elements are predictable
-         * - underline is a <span> child (not ::after on inline) — avoids
-         *   all Blink/WebKit inline pseudo-element paint bugs
-         * - will-change isolated to the animated spans only
-         * - animation slowwed to 9s, glow kept gentle
-         */
-        .oncotrace-wrap {
-          display: inline-block;
-          position: relative;
-          vertical-align: baseline;
-          line-height: inherit;
-        }
-
-        .oncotrace-link {
-          display: inline-block;
-          position: relative;
-          text-decoration: none;
-          font-weight: 800;
-          letter-spacing: 0.022em;
-          vertical-align: baseline;
-          /* isolate stacking context so filter doesn't bleed */
-          isolation: isolate;
-          /* subtle lift on focus for a11y */
-          outline-offset: 3px;
-        }
-
-        /* The shimmer text layer */
-        .oncotrace-text {
-          display: inline-block;
-          position: relative;
-          background: linear-gradient(
-            90deg,
-            #8c1e52  0%,
-            #b52a6b  20%,
-            #d6407a  38%,
-            #f06a9b  48%,
-            #ff9dc0  50%,
-            #f06a9b  52%,
-            #d6407a  62%,
-            #b52a6b  80%,
-            #8c1e52  100%
-          );
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          will-change: background-position;
-          animation: shimmer-text 9s linear infinite;
-          /* gentle text glow via filter on this span, not the anchor */
-          filter: drop-shadow(0 0 4px rgba(214,64,122,0.22))
-                  drop-shadow(0 0 8px rgba(214,64,122,0.10));
-          transition: filter 0.35s ease;
-        }
-
-        /* The underline — a sibling span, block under the text */
-        .oncotrace-underline {
-          display: block;
-          position: absolute;
-          left: 0;
-          bottom: -2px;
-          width: 100%;
-          height: 2px;
-          border-radius: 2px;
-          pointer-events: none;
-          background: linear-gradient(
-            90deg,
-            rgba(140,30,82,0.08)   0%,
-            rgba(181,42,107,0.45)  20%,
-            rgba(214,64,122,0.82)  38%,
-            rgba(240,106,155,0.92) 48%,
-            rgba(255,157,192,1.0)  50%,
-            rgba(240,106,155,0.92) 52%,
-            rgba(214,64,122,0.82)  62%,
-            rgba(181,42,107,0.45)  80%,
-            rgba(140,30,82,0.08)   100%
-          );
-          background-size: 220% auto;
-          will-change: background-position;
-          animation: shimmer-line 9s linear infinite;
-          filter: drop-shadow(0 0 2px rgba(240,106,155,0.40))
-                  drop-shadow(0 0 5px rgba(240,106,155,0.18));
-          transition: filter 0.35s ease;
-        }
-
-        /* Hover states — brighten glow only, no layout change */
-        .oncotrace-link:hover .oncotrace-text {
-          filter: drop-shadow(0 0 6px rgba(240,106,155,0.42))
-                  drop-shadow(0 0 12px rgba(240,106,155,0.20));
-        }
-        .oncotrace-link:hover .oncotrace-underline {
-          filter: drop-shadow(0 0 4px rgba(255,157,192,0.62))
-                  drop-shadow(0 0 8px rgba(240,106,155,0.30));
-        }
-
-        /* Two-up support row: Stroke-AI in the first column, OncoTrace-AI in
-           the second. Width is viewport-relative so the row never runs under
-           the DNA artwork's opaque region on the right (the artwork is
-           clamp(320px, 44vw, 740px) wide and its left 42% is mask-faded). */
-        /* Three-up support row: Stroke-AI, OncoTrace-AI, SHRI-Health. Width
-           is viewport-relative and deliberately short of the old two-up 62vw:
-           at 62vw the third column landed on the DNA strand itself and was
-           hard to read. 52vw ends the row in the artwork's faded left edge,
-           before the strand (measured at 1281-2560px). Type steps down a
-           little here so three narrower columns don't run too tall. */
-        .hero-supports {
-          --hero-rule-pad: clamp(0.9rem, 1.6vw, 1.75rem);
+          padding: 0;
           display: flex;
-          align-items: stretch;
-          width: min(100%, clamp(560px, 52vw, 1000px));
+          flex-direction: column;
+          gap: 0.6rem;
         }
-        @media (min-width: 1281px) {
-          .hero-supports > .hero-support-text {
-            font-size: clamp(14px, 1.12vw, 18px);
-            line-height: 1.65;
-          }
+        .hh-point {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: var(--fs-xs);
+          font-weight: var(--fw-regular);
+          color: var(--ink-soft);
+          white-space: nowrap;
         }
-        /* Equal columns regardless of which paragraph is longer, and
-           min-width:0 so a long link cannot push a column past its share. */
-        .hero-supports > .hero-support-text {
-          flex: 1 1 0;
-          min-width: 0;
-          max-width: none;
-        }
-        /* Every divider gets the SAME padding on both of its sides — the
-           column before it pads right, the column after it pads left — so
-           each rule sits centred between its two paragraphs and all three
-           boxes stay symmetric. No flex gap on top of that: with three
-           columns a gap plus both paddings left too little room for text. */
-        .hero-supports > .hero-support-text:not(:last-child) {
-          padding-right: var(--hero-rule-pad);
-        }
-        .hero-supports > .hero-support-text + .hero-support-text {
-          border-left: 1px solid rgba(100, 100, 120, 0.16);
-          padding-left: var(--hero-rule-pad);
-        }
-        /* Stacks below 1281px (not 1024px as the two-up row did): three
-           columns in the room left of the artwork get too narrow to read. */
-        @media (max-width: 1280px) {
-          .hero-supports {
-            flex-direction: column;
-            /* align-items:stretch matters in both directions here: in column
-               direction flex-basis sizes the HEIGHT, so the default flex-start
-               would let each block shrink-to-fit its own text and their edges
-               would stop lining up. */
-            align-items: stretch;
-            width: min(100%, 60vw);
-          }
-          /* Stacked: no side padding, the dividers become horizontal rules
-             above the second and third blocks. */
-          .hero-supports > .hero-support-text:not(:last-child) {
-            padding-right: 0;
-            padding-bottom: clamp(0.7rem, 2vw, 1rem);
-          }
-          .hero-supports > .hero-support-text + .hero-support-text {
-            border-left: none;
-            padding-left: 0;
-            border-top: 1px solid rgba(100, 100, 120, 0.16);
-            padding-top: clamp(0.7rem, 2vw, 1rem);
-          }
-        }
-        /* 1025-1280px: the artwork is still full-size here, and at 60vw the
-           stacked lines ran into the strand. */
-        @media (min-width: 1025px) and (max-width: 1280px) {
-          .hero-supports { width: min(100%, 48vw); }
-        }
-        @media (max-width: 768px) {
-          /* Below here the DNA becomes a faint full-bleed wash (opacity 0.12),
-             so the text can safely use the full measure. */
-          .hero-supports { width: 100%; }
+        .hh-point span {
+          flex: none;
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          background: linear-gradient(145deg, var(--c-accent-2), var(--c-accent));
+          box-shadow: 0 4px 10px -4px rgba(var(--c-accent-rgb), 0.65);
         }
 
-        /* Stroke-AI link — same shimmer-and-glow treatment as OncoTrace-AI,
-           in blue instead of pink so the two stay visually distinct while both
-           glow. Same structure: gradient gliding across the text via
-           background-position, a drop-shadow halo (not just on hover — hover
-           only brightens it), and a matching underline. */
-        .strokeai-text {
-          display: inline-block;
-          position: relative;
-          background: linear-gradient(
-            90deg,
-            #123c66  0%,
-            #1c5490  20%,
-            #2a6db5  38%,
-            #4f96db  48%,
-            #7ab8f2  50%,
-            #4f96db  52%,
-            #2a6db5  62%,
-            #1c5490  80%,
-            #123c66  100%
-          );
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          will-change: background-position;
-          animation: shimmer-text 9s linear infinite;
-          filter: drop-shadow(0 0 4px rgba(42,109,181,0.24))
-                  drop-shadow(0 0 8px rgba(42,109,181,0.12));
-          transition: filter 0.35s ease;
-        }
-        .strokeai-underline {
-          display: block;
-          position: absolute;
-          left: 0;
-          bottom: -2px;
-          width: 100%;
-          height: 2px;
-          border-radius: 2px;
-          pointer-events: none;
-          background: linear-gradient(
-            90deg,
-            rgba(18,60,102,0.08)   0%,
-            rgba(28,84,144,0.45)   20%,
-            rgba(42,109,181,0.82)  38%,
-            rgba(79,150,219,0.92)  48%,
-            rgba(122,184,242,1.0)  50%,
-            rgba(79,150,219,0.92)  52%,
-            rgba(42,109,181,0.82)  62%,
-            rgba(28,84,144,0.45)   80%,
-            rgba(18,60,102,0.08)   100%
-          );
-          background-size: 220% auto;
-          will-change: background-position;
-          animation: shimmer-line 9s linear infinite;
-          filter: drop-shadow(0 0 2px rgba(79,150,219,0.36))
-                  drop-shadow(0 0 5px rgba(79,150,219,0.16));
-          transition: filter 0.35s ease;
-        }
-        .strokeai-link:hover .strokeai-text {
-          filter: drop-shadow(0 0 6px rgba(79,150,219,0.44))
-                  drop-shadow(0 0 12px rgba(79,150,219,0.22));
-        }
-        .strokeai-link:hover .strokeai-underline {
-          filter: drop-shadow(0 0 4px rgba(122,184,242,0.60))
-                  drop-shadow(0 0 8px rgba(79,150,219,0.28));
+        /* ── Body ── */
+        .hh-body {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(2rem, 3.6vw, 3.5rem);
         }
 
-        /* SHRI-Health link — same treatment again, in green, so all three
-           platforms glow but stay distinguishable at a glance. */
-        .shrihealth-text {
-          display: inline-block;
-          position: relative;
-          background: linear-gradient(
-            90deg,
-            #0d4f35  0%,
-            #13704a  20%,
-            #1f9163  38%,
-            #3dbb86  48%,
-            #7ee0b4  50%,
-            #3dbb86  52%,
-            #1f9163  62%,
-            #13704a  80%,
-            #0d4f35  100%
-          );
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          will-change: background-position;
-          animation: shimmer-text 9s linear infinite;
-          filter: drop-shadow(0 0 4px rgba(31,145,99,0.24))
-                  drop-shadow(0 0 8px rgba(31,145,99,0.12));
-          transition: filter 0.35s ease;
-        }
-        .shrihealth-underline {
-          display: block;
-          position: absolute;
-          left: 0;
-          bottom: -2px;
-          width: 100%;
-          height: 2px;
-          border-radius: 2px;
-          pointer-events: none;
-          background: linear-gradient(
-            90deg,
-            rgba(13,79,53,0.08)    0%,
-            rgba(19,112,74,0.45)   20%,
-            rgba(31,145,99,0.82)   38%,
-            rgba(61,187,134,0.92)  48%,
-            rgba(126,224,180,1.0)  50%,
-            rgba(61,187,134,0.92)  52%,
-            rgba(31,145,99,0.82)   62%,
-            rgba(19,112,74,0.45)   80%,
-            rgba(13,79,53,0.08)    100%
-          );
-          background-size: 220% auto;
-          will-change: background-position;
-          animation: shimmer-line 9s linear infinite;
-          filter: drop-shadow(0 0 2px rgba(61,187,134,0.36))
-                  drop-shadow(0 0 5px rgba(61,187,134,0.16));
-          transition: filter 0.35s ease;
-        }
-        .shrihealth-link:hover .shrihealth-text {
-          filter: drop-shadow(0 0 6px rgba(61,187,134,0.44))
-                  drop-shadow(0 0 12px rgba(61,187,134,0.22));
-        }
-        .shrihealth-link:hover .shrihealth-underline {
-          filter: drop-shadow(0 0 4px rgba(126,224,180,0.60))
-                  drop-shadow(0 0 8px rgba(61,187,134,0.28));
-        }
-
-        @keyframes shimmer-text {
-          0%   { background-position: 220% center; }
-          100% { background-position: -220% center; }
-        }
-        @keyframes shimmer-line {
-          0%   { background-position: 220% center; }
-          100% { background-position: -220% center; }
-        }
-
-        /* ── Bottom bar ── */
-        .hero-bottom-bar {
-          border-top: 1px solid rgba(100,100,120,0.13);
-          background: rgba(255,255,255,0.10);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-        }
-        .hero-bottom-grid {
+        /* ── Module cards (reference layout) ──
+           Header row, then a two-column middle — feature list left, render
+           right — then a full-width button. The render has its own grid
+           column and bleeds only to the card's right edge, so it can never
+           sit under text at any width. */
+        .hh-modules {
           display: grid;
-          grid-template-columns: 1fr;
-          padding: 0 clamp(16px, 5vw, 56px);
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: clamp(1.5rem, 2.6vw, 2.75rem);
         }
-        @media (max-width: 768px) {
-          .hero-bottom-grid { padding: 0; }
+        .hh-card {
+          --pad: clamp(1.1rem, 1.5vw, 1.55rem);
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          overflow: hidden;
+          padding: var(--pad);
+          /* Crisper corners than the shared 22px surface. */
+          border-radius: 12px;
+          background:
+            radial-gradient(ellipse 55% 65% at 88% 55%, rgba(var(--c-accent-rgb), 0.16), transparent 70%),
+            linear-gradient(110deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.64) 45%, var(--c-tint-1) 100%);
+          transition: box-shadow 0.4s ease;
+        }
+        .hh-card:hover {
+          box-shadow:
+            inset 0 0 0 1px rgba(20, 20, 40, 0.03),
+            0 1px 2px rgba(20, 20, 40, 0.04),
+            0 34px 64px -30px rgba(var(--c-accent-rgb), 0.45);
+        }
+        .hh-card-head { display: flex; align-items: flex-start; gap: 1.1rem; }
+        .hh-card-head > div { flex: 1; min-width: 0; padding-top: 0.15rem; }
+        /* The emblem stands in open space — no tile around it; a soft accent
+           shadow under the strokes gives it depth instead. */
+        .hh-emblem {
+          flex: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 0;
+          filter: drop-shadow(0 6px 10px rgba(var(--c-accent-rgb), 0.28));
+        }
+        .hh-card-title {
+          margin: 0;
+          font-size: clamp(1.2rem, 1.55vw, 1.55rem);
+          font-weight: var(--fw-medium);
+          letter-spacing: -0.02em;
+          line-height: 1.15;
+          color: var(--c-btn);
+        }
+        .hh-card-tagline {
+          margin: 0.35rem 0 0;
+          font-size: var(--fs-sm);
+          font-weight: var(--fw-light);
+          line-height: 1.45;
+          color: var(--ink-soft);
+        }
+        .hh-corner {
+          flex: none;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--c-accent);
+          background: #fff;
+          box-shadow: 0 1px 2px rgba(20, 20, 40, 0.06), 0 6px 16px -8px rgba(var(--c-accent-rgb), 0.55);
+          transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+        }
+        .hh-corner:hover { transform: translateX(2px); background: var(--c-btn); color: #fff; }
+
+        .hh-card-main {
+          flex: 1;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) clamp(110px, 40%, 270px);
+          align-items: center;
+          gap: 0.75rem;
+          margin: 1.25rem calc(-1 * var(--pad)) 1.35rem 0;
+        }
+        .hh-features {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.65rem;
+          min-width: 0;
+        }
+        .hh-features li {
+          display: flex;
+          align-items: center;
+          gap: 0.9rem;
+          min-width: 0;
+          font-size: var(--fs-sm);
+          font-weight: var(--fw-regular);
+          line-height: 1.35;
+          color: var(--ink-soft);
+        }
+        /* Feature icons stand free — no tile — in the card's accent. */
+        .hh-feat-icon {
+          flex: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 0;
+          color: var(--c-accent);
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hh-features li:hover .hh-feat-icon { transform: scale(1.12); }
+        /* The image box takes the image's own proportions (height auto), so
+           nothing is cropped; the elliptical fade only softens the outer rim
+           where the source was cut from the reference, never the subject. */
+        .hh-card-img {
+          position: relative;
+          align-self: center;
+          justify-self: center;
+          width: 100%;
+          max-width: 240px;
+        }
+        .hh-card-img img {
+          display: block;
+          width: auto;
+          max-width: 100%;
+          height: auto;
+          /* A shared height cap keeps the three cards level even though the
+             images differ slightly in proportion. */
+          max-height: 210px;
+          margin-inline: auto;
+          -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 82%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 82%, transparent 100%);
+        }
+        /* A transparent cut-out has no rectangular edge to soften, so it
+           skips the fade and takes a soft accent shadow instead. */
+        .hh-card-img img.is-cutout {
+          -webkit-mask-image: none;
+          mask-image: none;
+          filter: drop-shadow(0 14px 22px rgba(var(--c-accent-rgb), 0.28));
+        }
+        .hh-art { display: block; width: 100%; height: 100%; overflow: visible; }
+        /* Motion for the vector illustrations in HeroArt.jsx — not used on the
+           page right now (the cards show images); kept so they can be
+           switched back in without redoing the art. */
+        .hh-art-spin { transform-box: view-box; transform-origin: 120px 120px; animation: hhArtSpin 28s linear infinite; }
+        .hh-art-orbit { transform-box: view-box; transform-origin: 120px 120px; animation: hhArtSpin 46s linear infinite; }
+        @keyframes hhArtSpin { to { transform: rotate(360deg); } }
+        .hh-art-ping { transform-box: fill-box; transform-origin: center; animation: hhArtPing 2.4s ease-out infinite; }
+        @keyframes hhArtPing {
+          0% { transform: scale(0.7); opacity: 0.9; }
+          100% { transform: scale(2); opacity: 0; }
+        }
+        .hh-art-trace { stroke-dasharray: 100; animation: hhArtTrace 3.4s ease-in-out infinite; }
+        @keyframes hhArtTrace {
+          0% { stroke-dashoffset: 100; opacity: 0; }
+          15% { opacity: 1; }
+          60% { stroke-dashoffset: 0; opacity: 1; }
+          100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+        .hh-art-bob { animation: hhArtBob 6s ease-in-out infinite; }
+        .hh-art-bob--late { animation-delay: -3s; }
+        @keyframes hhArtBob {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+        .hh-art-bar { transform-box: fill-box; transform-origin: bottom; animation: hhArtBar 3.2s ease-in-out infinite alternate; }
+        @keyframes hhArtBar { from { transform: scaleY(0.72); } to { transform: scaleY(1); } }
+        .hh-art-node { transform-box: fill-box; transform-origin: center; animation: hhArtNode 3s ease-in-out infinite; }
+        @keyframes hhArtNode {
+          0%, 100% { transform: scale(1); opacity: 0.75; }
+          50% { transform: scale(1.6); opacity: 1; }
         }
 
-        /* ── Reduced motion — pause animations, static mid-gradient ── */
-        @media (prefers-reduced-motion: reduce) {
-          .oncotrace-text,
-          .oncotrace-underline,
-          .strokeai-text,
-          .strokeai-underline,
-          .shrihealth-text,
-          .shrihealth-underline {
-            animation: none;
-            background-position: 50% center;
-            will-change: auto;
+        .hh-btn {
+          margin-top: auto;
+          align-self: flex-start;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.6rem;
+          min-height: 44px;
+          padding: 0.75rem 1.4rem;
+          border: 0;
+          border-radius: 999px;
+          background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)),
+            var(--c-btn);
+          color: #fff;
+          font-family: var(--font-sans);
+          font-size: var(--fs-xs);
+          font-weight: var(--fw-medium);
+          letter-spacing: 0.01em;
+          text-decoration: none;
+          box-shadow: 0 10px 22px -12px rgba(var(--c-accent-rgb), 0.8);
+          transition: filter 0.25s ease, box-shadow 0.25s ease;
+        }
+        .hh-btn svg { transition: transform 0.25s ease; }
+        .hh-btn:hover { color: #fff; filter: brightness(1.08); box-shadow: 0 14px 28px -12px rgba(var(--c-accent-rgb), 0.9); }
+        .hh-btn:hover svg { transform: translateX(3px); }
+        .hh-card .hh-btn {
+          align-self: stretch;
+          justify-content: center;
+          min-height: 46px;
+          border-radius: 8px;
+          font-size: var(--fs-sm);
+        }
+
+        .hh-btn:focus-visible, .hh-corner:focus-visible { outline: 2px solid #3A82C4; outline-offset: 3px; }
+
+        /* ── Desktop scale ──
+           zoom sets the drawn size of everything inside (text, padding,
+           icons, images) and so the containers' height; width is set
+           separately as a share of the viewport. 0.84 / 91% = the earlier
+           0.7 / 70% made 20% taller and 30% wider. Tablets and phones stay
+           at 100% so text remains readable. */
+        @media (min-width: 1101px) {
+          .hh-body { zoom: 0.84; width: 91%; }
+          /* Desktop banner at twice its base height; the building column
+             widens so the (uncropped) image grows into the extra room. */
+          .hh-banner-inner {
+            /* ~2x the measured base height (1536px: 192px -> ~385px drawn). */
+            min-height: clamp(400px, 30vw, 540px);
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) auto;
           }
+          .hh-points { gap: 0.9rem; }
+        }
+
+        /* ── Responsive ── */
+        /* Three-up cards are narrowest here: a slimmer render column and
+           icon tile keep the feature labels on one line. */
+        @media (min-width: 1101px) and (max-width: 1400px) {
+          .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(96px, 32%, 190px); gap: 0.5rem; }
+          .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
+        }
+        @media (max-width: 1100px) {
+          /* Text and chips stacked left, building on the right. */
+          .hh-banner-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); }
+          .hh-points { grid-column: 1; flex-direction: row; flex-wrap: wrap; }
+          .hh-banner-media { grid-column: 2; grid-row: 1 / span 2; }
+          .hh-modules { grid-template-columns: minmax(0, 1fr); }
+          .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(150px, 36%, 300px); }
+        }
+        @media (max-width: 640px) {
+          /* Phones: no room for a building beside the heading, so it goes
+             rather than sitting under the text. */
+          .hh-banner-inner { grid-template-columns: minmax(0, 1fr); }
+          .hh-banner-media { display: none; }
+          .hh-point { white-space: normal; }
+          /* Phones: the three modules drop their card box and read as one
+             flowing list, split by hairlines. Everything inside is as-is. */
+          .hh-modules { gap: 0; }
+          .hh-card.hh-surface,
+          .hh-card.hh-surface:hover {
+            background: none;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            overflow: visible;
+            padding: 1.75rem 0;
+          }
+          .hh-card + .hh-card { border-top: 1px solid rgba(20, 20, 40, 0.08); }
+          .hh-modules > .hh-card:first-child { padding-top: 0.5rem; }
+          .hh-card-main { margin-right: 0; }
+        }
+        @media (max-width: 480px) {
+          .hh-card-main { grid-template-columns: minmax(0, 1fr) 104px; }
+          .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hh-banner::after, .hh-title-em,
+          .hh-art-spin, .hh-art-orbit, .hh-art-ping, .hh-art-trace,
+          .hh-art-bob, .hh-art-bar, .hh-art-node { animation: none; }
+          .hh-corner, .hh-btn, .hh-btn svg, .hh-feat-icon { transition: none; }
+          .hh-features li:hover .hh-feat-icon { transform: none; }
+          .hh-corner:hover, .hh-btn:hover svg { transform: none; }
         }
       `}</style>
 
-      <section
-        style={{
-          position: 'relative',
-          minHeight: '88vh',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'linear-gradient(135deg, #fce8cc 0%, #ede4f8 35%, #cfe3ff 65%, #daeeff 100%)',
-          fontFamily: 'var(--font-sans)',
-        }}
-      >
-        {/* ── Background glow blobs ── */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0,
-            overflow: 'hidden', pointerEvents: 'none', zIndex: 0,
-          }}
-        >
-          <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', left: '-8%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(255,140,30,0.55) 0%, rgba(255,180,80,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
-          <div style={{ position: 'absolute', width: '50%', height: '60%', top: '-15%', left: '22%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(160,100,255,0.45) 0%, rgba(200,160,255,0.22) 40%, transparent 70%)', filter: 'blur(55px)' }} />
-          <div style={{ position: 'absolute', width: '55%', height: '65%', top: '-20%', right: '-8%', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(50,130,255,0.50) 0%, rgba(100,170,255,0.25) 35%, transparent 70%)',  filter: 'blur(50px)' }} />
-          <div style={{ position: 'absolute', width: '30%', height: '40%', top: '5%',   right: '5%',  borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(20,90,220,0.35) 0%, transparent 70%)',                            filter: 'blur(40px)' }} />
-        </div>
-
-        {/* ── Glass shapes ── */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0,
-            overflow: 'hidden', pointerEvents: 'none', zIndex: 2,
-          }}
-        >
-          {/* Desktop */}
-          <div className="shapes-desktop" style={{ position: 'absolute', inset: 0 }}>
-            <motion.div animate={{ y: [0,-18,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.0,  repeat: Infinity, ease: 'easeInOut', delay: 0.0 }} className="gl-shape l1-shape" style={{ left: '1%',    background: 'linear-gradient(145deg, rgba(255,200,100,0.31) 0%, rgba(255,165,50,0.22) 45%, rgba(255,140,30,0.12) 100%)',  boxShadow: '0 24px 96px rgba(220,120,20,0.29), 0 12px 48px rgba(255,160,40,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-13,0], rotate: [0,-1.5,0] }} transition={{ duration: 9.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.8 }} className="gl-shape l1-shape" style={{ left: '16.5%', background: 'linear-gradient(145deg, rgba(255,185,130,0.31) 0%, rgba(255,155,90,0.22) 45%, rgba(245,125,60,0.12) 100%)',  boxShadow: '0 24px 96px rgba(230,110,40,0.29), 0 12px 48px rgba(255,145,70,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-20,0], rotate: [0,2,0]    }} transition={{ duration: 7.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.4 }} className="gl-shape l1-shape" style={{ left: '32%',   background: 'linear-gradient(145deg, rgba(210,175,255,0.31) 0%, rgba(180,140,245,0.22) 45%, rgba(150,110,230,0.12) 100%)',  boxShadow: '0 24px 96px rgba(140,90,220,0.29), 0 12px 48px rgba(180,130,255,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-11,0], rotate: [0,-1,0]   }} transition={{ duration: 10.0, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }} className="gl-shape l1-shape" style={{ left: '47.5%', background: 'linear-gradient(145deg, rgba(185,195,255,0.31) 0%, rgba(155,165,250,0.22) 45%, rgba(120,135,235,0.12) 100%)',  boxShadow: '0 24px 96px rgba(100,110,230,0.29), 0 12px 48px rgba(150,160,255,0.22), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-16,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.5,  repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape" style={{ left: '63%',   background: 'linear-gradient(145deg, rgba(140,200,255,0.36) 0%, rgba(90,165,255,0.27) 45%, rgba(50,130,240,0.17) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.31), 0 12px 48px rgba(100,170,255,0.24), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-22,0], rotate: [0,-2,0]   }} transition={{ duration: 9.0,  repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape" style={{ left: '78.5%', background: 'linear-gradient(145deg, rgba(110,175,255,0.35) 0%, rgba(70,140,245,0.26) 45%, rgba(30,100,220,0.16) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.31), 0 12px 48px rgba(70,140,255,0.24), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-
-            <motion.div animate={{ y: [0,-14,0], rotate: [0,1,0]    }} transition={{ duration: 7.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape" style={{ left: '9%',    background: 'linear-gradient(150deg, rgba(255,230,150,0.36) 0%, rgba(255,200,80,0.29) 45%, rgba(240,170,40,0.16) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.29), 0 14px 50px rgba(255,190,50,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape" style={{ left: '24.5%', background: 'linear-gradient(150deg, rgba(255,210,175,0.36) 0%, rgba(255,175,130,0.29) 45%, rgba(245,145,100,0.16) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.29), 0 14px 50px rgba(255,160,100,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8,  repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape" style={{ left: '40%',   background: 'linear-gradient(150deg, rgba(220,195,255,0.36) 0%, rgba(190,160,250,0.29) 45%, rgba(160,120,235,0.16) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.29), 0 14px 50px rgba(180,140,255,0.24), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-17,0], rotate: [0,-1,0]   }} transition={{ duration: 7.2,  repeat: Infinity, ease: 'easeInOut', delay: 0.2 }} className="gl-shape l2-shape" style={{ left: '55.5%', background: 'linear-gradient(150deg, rgba(165,195,255,0.41) 0%, rgba(125,165,250,0.33) 45%, rgba(85,135,235,0.21) 100%)',   boxShadow: '0 30px 100px rgba(70,110,225,0.31), 0 14px 50px rgba(130,170,255,0.25), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-21,0], rotate: [0,1.5,0]  }} transition={{ duration: 8.8,  repeat: Infinity, ease: 'easeInOut', delay: 0.9 }} className="gl-shape l2-shape" style={{ left: '71%',   background: 'linear-gradient(150deg, rgba(175,220,255,0.41) 0%, rgba(120,185,255,0.33) 45%, rgba(70,150,245,0.21) 100%)',   boxShadow: '0 30px 100px rgba(50,110,230,0.31), 0 14px 50px rgba(100,165,255,0.25), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-          </div>
-
-          {/* Mobile */}
-          <div className="shapes-mobile" style={{ position: 'absolute', inset: 0 }}>
-            <motion.div animate={{ y: [0,-14,0], rotate: [0,1.5,0]  }} transition={{ duration: 7.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }} className="gl-shape l2-shape-mob" style={{ left: '8%',  top: '-12vh', background: 'linear-gradient(150deg, rgba(255,230,150,0.58) 0%, rgba(255,200,80,0.46) 45%, rgba(240,170,40,0.26) 100%)',   boxShadow: '0 30px 100px rgba(200,140,20,0.85), 0 14px 50px rgba(255,190,50,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-19,0], rotate: [0,-1,0]   }} transition={{ duration: 8.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="gl-shape l2-shape-mob" style={{ left: '34%', top: '-9vh',  background: 'linear-gradient(150deg, rgba(255,210,175,0.58) 0%, rgba(255,175,130,0.46) 45%, rgba(245,145,100,0.26) 100%)',  boxShadow: '0 30px 100px rgba(230,120,60,0.85), 0 14px 50px rgba(255,160,100,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-12,0], rotate: [0,2,0]    }} transition={{ duration: 9.8, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }} className="gl-shape l2-shape-mob" style={{ left: '66%', top: '-13vh', background: 'linear-gradient(150deg, rgba(220,195,255,0.58) 0%, rgba(190,160,250,0.46) 45%, rgba(160,120,235,0.26) 100%)',  boxShadow: '0 30px 100px rgba(130,80,220,0.85), 0 14px 50px rgba(180,140,255,0.7), inset 0 2px 0 rgba(255,255,255,0.72), inset 1px 0 0 rgba(255,255,255,0.45)' }} />
-            <motion.div animate={{ y: [0,-16,0], rotate: [0,-1.5,0] }} transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="gl-shape l1-shape-mob" style={{ left: '18%', top: '-6vh',  background: 'linear-gradient(145deg, rgba(140,200,255,0.50) 0%, rgba(90,165,255,0.36) 45%, rgba(50,130,240,0.20) 100%)',   boxShadow: '0 24px 96px rgba(50,120,240,0.85), 0 12px 48px rgba(100,170,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-            <motion.div animate={{ y: [0,-22,0], rotate: [0,1.5,0]  }} transition={{ duration: 9.0, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }} className="gl-shape l1-shape-mob" style={{ left: '58%', top: '-10vh', background: 'linear-gradient(145deg, rgba(110,175,255,0.48) 0%, rgba(70,140,245,0.34) 45%, rgba(30,100,220,0.18) 100%)',   boxShadow: '0 24px 96px rgba(30,90,210,0.85), 0 12px 48px rgba(70,140,255,0.65), inset 0 2px 0 rgba(255,255,255,0.65), inset 1px 0 0 rgba(255,255,255,0.38)' }} />
-          </div>
-
-          {/* Bottom fade */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              height: '38%',
-              background: 'linear-gradient(to top, rgba(245,244,250,0.97) 0%, rgba(245,244,250,0.80) 35%, transparent 100%)',
-              zIndex: 10,
-            }}
-          />
-        </div>
-
-        {/* ── DNA Image ── */}
-        <div className="dna-clip-box" aria-hidden="true">
-          <img
-            className="dna-img"
-            src="/gene.webp"
-            alt=""
-            draggable={false}
-            loading="eager"
-            decoding="async"
-          />
-        </div>
-
-        {/* ── Main content ── */}
-        <div
-          style={{
-            position: 'relative', zIndex: 20,
-            display: 'flex', flexDirection: 'column',
-            minHeight: '88vh',
-          }}
-        >
-          {/* Headline block — back to bottom-anchored, as it was originally.
-              flex:1 + justify-content:flex-end pushes the whole group (heading
-              through platform links) down to the bottom of the section. */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <div className="hero-content-pad">
-
-              {/* Heading-through-nonprofit-line group, in its own wrapper so
-                  it can be nudged up independently of the platform links
-                  below — bottom margin here lifts this group, the links stay
-                  where they were. */}
-              <div style={{ marginBottom: 'clamp(36px,5vw,64px)' }}>
-                <h1 className="hero-h1">
-                  <span className="hero-h1-line">AI to Fight <span className="word-ai">Cancer</span>.</span>{' '}
-                  <span className="hero-h1-line">Detect <span className="word-healthcare">Stroke</span> Earlier.</span>{' '}
-                  <span className="hero-h1-line">Advance <span className="word-lives">Heart</span> Care.</span>
+      <div className="hh-root">
+        <div className="hh-wrap hh-body">
+          <section className="hh-banner">
+            <div className="hh-banner-inner">
+              <motion.div className="hh-banner-text" {...rise(0)}>
+                <h1 className="hh-title">
+                  AI-Powered <span className="hh-title-em">Healthcare</span>
                 </h1>
-
-                <p className="hero-subline">
-                  From Early Detection to Treatment and Monitoring.
+                <p className="hh-sub">Intelligence across diagnosis, genomics and patient care</p>
+                <p className="hh-org">
+                  A California-based <span className="hh-org-em">501(c)(3)</span> nonprofit organization
                 </p>
-
-                <p className="hero-nonprofit-line">
-                  A California-based 501(c)(3) nonprofit organization
-                </p>
-              </div>
-
-              {/* Support taglines — three platforms, side by side above 1024px
-                  with hairline rules between them, stacked below it with the
-                  rules flipping to horizontal. */}
-              <div className="hero-supports">
-                <p className="hero-support-text">
-                  SHRI-AI proudly supports{' '}
-                  {/*
-                    Crash-safe link structure:
-                    - .oncotrace-wrap  → inline-block spacing container
-                    - .oncotrace-link  → inline-block anchor (no filter here)
-                    - .strokeai-text   → same shimmer+glow treatment as
-                      OncoTrace-AI below, in blue instead of pink
-                    - .strokeai-underline → sibling span, not ::after
-                  */}
-                  <span className="oncotrace-wrap">
-                    <a
-                      href="https://stroke-ai.org"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="oncotrace-link strokeai-link"
-                      aria-label="Visit Stroke-AI.org (opens in new tab)"
-                    >
-                      <span className="strokeai-text">Stroke-AI.org</span>
-                      <span className="strokeai-underline" aria-hidden="true" />
-                    </a>
-                  </span>
-                  {' '}— an AI initiative advancing medical imaging, early stroke
-                  detection, and risk assessment.
-                </p>
-
-                <p className="hero-support-text">
-                  SHRI-AI also proudly supports{' '}
-                  {/* Same three-span structure, with the shimmer gradient. */}
-                  <span className="oncotrace-wrap">
-                    <a
-                      href="https://oncotrace-ai.org"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="oncotrace-link"
-                      aria-label="Visit OncoTrace-AI.org (opens in new tab)"
-                    >
-                      <span className="oncotrace-text">OncoTrace-AI.org</span>
-                      <span className="oncotrace-underline" aria-hidden="true" />
-                    </a>
-                  </span>
-                  {' '}— an open-source AI platform advancing liquid biopsy, ctDNA, and
-                  precision oncology.
-                </p>
-
-                <p className="hero-support-text">
-                  {/* Same three-span structure. SHRI-Health is part of this
-                      site, so it opens in the same tab. */}
-                  <span className="oncotrace-wrap">
-                    <a
-                      href="/shri-health"
-                      className="oncotrace-link shrihealth-link"
-                      aria-label="Visit SHRI-Health"
-                    >
-                      <span className="shrihealth-text">SHRI-Health</span>
-                      <span className="shrihealth-underline" aria-hidden="true" />
-                    </a>
-                  </span>
-                  {' '}is a product of SHRI-AI — a connected care platform for
-                  doctors, pharma, procurement, and laboratory management.
-                </p>
-              </div>
-
+              </motion.div>
+              <motion.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
+                <img src="/banner-hospital.webp" alt="" draggable={false} width={1600} height={782} />
+              </motion.div>
+              <ul className="hh-points">
+                {HERO_POINTS.map(({ Icon, label, vars }, i) => (
+                  <motion.li key={label} className="hh-point" style={vars} {...rise(i + 1)}>
+                    <span aria-hidden="true"><Icon size={14} strokeWidth={1.75} /></span>
+                    {label}
+                  </motion.li>
+                ))}
+              </ul>
             </div>
-          </div>
+          </section>
 
-          {/* Bottom bar */}
-          <div className="hero-bottom-bar" role="contentinfo">
-            <div className="hero-bottom-grid" />
-          </div>
+          <section className="hh-modules" aria-label="AI modules">
+            {MODULE_CARDS.map((card, i) => {
+              const linkProps = card.external
+                ? { href: card.href, target: '_blank', rel: 'noopener noreferrer' }
+                : { href: card.href };
+              return (
+                <motion.article
+                  key={card.id}
+                  className="hh-card hh-surface"
+                  style={card.vars}
+                  {...rise(i)}
+                  whileHover={{ y: -4, transition: { duration: 0.35, ease: EASE } }}
+                >
+                  <div className="hh-card-head">
+                    <Emblem kind={card.emblem} />
+                    <div>
+                      <h2 className="hh-card-title">{card.title}</h2>
+                      <p className="hh-card-tagline">{card.tagline}</p>
+                    </div>
+                    <a
+                      className="hh-corner"
+                      aria-label={card.cta + (card.external ? ' (opens in new tab)' : '')}
+                      {...linkProps}
+                    >
+                      <ChevronRight size={18} strokeWidth={1.75} aria-hidden="true" />
+                    </a>
+                  </div>
+                  <div className="hh-card-main">
+                    <ul className="hh-features">
+                      {card.features.map(({ Icon, label }) => (
+                        <li key={label}>
+                          <span className="hh-feat-icon" aria-hidden="true">
+                            <Icon size={20} strokeWidth={1.6} />
+                          </span>
+                          {label}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="hh-card-img" aria-hidden="true">
+                      <img
+                        className={card.cutout ? 'is-cutout' : undefined}
+                        src={card.image}
+                        alt=""
+                        loading="lazy"
+                        draggable={false}
+                        width={card.imageSize[0]}
+                        height={card.imageSize[1]}
+                      />
+                    </div>
+                  </div>
+                  <a className="hh-btn" {...linkProps}>
+                    {card.cta}
+                    <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+                  </a>
+                </motion.article>
+              );
+            })}
+          </section>
+
         </div>
-      </section>
-    </>
+      </div>
+    </MotionConfig>
   );
 };
 

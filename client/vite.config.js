@@ -24,7 +24,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
  * Adding a clean URL is one entry here plus one in SECTION_ROUTES or
  * PAGE_ROUTES (src/lib/careersRoute.js).
  */
-const CLEAN_PATHS = ['careers', 'team', 'shri-health']
+const CLEAN_PATHS = ['careers', 'team', 'dev']
 
 function cleanPathCopies() {
   let outDir

@@ -42,7 +42,7 @@ const Careers = () => {
         }
 
         .careers-inner {
-          max-width: 1200px;
+          max-width: 1440px;
           margin: 0 auto;
           position: relative;
           z-index: 1;
@@ -83,25 +83,18 @@ const Careers = () => {
           margin: 0;
         }
 
-        /* Flex wrap + centre rather than grid auto-fit: auto-fit sizes a whole
-           row of tracks to the container, so a set that does not divide evenly
-           gets pushed off-centre by the leftover tracks. Card width is a single
-           token, so each breakpoint is one reassignment. */
+        /* A fixed column count rather than auto-fit: the 8 open roles divide
+           evenly into 4 x 2 on desktop and 2 x 4 on tablets, so no row is
+           ever orphaned. The wider 1440px column gives each card the width
+           its long role titles need, so on desktop the cards come out
+           slightly wider than tall instead of tall and narrow. */
         .careers-grid {
-          /* Ceiling brought down from 344px to 272px so all 8 open roles sit
-             as 4 columns / 2 rows inside the 1200px container: 4*272 + 3*24
-             (gap ceiling) = 1160px, comfortably under the cap. At 344px only
-             3 fit per row, orphaning a lopsided 3/3/2 split. */
-          --careers-card-w: clamp(260px, 24vw, 272px);
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: stretch;
-          gap: clamp(1rem, 2vw, 1.5rem);
-        }
-        .careers-grid > * {
-          flex: 0 0 var(--careers-card-w);
-          max-width: 100%;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          /* Every row takes the height of the tallest one, so all eight
+             cards are exactly the same size at every width. */
+          grid-auto-rows: 1fr;
+          gap: clamp(1rem, 1.8vw, 1.5rem);
         }
 
         /* Cards are anchors now, so the link defaults have to be neutralised
@@ -112,10 +105,11 @@ const Careers = () => {
           color: inherit;
           flex-direction: column;
           width: 100%;
-          padding: clamp(1.3rem, 2vw, 1.65rem);
+          min-width: 0;
+          padding: clamp(1.15rem, 1.7vw, 1.5rem);
           background: var(--surface);
           border: 1px solid rgba(20, 20, 30, 0.07);
-          border-radius: clamp(14px, 1.4vw, 18px);
+          border-radius: 0;
           box-shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 12px 30px rgba(20, 20, 30, 0.05);
           cursor: pointer;
           font: inherit;
@@ -139,7 +133,7 @@ const Careers = () => {
           width: 28px;
           height: 2px;
           border-radius: 1px;
-          margin-bottom: clamp(1rem, 1.8vw, 1.35rem);
+          margin-bottom: clamp(0.75rem, 1.3vw, 1rem);
           flex-shrink: 0;
         }
 
@@ -150,7 +144,7 @@ const Careers = () => {
           font-weight: var(--fw-regular);
           letter-spacing: var(--ls-eyebrow);
           text-transform: uppercase;
-          margin-bottom: 0.6rem;
+          margin-bottom: 0.45rem;
         }
 
         .careers-card-title {
@@ -179,7 +173,7 @@ const Careers = () => {
           font-size: var(--fs-sm);
           color: var(--ink-muted);
           line-height: var(--lh-body);
-          margin: clamp(0.7rem, 1.3vw, 0.95rem) 0 0;
+          margin: clamp(0.55rem, 1vw, 0.75rem) 0 0;
           text-wrap: pretty;
         }
 
@@ -190,7 +184,7 @@ const Careers = () => {
           align-items: center;
           gap: 0.4rem;
           margin-top: auto;
-          padding-top: clamp(1rem, 1.8vw, 1.35rem);
+          padding-top: clamp(0.8rem, 1.3vw, 1rem);
           font-family: var(--font-sans);
           font-weight: var(--fw-medium);
           font-size: var(--fs-xs);
@@ -235,11 +229,13 @@ const Careers = () => {
           border-radius: 4px;
         }
 
-        @media (max-width: 768px) {
-          .careers-grid { --careers-card-w: clamp(260px, 44vw, 320px); }
+        /* Tablets: two wide columns — the cards come out wider than tall. */
+        @media (max-width: 1099px) {
+          .careers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
+        /* Phones: one column. */
         @media (max-width: 620px) {
-          .careers-grid { --careers-card-w: min(340px, 100%); }
+          .careers-grid { grid-template-columns: minmax(0, 1fr); max-width: 440px; margin: 0 auto; }
         }
 
         @media (prefers-reduced-motion: reduce) {

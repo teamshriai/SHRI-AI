@@ -50,7 +50,7 @@ export const SECTION_ROUTES = {
  * the SPA fallbacks in public/.
  */
 const PAGE_ROUTES = {
-  '/shri-health': 'shri-health',
+  '/dev': 'shri-health',
 };
 
 /** Standalone page this URL asks for, or null. */

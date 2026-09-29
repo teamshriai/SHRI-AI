@@ -1,15 +1,16 @@
 // Navbar.jsx
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { BriefcaseBusiness, Handshake, House, Layers, Mail, Sparkles, Users } from 'lucide-react';
 import { scrollToSection, documentTop, navbarOffset } from '../lib/scrollToSection';
 
 const navLinks = [
-  { name: 'Home', href: '#hero' },
-  { name: 'About SHRI-AI', href: '#about' },
-  { name: 'Services', href: '#focus' },
-  { name: 'Collaborating Organizations', href: '#partnership' },
-  { name: 'Team', href: '#team' },
-  { name: 'Careers', href: '#careers' },
-  { name: 'Contact', href: '#contact', triggerForm: true },
+  { name: 'Home', href: '#hero', Icon: House },
+  { name: 'About SHRI-AI', href: '#about', Icon: Sparkles },
+  { name: 'Services', href: '#focus', Icon: Layers },
+  { name: 'Collaborating Organizations', href: '#partnership', Icon: Handshake },
+  { name: 'Team', href: '#team', Icon: Users },
+  { name: 'Careers', href: '#careers', Icon: BriefcaseBusiness },
+  { name: 'Contact', href: '#contact', triggerForm: true, Icon: Mail },
 ];
 
 const Navbar = () => {
@@ -261,6 +262,37 @@ const Navbar = () => {
           color: #14141e;
         }
 
+        /* ── Link icons ──
+         * Fine-line icons stroked with the brand gradient (the About tagline's
+         * purple → blue → gold), defined once in #nav-icon-grad. The CSS
+         * stroke overrides lucide's currentColor attribute. Muted at rest,
+         * full strength and a small lift on hover or when active. */
+        .nav-icon {
+          flex: none;
+          stroke: url(#nav-icon-grad);
+          opacity: 0.72;
+          transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .nav-link { gap: 7px; }
+        .nav-link:hover .nav-icon,
+        .nav-link.active .nav-icon,
+        .mobile-link:hover .nav-icon,
+        .mobile-link.active .nav-icon {
+          opacity: 1;
+          transform: translateY(-1px);
+        }
+        /* Tight desktop widths: the labels need the room more than the icons. */
+        @media (min-width: 1180px) and (max-width: 1380px) {
+          .nav-link .nav-icon { display: none; }
+        }
+        /* Where the icons show, the header row is capped at 1400px, so the
+           icons' width comes out of the link padding instead of pushing the
+           row into the logo. */
+        @media (min-width: 1381px) {
+          .nav-link { padding: 10px 10px; }
+        }
+        .mobile-link-inner { display: inline-flex; align-items: center; gap: 12px; }
+
         /* Mobile: a left accent bar reads better than an underline on a
            full-width row, and costs no layout shift. */
         .mobile-link {
@@ -288,8 +320,15 @@ const Navbar = () => {
 
         @media (prefers-reduced-motion: reduce) {
           .nav-link-label::after,
-          .mobile-link::before {
+          .mobile-link::before,
+          .nav-icon {
             transition: none;
+          }
+          .nav-link:hover .nav-icon,
+          .nav-link.active .nav-icon,
+          .mobile-link:hover .nav-icon,
+          .mobile-link.active .nav-icon {
+            transform: none;
           }
         }
 
@@ -372,6 +411,17 @@ const Navbar = () => {
         ref={navRef}
         className={`nav-root ${isTransparent ? 'transparent' : 'solid'}`}
       >
+        {/* Shared gradient for the link icons (see .nav-icon). userSpaceOnUse
+            in lucide's 24x24 box, so every icon gets the same sweep. */}
+        <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="nav-icon-grad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22">
+              <stop offset="0" stopColor="#7B6FCD" />
+              <stop offset="0.55" stopColor="#3A82C4" />
+              <stop offset="1" stopColor="#D4891E" />
+            </linearGradient>
+          </defs>
+        </svg>
         {/* ── Inner container (header row) ── */}
         <div ref={headerRef} data-nav-header style={{
           maxWidth: 1400,
@@ -432,6 +482,7 @@ const Navbar = () => {
                     aria-current={isActive ? 'true' : undefined}
                     onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
                   >
+                    <link.Icon className="nav-icon" size={16} strokeWidth={1.6} aria-hidden="true" />
                     <span className="nav-link-label">{link.name}</span>
                   </a>
                 );
@@ -487,7 +538,10 @@ const Navbar = () => {
                       aria-current={activeId === link.href.slice(1) ? 'true' : undefined}
                       onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
                     >
-                      {link.name}
+                      <span className="mobile-link-inner">
+                        <link.Icon className="nav-icon" size={18} strokeWidth={1.6} aria-hidden="true" />
+                        {link.name}
+                      </span>
                     </a>
                   </div>
                 ))}

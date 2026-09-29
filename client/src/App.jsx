@@ -28,7 +28,7 @@ function App() {
   // null = the site; a slug = that job's own page. See lib/careersRoute.js for
   // why this is a query parameter and not a path.
   const [roleSlug, setRoleSlug] = useState(readRoleSlug);
-  // A standalone page (e.g. /shri-health). Reached by a full page load, so it
+  // A standalone page (e.g. /dev, the SHRI Health page). Reached by a full page load, so it
   // is read once rather than subscribed to.
   const [page] = useState(readPageRoute);
   // Set once the deep link has been honoured, so returning from a job page

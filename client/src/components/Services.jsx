@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrainCircuit, Stethoscope, Microscope, Dna } from 'lucide-react';
+import { BrainCircuit, Dna, Microscope, Stethoscope } from 'lucide-react';
 import { scrollToSection } from '../lib/scrollToSection';
 
 // ViSolve's own AI capability areas, worded as on visolve.com.
@@ -220,8 +220,6 @@ const Services = () => {
           /* The two values that must match. */
           padding-top: var(--fa2-sponsor-pad);
           padding-bottom: var(--fa2-sponsor-pad);
-
-          border-bottom: 1px solid rgba(10, 10, 10, 0.07);
         }
 
         /* Logo + text row. Lives on an inner wrapper so the AI-services grid
@@ -235,10 +233,10 @@ const Services = () => {
 
         /* ── ViSolve AI services ──
            Titles, taglines and items are ViSolve's own, from visolve.com.
-           Light cards, each carrying its accent in three places at once — a
-           solid top strip, a faint wash and the service chips — so the four
-           areas read as distinct at a glance without leaving the page's
-           white palette. */
+           An editorial index rather than cards: four hairline-ruled rows in
+           the same rhythm as the sponsor band and the Services accordion,
+           with no boxes, tiles or chips. Each area's colour appears only in
+           small touches — the index dot, the item dashes, and on hover. */
         .fa2-ai {
           margin-top: clamp(2.25rem, 4vw, 3.25rem);
         }
@@ -249,116 +247,147 @@ const Services = () => {
           letter-spacing: -0.025em;
           line-height: 1.2;
           color: #0a0a0a;
-          margin: 0 0 clamp(1.5rem, 2.8vw, 2.25rem);
+          margin: 0 0 clamp(1.75rem, 3.2vw, 2.75rem);
           max-width: 34ch;
           text-wrap: balance;
         }
         .fa2-ai-headline strong { font-weight: 500; }
-        .fa2-ai-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: clamp(0.9rem, 1.6vw, 1.25rem);
-        }
-        .fa2-ai-card {
+
+        .fa2-ai-headline .fa2-ai-kw-blue { color: #3A82C4; }
+        .fa2-ai-headline .fa2-ai-kw-red { color: #c0392b; }
+        .fa2-ai-headline .fa2-ai-kw-green { color: #2aaa72; }
+
+        .fa2-ai-index { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(10, 10, 10, 0.08); }
+        .fa2-ai-row {
+          --ai-accent-2: color-mix(in srgb, var(--ai-accent) 55%, #fff);
           position: relative;
-          display: flex;
-          flex-direction: column;
-          min-width: 0;
-          overflow: hidden;
-          padding: calc(clamp(1.4rem, 2.2vw, 1.8rem) + 6px) clamp(1.25rem, 2vw, 1.6rem) clamp(1.4rem, 2.2vw, 1.8rem);
-          background:
-            linear-gradient(to bottom, rgba(var(--ai-accent-rgb), 0.07), rgba(var(--ai-accent-rgb), 0) 45%),
-            #fff;
-          border: 1px solid rgba(10, 10, 10, 0.07);
-          border-radius: 16px;
-          box-shadow: 0 1px 2px rgba(10, 10, 20, 0.04), 0 10px 28px rgba(10, 10, 20, 0.05);
-          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+          display: grid;
+          grid-template-columns: 5.5rem minmax(0, 0.8fr) minmax(0, 0.95fr) minmax(0, 1.45fr);
+          align-items: baseline;
+          column-gap: clamp(1.25rem, 2.6vw, 2.75rem);
+          padding: clamp(1.6rem, 2.8vw, 2.25rem) clamp(0.75rem, 1.4vw, 1.25rem);
+          /* Soft colour sweep on hover: a wash that grows from the left edge.
+             It is a gradient on the row itself — no box, border or radius. */
+          background-image: linear-gradient(90deg, rgba(var(--ai-accent-rgb), 0.07), rgba(var(--ai-accent-rgb), 0) 70%);
+          background-repeat: no-repeat;
+          background-size: 0% 100%;
+          transition: background-size 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .fa2-ai-card::before {
+        .fa2-ai-row:hover { background-size: 100% 100%; }
+        /* The row's rule, in its own colour: strong at the left, fading to
+           the neutral hairline. */
+        .fa2-ai-row::before {
           content: '';
           position: absolute;
           left: 0;
-          top: 0;
           right: 0;
-          height: 6px;
+          bottom: 0;
+          height: 1px;
+          background: linear-gradient(90deg, rgba(var(--ai-accent-rgb), 0.6), rgba(var(--ai-accent-rgb), 0.15) 35%, rgba(10, 10, 10, 0.07) 70%);
+        }
+        /* On hover the full accent line draws across. */
+        .fa2-ai-row::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 1px;
           background: var(--ai-accent);
+          transform: scaleX(0);
+          transform-origin: left center;
+          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .fa2-ai-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 1px 2px rgba(10, 10, 20, 0.04), 0 20px 44px rgba(var(--ai-accent-rgb), 0.16);
-        }
-        .fa2-ai-head {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 0.75rem;
-          margin-bottom: 1.15rem;
-        }
-        .fa2-ai-icon {
-          width: 48px;
-          height: 48px;
-          flex: 0 0 auto;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 14px;
-          color: var(--ai-accent);
-          background: rgba(var(--ai-accent-rgb), 0.12);
-        }
-        .fa2-ai-index {
+        .fa2-ai-row:hover::after { transform: scaleX(1); }
+        /* The list ends in open space: no rule under the last row. */
+        .fa2-ai-row:last-child::before,
+        .fa2-ai-row:last-child::after { display: none; }
+
+        .fa2-ai-num {
           font-family: var(--font-sans);
-          font-size: 2.4rem;
+          font-size: clamp(2.1rem, 3.2vw, 3rem);
           font-weight: 300;
-          line-height: 1;
+          line-height: 0.9;
           letter-spacing: -0.04em;
-          color: var(--ai-accent);
-          opacity: 0.28;
           font-variant-numeric: tabular-nums;
+          background: linear-gradient(145deg, var(--ai-accent-2), var(--ai-accent));
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
         .fa2-ai-title {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          margin: 0;
           font-family: var(--font-sans);
-          font-size: clamp(1.1rem, 1.35vw, 1.25rem);
-          font-weight: 500;
-          letter-spacing: -0.015em;
-          line-height: 1.25;
-          color: #0a0a0a;
-          margin: 0 0 0.5rem;
-        }
-        .fa2-ai-desc {
-          font-family: var(--font-sans);
-          font-size: 0.82rem;
+          font-size: clamp(1.35rem, 2.1vw, 1.9rem);
           font-weight: 300;
-          line-height: 1.6;
-          color: #5e5e66;
-          margin: 0 0 1.25rem;
+          letter-spacing: -0.02em;
+          line-height: 1.15;
+          color: #0a0a0a;
+          transition: color 0.3s ease;
+        }
+        .fa2-ai-title svg {
+          flex: none;
+          color: var(--ai-accent);
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fa2-ai-row:hover .fa2-ai-title { color: var(--ai-accent); }
+        .fa2-ai-row:hover .fa2-ai-title svg { transform: rotate(-8deg) scale(1.08); }
+        .fa2-ai-desc {
+          margin: 0;
+          font-family: var(--font-sans);
+          font-size: var(--fs-sm);
+          font-weight: 300;
+          line-height: 1.65;
+          color: #6e6e76;
+          max-width: 40ch;
           text-wrap: pretty;
         }
-        .fa2-ai-list {
+        .fa2-ai-items {
           list-style: none;
-          margin: auto 0 0;
+          margin: 0;
           padding: 0;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.6rem 1.5rem;
+        }
+        .fa2-ai-items li {
           display: flex;
-          flex-wrap: wrap;
-          gap: 0.4rem;
-        }
-        .fa2-ai-list li {
+          align-items: baseline;
+          gap: 0.6rem;
           font-family: var(--font-sans);
-          font-size: 0.72rem;
-          font-weight: 500;
-          line-height: 1.3;
-          padding: 0.34rem 0.65rem;
-          border-radius: 999px;
-          color: color-mix(in srgb, var(--ai-accent) 72%, #000);
-          background: rgba(var(--ai-accent-rgb), 0.09);
-          border: 1px solid rgba(var(--ai-accent-rgb), 0.16);
-          max-width: 100%;
-          overflow-wrap: anywhere;
+          font-size: var(--fs-sm);
+          font-weight: 400;
+          line-height: 1.45;
+          color: #3d3d45;
+          transition: color 0.3s ease;
         }
+        .fa2-ai-items li::before {
+          content: '';
+          flex: none;
+          width: 12px;
+          height: 2px;
+          border-radius: 1px;
+          background: linear-gradient(90deg, var(--ai-accent), var(--ai-accent-2));
+          transform: translateY(-0.28em);
+          transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fa2-ai-row:hover .fa2-ai-items li::before { width: 18px; }
+        .fa2-ai-items li:hover { color: var(--ai-accent); }
         @media (max-width: 1100px) {
-          .fa2-ai-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .fa2-ai-row {
+            grid-template-columns: 4rem minmax(0, 1fr);
+            row-gap: 0.75rem;
+          }
+          .fa2-ai-desc, .fa2-ai-items { grid-column: 2; }
+          .fa2-ai-items { margin-top: 0.35rem; }
         }
         @media (max-width: 560px) {
-          .fa2-ai-grid { grid-template-columns: minmax(0, 1fr); }
+          .fa2-ai-row { grid-template-columns: minmax(0, 1fr); padding-inline: 0.25rem; }
+          .fa2-ai-desc, .fa2-ai-items { grid-column: 1; }
+          .fa2-ai-items { grid-template-columns: minmax(0, 1fr); }
         }
 
         /* The logo sits directly on the section — no plate, no frame. The
@@ -506,8 +535,9 @@ const Services = () => {
         @media (prefers-reduced-motion: reduce) {
           .fa2-sponsor-logo-link { transition: none; }
           .fa2-sponsor-logo-link:hover { transform: none; }
-          .fa2-ai-card { transition: none; }
-          .fa2-ai-card:hover { transform: none; }
+          .fa2-ai-row, .fa2-ai-row::after, .fa2-ai-title, .fa2-ai-title svg,
+          .fa2-ai-items li, .fa2-ai-items li::before { transition: none; }
+          .fa2-ai-row:hover .fa2-ai-title svg { transform: none; }
         }
 
         .fa2-hero-title {
@@ -874,38 +904,37 @@ const Services = () => {
                 ViSolve AI Services
               </p>
               <p className="fa2-ai-headline">
-                AI engineered for <strong>healthcare</strong>,{' '}
-                <strong>precision oncology</strong> and <strong>genomics</strong>.
+                AI engineered for <strong className="fa2-ai-kw-blue">healthcare</strong>,{' '}
+                <strong className="fa2-ai-kw-red">precision oncology</strong> and{' '}
+                <strong className="fa2-ai-kw-green">genomics</strong>.
               </p>
-              <div className="fa2-ai-grid">
+              <ol className="fa2-ai-index">
                 {VISOLVE_AI.map(({ Icon, title, desc, items, accent, accentRgb }, i) => (
-                  <motion.article
+                  <motion.li
                     key={title}
-                    className="fa2-ai-card"
+                    className="fa2-ai-row"
                     style={{ '--ai-accent': accent, '--ai-accent-rgb': accentRgb }}
-                    initial={{ opacity: 0, y: 16 }}
+                    initial={{ opacity: 0, y: 14 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ delay: i * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <div className="fa2-ai-head">
-                      <span className="fa2-ai-icon" aria-hidden="true">
-                        <Icon size={22} strokeWidth={1.6} />
-                      </span>
-                      <span className="fa2-ai-index" aria-hidden="true">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <h3 className="fa2-ai-title">{title}</h3>
+                    <span className="fa2-ai-num" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="fa2-ai-title">
+                      <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
+                      {title}
+                    </h3>
                     <p className="fa2-ai-desc">{desc}</p>
-                    <ul className="fa2-ai-list">
+                    <ul className="fa2-ai-items">
                       {items.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
-                  </motion.article>
+                  </motion.li>
                 ))}
-              </div>
+              </ol>
             </div>
           </motion.div>
 

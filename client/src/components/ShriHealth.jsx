@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, FlaskConical, PackageCheck, Pill, Stethoscope } from 'lucide-react';
 
 /**
- * /shri-health — product page for SHRI-Health, a product of SHRI-AI. One
+ * /dev — product page for SHRI-Health, a product of SHRI-AI. One
  * heading and the platform's four modules, each with a "View Demo" action.
  *
  * Demos are not live yet. Each module carries a demoUrl: set it and that
