@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, FlaskConical, PackageCheck, Pill, Stethoscope } 
  * /dev — product page for SHRI-Health, a product of SHRI-AI. One
  * heading and the platform's four modules, each with a "View Demo" action.
  *
- * Demos are not live yet. Each module carries a demoUrl: set it and that
+ * Each module carries a demoUrl (only Doctor's is live so far): set it and that
  * card's button becomes a real link — nothing else changes. While it is null
  * the button says so in place rather than leading to a dead page.
  */
@@ -18,11 +18,11 @@ const MODULES = [
     Icon: Stethoscope,
     accent: '#3A82C4',
     accentRgb: '58, 130, 196',
-    demoUrl: null,
+    demoUrl: 'https://www.shri-ai.org/dev/clinician',
   },
   {
     id: 'pharma',
-    label: 'Pharma',
+    label: 'Pharmacy',
     desc: 'Prescriptions, dispensing and medicine stock.',
     Icon: Pill,
     accent: '#7B6FCD',
@@ -40,7 +40,7 @@ const MODULES = [
   },
   {
     id: 'laboratory',
-    label: 'Laboratory Management',
+    label: 'Lab',
     desc: 'Samples, tests and result reporting.',
     Icon: FlaskConical,
     accent: '#1f9163',
@@ -324,7 +324,7 @@ const ShriHealth = () => {
 
                   {demoUrl ? (
                     <a className="sh-demo" href={demoUrl} aria-label={`View ${label} demo`}>
-                      View Demo
+                      View Demo 
                       <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
                     </a>
                   ) : (
