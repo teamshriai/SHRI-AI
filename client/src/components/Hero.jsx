@@ -8,19 +8,17 @@ import {
 /**
  * Home page hero.
  *
- * Content and structure come from the Claude Design mockup in
- * assets-src/design/Shri Health homepage mockup/ ("Shri Health Home.dc.html",
- * uploads/reference.png). The look is the site's own: a white ground, DM Sans
- * at the three system weights and the index.css
- * tokens. Card accents are the brand colours the old hero gave each
- * platform's link.
+ * Content and structure come from the "Shri Health Home" Claude Design
+ * mockup. The look is the site's own: a white ground, DM Sans at the three
+ * system weights and the index.css tokens. Card accents are the brand colours
+ * the old hero gave each platform's link.
  *
  * Every illustration has its own box and never sits behind text: each card's
  * art is its own grid column beside the feature list (the reference layout),
  * and the banner's building is its own column (dropped on phones rather than
- * layered under text). Images are crops of reference.png exported at 2x
- * (public/shri-health-*.webp) and are always shown whole: object-fit contain,
- * with only a soft fade at the outer edges.
+ * layered under text). Images are exported at 2x into public/ and are always
+ * shown whole: object-fit contain, with only a soft fade at the outer edges
+ * (or a drop shadow, for transparent cut-outs).
  */
 
 /* ── Emblems ──
@@ -513,39 +511,6 @@ const Hero = () => {
           mask-image: none;
           filter: drop-shadow(0 14px 22px rgba(var(--c-accent-rgb), 0.28));
         }
-        .hh-art { display: block; width: 100%; height: 100%; overflow: visible; }
-        /* Motion for the vector illustrations in HeroArt.jsx — not used on the
-           page right now (the cards show images); kept so they can be
-           switched back in without redoing the art. */
-        .hh-art-spin { transform-box: view-box; transform-origin: 120px 120px; animation: hhArtSpin 28s linear infinite; }
-        .hh-art-orbit { transform-box: view-box; transform-origin: 120px 120px; animation: hhArtSpin 46s linear infinite; }
-        @keyframes hhArtSpin { to { transform: rotate(360deg); } }
-        .hh-art-ping { transform-box: fill-box; transform-origin: center; animation: hhArtPing 2.4s ease-out infinite; }
-        @keyframes hhArtPing {
-          0% { transform: scale(0.7); opacity: 0.9; }
-          100% { transform: scale(2); opacity: 0; }
-        }
-        .hh-art-trace { stroke-dasharray: 100; animation: hhArtTrace 3.4s ease-in-out infinite; }
-        @keyframes hhArtTrace {
-          0% { stroke-dashoffset: 100; opacity: 0; }
-          15% { opacity: 1; }
-          60% { stroke-dashoffset: 0; opacity: 1; }
-          100% { stroke-dashoffset: 0; opacity: 0; }
-        }
-        .hh-art-bob { animation: hhArtBob 6s ease-in-out infinite; }
-        .hh-art-bob--late { animation-delay: -3s; }
-        @keyframes hhArtBob {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-4px); }
-        }
-        .hh-art-bar { transform-box: fill-box; transform-origin: bottom; animation: hhArtBar 3.2s ease-in-out infinite alternate; }
-        @keyframes hhArtBar { from { transform: scaleY(0.72); } to { transform: scaleY(1); } }
-        .hh-art-node { transform-box: fill-box; transform-origin: center; animation: hhArtNode 3s ease-in-out infinite; }
-        @keyframes hhArtNode {
-          0%, 100% { transform: scale(1); opacity: 0.75; }
-          50% { transform: scale(1.6); opacity: 1; }
-        }
-
         .hh-btn {
           margin-top: auto;
           align-self: flex-start;
@@ -643,9 +608,7 @@ const Hero = () => {
           .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .hh-banner::after, .hh-title-em,
-          .hh-art-spin, .hh-art-orbit, .hh-art-ping, .hh-art-trace,
-          .hh-art-bob, .hh-art-bar, .hh-art-node { animation: none; }
+          .hh-banner::after, .hh-title-em { animation: none; }
           .hh-corner, .hh-btn, .hh-btn svg, .hh-feat-icon { transition: none; }
           .hh-features li:hover .hh-feat-icon { transform: none; }
           .hh-corner:hover, .hh-btn:hover svg { transform: none; }
