@@ -442,7 +442,10 @@ const Hero = () => {
           box-shadow: 0 1px 2px rgba(20, 20, 40, 0.06), 0 6px 16px -8px rgba(var(--c-accent-rgb), 0.55);
           transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
         }
-        .hh-corner:hover { transform: translateX(2px); background: var(--c-btn); color: #fff; }
+        /* Decorative only: the whole card is the link (see .hh-btn::after),
+           so the chevron reacts to the card rather than being its own target. */
+        .hh-card:hover .hh-corner,
+        .hh-card:focus-within .hh-corner { transform: translateX(2px); background: var(--c-btn); color: #fff; }
 
         .hh-card-main {
           flex: 1;
@@ -530,12 +533,26 @@ const Hero = () => {
           font-weight: var(--fw-medium);
           letter-spacing: 0.01em;
           text-decoration: none;
-          box-shadow: 0 10px 22px -12px rgba(var(--c-accent-rgb), 0.8);
-          transition: filter 0.25s ease, box-shadow 0.25s ease;
+          /* Hover brightens with an inset white wash, never \`filter\`: a filter
+             would make this button the containing block of its ::after and
+             shrink the card-wide click area to the button itself. */
+          box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0), 0 10px 22px -12px rgba(var(--c-accent-rgb), 0.8);
+          transition: box-shadow 0.25s ease;
         }
         .hh-btn svg { transition: transform 0.25s ease; }
-        .hh-btn:hover { color: #fff; filter: brightness(1.08); box-shadow: 0 14px 28px -12px rgba(var(--c-accent-rgb), 0.9); }
-        .hh-btn:hover svg { transform: translateX(3px); }
+        .hh-card:hover .hh-btn,
+        .hh-card:focus-within .hh-btn { color: #fff; box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.1), 0 14px 28px -12px rgba(var(--c-accent-rgb), 0.9); }
+        .hh-card:hover .hh-btn svg,
+        .hh-card:focus-within .hh-btn svg { transform: translateX(3px); }
+        /* Stretched link: the button's overlay covers the whole card, so a
+           click anywhere on it follows the button. The card stays an article
+           with its own heading and list; there is still one tab stop. */
+        .hh-card .hh-btn::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
         .hh-card .hh-btn {
           align-self: stretch;
           justify-content: center;
@@ -544,7 +561,7 @@ const Hero = () => {
           font-size: var(--fs-sm);
         }
 
-        .hh-btn:focus-visible, .hh-corner:focus-visible { outline: 2px solid #3A82C4; outline-offset: 3px; }
+        .hh-btn:focus-visible { outline: 2px solid #3A82C4; outline-offset: 3px; }
 
         /* ── Desktop scale ──
            zoom sets the drawn size of everything inside (text, padding,
@@ -611,7 +628,8 @@ const Hero = () => {
           .hh-banner::after, .hh-title-em { animation: none; }
           .hh-corner, .hh-btn, .hh-btn svg, .hh-feat-icon { transition: none; }
           .hh-features li:hover .hh-feat-icon { transform: none; }
-          .hh-corner:hover, .hh-btn:hover svg { transform: none; }
+          .hh-card:hover .hh-corner, .hh-card:focus-within .hh-corner,
+          .hh-card:hover .hh-btn svg, .hh-card:focus-within .hh-btn svg { transform: none; }
         }
       `}</style>
 
@@ -661,13 +679,9 @@ const Hero = () => {
                       <h2 className="hh-card-title">{card.title}</h2>
                       <p className="hh-card-tagline">{card.tagline}</p>
                     </div>
-                    <a
-                      className="hh-corner"
-                      aria-label={card.cta + (card.external ? ' (opens in new tab)' : '')}
-                      {...linkProps}
-                    >
-                      <ChevronRight size={18} strokeWidth={1.75} aria-hidden="true" />
-                    </a>
+                    <span className="hh-corner" aria-hidden="true">
+                      <ChevronRight size={18} strokeWidth={1.75} />
+                    </span>
                   </div>
                   <div className="hh-card-main">
                     <ul className="hh-features">
@@ -692,7 +706,11 @@ const Hero = () => {
                       />
                     </div>
                   </div>
-                  <a className="hh-btn" {...linkProps}>
+                  <a
+                    className="hh-btn"
+                    aria-label={card.cta + (card.external ? ' (opens in new tab)' : '')}
+                    {...linkProps}
+                  >
                     {card.cta}
                     <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
                   </a>
