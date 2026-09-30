@@ -36,7 +36,7 @@ const MODULES = [
     Icon: Pill,
     accent: '#7B6FCD',
     accentRgb: '123, 111, 205',
-    demoUrl: null,
+    demoUrl: 'https://www.shri-ai.org/dev/pharmacy',
   },
   {
     id: 'procurement',
@@ -101,7 +101,7 @@ const ShriHealth = () => {
           text-decoration: none;
           min-width: 0;
         }
-        .sh-brand img { width: 30px; height: 30px; object-fit: contain; display: block; flex-shrink: 0; }
+        .sh-brand img { width: 35px; height: 35px; object-fit: contain; display: block; flex-shrink: 0; }
         .sh-brand span {
           font-size: 0.95rem;
           font-weight: var(--fw-medium);

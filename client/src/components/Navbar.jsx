@@ -156,8 +156,8 @@ const Navbar = () => {
 
         /* ── Logo ── */
         .logo-img {
-          width: 42px;
-          height: 42px;
+          width: 48px;
+          height: 48px;
           object-fit: contain;
           flex-shrink: 0;
           transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);

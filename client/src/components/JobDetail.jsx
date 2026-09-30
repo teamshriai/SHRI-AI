@@ -105,7 +105,7 @@ const JobDetail = ({ job }) => {
         min-width: 0;
       }
       .jd-brand-mark {
-        width: 30px; height: 30px;
+        width: 35px; height: 35px;
         object-fit: contain;
         display: block;
         flex-shrink: 0;
