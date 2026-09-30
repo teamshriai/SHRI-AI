@@ -1,16 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, FlaskConical, PackageCheck, Pill, Stethoscope } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardPlus, FlaskConical, PackageCheck, Pill, Stethoscope } from 'lucide-react';
 
 /**
  * /dev — product page for SHRI-Health, a product of SHRI-AI. One
- * heading and the platform's four modules, each with a "View Demo" action.
+ * heading and the platform's five modules, each with a "View Demo" action.
  *
- * Each module carries a demoUrl (only Doctor's is live so far): set it and that
+ * Each module carries a demoUrl (Care Entry and Doctor are live so far): set it and that
  * card's button becomes a real link — nothing else changes. While it is null
  * the button says so in place rather than leading to a dead page.
  */
 
 const MODULES = [
+  {
+    id: 'care-entry',
+    label: 'Care Entry',
+    desc: 'Patient registration, intake and visit check-in.',
+    Icon: ClipboardPlus,
+    accent: '#b52a6b',
+    accentRgb: '181, 42, 107',
+    demoUrl: 'https://www.shri-ai.org/dev/care-entry',
+  },
   {
     id: 'doctor',
     label: 'Doctor',
@@ -159,7 +168,7 @@ const ShriHealth = () => {
         .sh-modules {
           width: min(100%, 1180px);
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(5, minmax(0, 1fr));
           gap: clamp(0.85rem, 1.6vw, 1.25rem);
         }
         .sh-module {
@@ -270,8 +279,13 @@ const ShriHealth = () => {
           border-top: 1px solid rgba(20, 20, 30, 0.06);
         }
 
-        @media (max-width: 1000px) {
+        /* Five in a row needs ~200px per card for "Demo coming soon" to stay
+           on one line; below that the grid drops to two columns. */
+        @media (max-width: 1200px) {
           .sh-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 720px); }
+          /* Five cards in two columns: the first spans the row, so it reads
+             1 + 2 + 2 rather than leaving the last card on its own. */
+          .sh-module:first-child { grid-column: 1 / -1; }
         }
         @media (max-width: 560px) {
           .sh-modules { grid-template-columns: minmax(0, 1fr); width: min(100%, 420px); }
@@ -303,8 +317,8 @@ const ShriHealth = () => {
             SHRI-Health
           </h1>
           <p className="sh-lede">
-            One connected care platform for doctors, pharma, procurement and
-            laboratory management.
+            One connected care platform for care entry, doctors, pharmacy,
+            procurement and laboratory management.
           </p>
 
           <div className="sh-modules">
