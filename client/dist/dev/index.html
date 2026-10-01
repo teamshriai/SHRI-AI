@@ -27,10 +27,29 @@
     <meta name="twitter:title" content="SHRI-AI | Senus Healthcare Research Institute" />
     <meta name="twitter:description" content="SHRI-AI (Senus Healthcare Research Institute) - Advancing precision health through research, innovation, and global collaboration." />
     <meta name="twitter:image" content="https://www.shri-ai.org/shri-ai-logo-trans.webp" />
-    <script type="module" crossorigin src="/assets/index-L2sNTmuL.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-B4PaR_88.css">
+    <script type="module" crossorigin src="/assets/index-Ab-qoDjM.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Db6py_bt.css">
   </head>
   <body>
+    <!-- SHRI-Health (/dev) only: apply the saved theme before first paint so
+         the page never flashes the wrong colour. The key, values and colours
+         must match THEME_KEY / THEME_BG in src/components/ShriHealth.jsx, and
+         the path test mirrors readPageRoute in src/lib/careersRoute.js. -->
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/+$/, '');
+        if (path.slice(path.lastIndexOf('/')) !== '/dev') return;
+        var theme = 'dark';
+        try { if (localStorage.getItem('shri-health:theme') === 'light') theme = 'light'; } catch (e) {}
+        var bg = theme === 'light' ? '#ffffff' : '#07080b';
+        document.body.style.backgroundColor = bg;
+        document.documentElement.style.colorScheme = theme;
+        var meta = document.createElement('meta');
+        meta.setAttribute('name', 'theme-color');
+        meta.setAttribute('content', bg);
+        document.head.appendChild(meta);
+      })();
+    </script>
     <div id="root"></div>
   </body>
 </html> 

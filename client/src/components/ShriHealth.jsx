@@ -1,27 +1,66 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { motion, MotionConfig } from 'framer-motion';
 import {
-  ArrowLeft, ArrowRight, ClipboardPlus, FlaskConical, Layers, MonitorPlay,
-  PackageCheck, Pill, Sparkles, Stethoscope,
+  ArrowUp, ClipboardPlus, FlaskConical, Moon, PackageCheck, Pill, Stethoscope, Sun,
 } from 'lucide-react';
+import { BUILD_VERSION } from '../lib/buildVersion';
+import { NotchedProjectCard } from './ui/NotchedProjectCard';
 
 /**
- * /dev — product page for SHRI-Health, a product of SHRI-AI: an intro banner,
- * the platform's five modules and a short strip showing how they connect.
+ * /dev — SHRI-Health, a product of SHRI-AI: a launcher for the platform's
+ * five module demos.
  *
- * Every module carries a demoUrl and links straight to its live demo. The
- * whole card is the link: the "View Demo" action stretches over the card
- * (.sh-demo::after), so the card keeps its own heading and list and there is
- * still one tab stop per module. A module whose demoUrl is null shows "Demo
- * coming soon" in place instead of leading to a dead page.
+ * Built from the home page's own vocabulary so it reads as the same site:
+ * the home page's font only (DM Sans via --font-sans) and the index.css
+ * tokens, a gradient title, quick links to each demo, and module cards in
+ * each module's colour.
+ *
+ * Each module is a NotchedProjectCard (components/ui): a photo cover with
+ * the open arrow nested in a notch, and the whole card as one link. The
+ * photos are Unsplash (Unsplash License, no attribution required), cropped
+ * to 4:3 and saved as 1200x900 WebP in public/shri-health/; their Unsplash
+ * IDs are noted beside each module.
  *
  * Demo URLs end in a slash: each demo is served as a directory, and the bare
  * path would cost a redirect before the page starts loading.
+ *
+ * Theme: this page alone switches between dark (the default) and light with
+ * the moon/sun button in the bar. Dark is the base token set on .sh-root and
+ * light overrides it on .sh-root[data-theme='light'], so a missing attribute
+ * still gives the designed dark page. The choice is kept in localStorage
+ * under a namespaced key (the /dev/<module>/ demos share this origin), and
+ * index.html applies it before first paint so the page never flashes the
+ * wrong colour — keep THEME_KEY and THEME_BG in sync with that script.
  */
+
+const THEME_KEY = 'shri-health:theme';
+const THEME_BG = { dark: '#07080b', light: '#ffffff' };
+const isTheme = (value) => value === 'dark' || value === 'light';
+
+// Storage can be missing or throw (blocked site data, private modes), and
+// the stored value can be anything; neither may ever break the page.
+function readStoredTheme() {
+  try {
+    const value = window.localStorage.getItem(THEME_KEY);
+    return isTheme(value) ? value : 'dark';
+  } catch {
+    return 'dark';
+  }
+}
+function writeStoredTheme(value) {
+  try {
+    window.localStorage.setItem(THEME_KEY, value);
+  } catch {
+    // Blocked or full: the switch still works for this visit.
+  }
+}
 
 const MODULES = [
   {
     id: 'care-entry',
+    image: '/shri-health/care-entry.webp', // Unsplash 1519494026892-80bbd2d6fd0d
+    imageAlt: 'A hospital reception desk with floor signage',
     label: 'Care Entry',
     desc: 'Patient registration, intake and visit check-in.',
     points: ['Patient registration', 'Triage & vitals', 'Appointment scheduling'],
@@ -32,7 +71,9 @@ const MODULES = [
   },
   {
     id: 'doctor',
-    label: 'Doctor',
+    image: '/shri-health/clinician.webp', // Unsplash 1666214280557-f1b5022eb634
+    imageAlt: 'Two clinicians reviewing a scan on a monitor',
+    label: 'Clinician',
     desc: 'Patient records, consultations and care notes.',
     points: ['Electronic health records', 'Consultation notes', 'Orders & prescriptions'],
     Icon: Stethoscope,
@@ -42,6 +83,8 @@ const MODULES = [
   },
   {
     id: 'pharma',
+    image: '/shri-health/pharmacy.webp', // Unsplash 1631549916768-4119b2e5f926
+    imageAlt: 'Blister packs of assorted tablets and capsules',
     label: 'Pharmacy',
     desc: 'Prescriptions, dispensing and medicine stock.',
     points: ['e-Prescriptions', 'Dispensing', 'Stock & expiry alerts'],
@@ -52,6 +95,8 @@ const MODULES = [
   },
   {
     id: 'laboratory',
+    image: '/shri-health/lab.webp', // Unsplash 1582719471384-894fbb16e074
+    imageAlt: 'A scientist working at a laboratory microscope',
     label: 'Lab',
     desc: 'Samples, tests and result reporting.',
     points: ['Sample tracking', 'Test orders', 'Result reporting'],
@@ -62,6 +107,8 @@ const MODULES = [
   },
   {
     id: 'procurement',
+    image: '/shri-health/procurement.webp', // Unsplash 1553413077-190dd305871c
+    imageAlt: 'A warehouse aisle with stocked shelves',
     label: 'Procurement',
     desc: 'Purchase orders, vendors and supply tracking.',
     points: ['Purchase orders', 'Vendor management', 'Inventory tracking'],
@@ -74,383 +121,355 @@ const MODULES = [
 
 const byId = Object.fromEntries(MODULES.map((m) => [m.id, m]));
 
-/* The patient's path through the platform, left to right. Each step's track
-   blends from its own accent into the next step's. */
+/* How a visit moves through the platform, left to right. */
 const FLOW = [
-  { key: 'entry', modules: ['care-entry'], label: 'Care Entry', note: 'Registration & triage' },
-  { key: 'doctor', modules: ['doctor'], label: 'Doctor', note: 'Consultation & orders' },
-  { key: 'fulfil', modules: ['pharma', 'laboratory'], label: 'Pharmacy & Lab', note: 'Dispensing & tests' },
-  { key: 'supply', modules: ['procurement'], label: 'Procurement', note: 'Stock & suppliers' },
-];
-
-const FACTS = [
-  { Icon: Layers, label: '5 connected modules', a: '#5c9bd6', b: '#3A82C4', rgb: '58, 130, 196' },
-  { Icon: MonitorPlay, label: 'Live demos', a: '#9c92e0', b: '#7B6FCD', rgb: '123, 111, 205' },
-  { Icon: Sparkles, label: 'Built by SHRI-AI', a: '#5cc79a', b: '#1f9163', rgb: '31, 145, 99' },
+  { modules: ['care-entry'], label: 'Care Entry', note: 'Registration & triage' },
+  { modules: ['doctor'], label: 'Clinician', note: 'Consultation & orders' },
+  { modules: ['pharma', 'laboratory'], label: 'Pharmacy & Lab', note: 'Dispensing & tests' },
+  { modules: ['procurement'], label: 'Procurement', note: 'Stock & suppliers' },
 ];
 
 const EASE = [0.22, 1, 0.36, 1];
-const rise = (i = 0) => ({
-  initial: { opacity: 0, y: 18 },
+// One shared object: re-renders on a theme switch hand framer the same
+// props, and once:true means nothing already shown replays.
+const RISE = {
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.6, delay: i * 0.07, ease: EASE },
-});
+  transition: { duration: 0.6, ease: EASE },
+};
 
-const ShriHealth = () => {
-  const [requested, setRequested] = useState(() => new Set());
-  const titleRef = useRef(null);
+/* The light token set, used by the light theme and by print (paper is
+   white whatever the screen theme). */
+const LIGHT_TOKENS = `
+          color-scheme: light;
+          --sh-bg: ${THEME_BG.light};
+          --sh-text: var(--ink);
+          --sh-soft: var(--ink-soft);
+          --sh-muted: var(--ink-muted);
+          --sh-line: rgba(20, 20, 30, 0.08);
+          --sh-glow-blue: rgba(58, 130, 196, 0.1);
+          --sh-glow-violet: rgba(123, 111, 205, 0.09);
+          --sh-glow-green: rgba(31, 145, 99, 0.07);
+          --sh-bar-bg: rgba(255, 255, 255, 0.88);
+          --sh-foot-bg: rgba(255, 255, 255, 0.6);
+          --sh-btn-line: rgba(20, 20, 30, 0.16);
+          --sh-btn-hover-bg: #f4f5f8;
+          --sh-btn-hover-line: rgba(20, 20, 30, 0.26);
+          --sh-chip-bg: #ffffff;
+          --sh-chip-line: rgba(20, 20, 30, 0.12);
+          --sh-title-g1: #7B6FCD;
+          --sh-title-g2: #3A82C4;
+          --sh-title-g3: #a8690f;
+          --sh-scrollbar: rgba(20, 20, 30, 0.25);
+          --sh-track-opacity: 0.55;
+          --sh-focus: #3A82C4;
+          --sh-theme-icon: #a8690f;`;
 
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = 'SHRI-Health | SHRI-AI';
-    titleRef.current?.focus({ preventScroll: true });
-    return () => { document.title = previousTitle; };
-  }, []);
+/* Colours that mix with each element's own module colour (--m on a chip,
+   --ic on a step icon) can't be page-level tokens — a custom property
+   resolves var() where it is declared — so light restates those rules. */
+const LIGHT_MODULE_RULES = (scope) => `
+        ${scope} .sh-chip svg { color: var(--m); }
+        ${scope} .sh-chip:hover { border-color: rgba(var(--m-rgb), 0.5); background: color-mix(in srgb, var(--m) 8%, #fff); }
+        ${scope} .sh-step-icons svg { color: var(--ic); }`;
 
-  const request = (id) => setRequested((prev) => new Set(prev).add(id));
-
-  return (
-    <MotionConfig reducedMotion="user">
-      <style>{`
+const CSS = `
         .sh-root {
+          /* Dark — the designed default. */
+          color-scheme: dark;
+          --sh-bg: ${THEME_BG.dark};
+          --sh-text: #ffffff;
+          --sh-soft: rgba(255, 255, 255, 0.9);
+          --sh-muted: rgba(255, 255, 255, 0.72);
+          --sh-line: rgba(255, 255, 255, 0.1);
+          --sh-glow-blue: rgba(58, 130, 196, 0.16);
+          --sh-glow-violet: rgba(123, 111, 205, 0.13);
+          --sh-glow-green: rgba(31, 145, 99, 0.08);
+          --sh-bar-bg: rgba(7, 8, 11, 0.72);
+          --sh-foot-bg: rgba(7, 8, 11, 0.6);
+          --sh-btn-line: rgba(255, 255, 255, 0.18);
+          --sh-btn-hover-bg: rgba(255, 255, 255, 0.08);
+          --sh-btn-hover-line: rgba(255, 255, 255, 0.3);
+          --sh-chip-bg: rgba(255, 255, 255, 0.05);
+          --sh-chip-line: rgba(255, 255, 255, 0.35);
+          --sh-title-g1: #b3a8f5;
+          --sh-title-g2: #74b6ee;
+          --sh-title-g3: #f2b766;
+          --sh-scrollbar: rgba(255, 255, 255, 0.25);
+          --sh-track-opacity: 0.8;
+          --sh-focus: #8cc0f0;
+          --sh-theme-icon: #a9c9f5;
+          /* Slimmer side margins than the rest of the site, so the page's
+             containers use as much of the screen as possible. */
+          --sh-gutter: clamp(0.9rem, 2.5vw, 2.5rem);
+
           min-height: 100dvh;
           display: flex;
           flex-direction: column;
-          /* Soft washes in the site's accent colours, low enough to stay a
-             white page. */
+          /* Soft colour glows over the theme's base colour. It scrolls with
+             the page (no background-attachment: fixed), so it costs nothing
+             to paint and behaves the same on iOS. */
           background:
-            radial-gradient(ellipse 55% 42% at 6% 0%, rgba(58, 130, 196, 0.1), transparent 70%),
-            radial-gradient(ellipse 50% 38% at 96% 6%, rgba(123, 111, 205, 0.09), transparent 70%),
-            radial-gradient(ellipse 60% 40% at 50% 100%, rgba(31, 145, 99, 0.07), transparent 70%),
-            var(--surface);
+            radial-gradient(ellipse 50% 38% at 0% 0%, var(--sh-glow-blue), transparent 70%),
+            radial-gradient(ellipse 45% 34% at 100% 0%, var(--sh-glow-violet), transparent 70%),
+            radial-gradient(ellipse 60% 40% at 50% 100%, var(--sh-glow-green), transparent 70%),
+            var(--sh-bg);
           font-family: var(--font-sans);
-          color: var(--ink);
+          color: var(--sh-text);
         }
+        .sh-root[data-theme='light'] {${LIGHT_TOKENS}
+        }
+        ${LIGHT_MODULE_RULES(".sh-root[data-theme='light']")}
+
+        /* A theme switch applies in one step: transitions are held for the
+           frame of the switch, so nothing (card titles, frames, buttons)
+           fades in late. The toggle's own icons are the one exception. */
+        .sh-root[data-theme-switching] *:not(.sh-theme-icon),
+        .sh-root[data-theme-switching] *::before,
+        .sh-root[data-theme-switching] *::after { transition: none !important; }
+        /* The browser's cross-fade between the two themes, where supported. */
+        ::view-transition-old(root),
+        ::view-transition-new(root) { animation-duration: 0.3s; }
+
+        .sh-wrap { width: min(100%, 1920px); margin-inline: auto; }
 
         /* ── Top bar ── */
         .sh-bar {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          padding: 0 var(--sh-gutter);
+          background: var(--sh-bar-bg);
+          -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+          border-bottom: 1px solid var(--sh-line);
+        }
+        .sh-bar-inner {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
-          padding: 0.8rem var(--gutter);
-          border-bottom: 1px solid rgba(20, 20, 30, 0.07);
+          min-height: 66px;
         }
         .sh-brand {
           display: inline-flex;
           align-items: center;
-          gap: 0.6rem;
-          color: var(--ink);
+          gap: 0.65rem;
+          color: var(--sh-text);
           text-decoration: none;
           min-width: 0;
         }
-        .sh-brand img { width: 35px; height: 35px; object-fit: contain; display: block; flex-shrink: 0; }
-        .sh-brand span {
-          font-size: 0.95rem;
+        .sh-brand:hover { color: var(--sh-text); }
+        .sh-brand img { width: 35px; height: 35px; object-fit: contain; display: block; flex: none; border-radius: 8px; background: #fff; padding: 2px; }
+        .sh-brand b {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 1rem;
           font-weight: var(--fw-medium);
-          letter-spacing: 0.01em;
+          letter-spacing: -0.01em;
           white-space: nowrap;
         }
-        .sh-back {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          padding: 0.52rem 1rem;
-          border-radius: 999px;
-          border: 1px solid rgba(20, 20, 30, 0.14);
-          color: var(--ink);
-          text-decoration: none;
-          font-size: var(--fs-xs);
-          font-weight: var(--fw-medium);
-          white-space: nowrap;
-          flex-shrink: 0;
-          transition: background 0.25s ease, border-color 0.25s ease;
+
+        /* ── Theme switch ──
+           The icon shows the current theme: a moon while dark, a sun while
+           light. Both are drawn in the same spot and cross-fade with a small
+           turn; the button's label names the action. */
+        .sh-theme {
+          position: relative;
+          flex: none;
+          display: inline-grid;
+          place-items: center;
+          width: 40px;
+          height: 40px;
+          padding: 0;
+          border-radius: 50%;
+          /* Full shorthand: Tailwind's preflight leaves buttons border-less
+             and without a pointer cursor. */
+          border: 1px solid var(--sh-btn-line);
+          background: transparent;
+          color: var(--sh-theme-icon);
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
         }
-        .sh-back:hover { background: #f2f1ee; border-color: rgba(20, 20, 30, 0.24); }
+        /* A 44px hit area around the 40px circle. */
+        .sh-theme::before { content: ''; position: absolute; inset: -2px; border-radius: 50%; }
+        .sh-theme-icon {
+          grid-area: 1 / 1;
+          display: block;
+          pointer-events: none;
+          transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .sh-theme-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+        .sh-root[data-theme='light'] .sh-theme-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+        .sh-root[data-theme='light'] .sh-theme-sun { opacity: 1; transform: none; }
+        @media (hover: hover) {
+          .sh-theme:hover { background: var(--sh-btn-hover-bg); border-color: var(--sh-btn-hover-line); }
+        }
+        .sh-theme:active { transform: scale(0.94); }
 
         .sh-main {
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: clamp(3rem, 6vw, 4.75rem);
-          padding: clamp(1.5rem, 4vw, 3rem) var(--gutter) clamp(3rem, 6vw, 5rem);
-        }
-        .sh-wrap {
-          width: min(100%, 1280px);
-          margin-inline: auto;
+          gap: clamp(2.25rem, 4vw, 3.25rem);
+          padding: clamp(1.25rem, 2.5vw, 2rem) var(--sh-gutter) clamp(2.5rem, 5vw, 3.5rem);
         }
 
-        /* ── Intro: text left, the building right ── */
-        .sh-intro {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-          gap: clamp(1rem, 3vw, 3rem);
-          min-height: clamp(300px, 28vw, 420px);
-        }
-        .sh-intro-text {
-          align-self: center;
+        /* ── Intro ──
+           No box and no picture: the heading and quick-launch row sit
+           straight on the page, aligned with the sections below. */
+        .sh-banner-text {
           min-width: 0;
+          padding-block: clamp(1rem, 2.4vw, 1.75rem) 0;
         }
-        .sh-eyebrow {
+        .sh-meta {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.55rem 0.9rem;
+          margin: 0 0 0.85rem;
+        }
+        .sh-maker {
           display: inline-flex;
           align-items: center;
-          font-size: 0.7rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #1f9163;
+          gap: 0.5rem;
+          font-size: var(--fs-xs);
           font-weight: var(--fw-medium);
-          margin: 0 0 1.1rem;
-          padding: 0.4rem 0.85rem;
-          border-radius: 999px;
-          background: rgba(31, 145, 99, 0.08);
+          letter-spacing: 0.01em;
+          color: var(--sh-soft);
         }
+        .sh-maker img { width: 22px; height: 22px; object-fit: contain; display: block; border-radius: 5px; background: #fff; padding: 1px; }
         .sh-title {
-          font-weight: 300;
-          font-size: clamp(2.6rem, 6vw, 4.25rem);
-          letter-spacing: -0.035em;
+          margin: 0;
+          font-size: clamp(2.5rem, 4.4vw, 3.6rem);
+          font-weight: var(--fw-light);
+          letter-spacing: -0.03em;
           line-height: 1.05;
-          margin: 0 0 1.1rem;
+          color: var(--sh-text);
           outline: none;
         }
-        /* Same gradient as "Healthcare" in the home hero, held still. */
         .sh-title-em {
           font-weight: var(--fw-regular);
-          background: linear-gradient(135deg, #7B6FCD 0%, #3A82C4 50%, #D4891E 100%);
+          background: linear-gradient(135deg, var(--sh-title-g1) 0%, var(--sh-title-g2) 50%, var(--sh-title-g3) 100%);
+          background-size: 200% 200%;
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
+          animation: shGradient 8s ease infinite;
+        }
+        @keyframes shGradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
         }
         .sh-lede {
-          font-weight: 300;
-          font-size: clamp(0.98rem, 1.4vw, 1.12rem);
-          line-height: 1.65;
-          color: var(--ink-muted);
-          max-width: 46ch;
-          margin: 0;
+          margin: 0.75rem 0 0;
+          max-width: 48ch;
+          font-size: var(--fs-lead);
+          font-weight: var(--fw-light);
+          line-height: var(--lh-body);
+          color: var(--sh-soft);
         }
-        .sh-facts {
-          list-style: none;
-          margin: clamp(1.4rem, 2.4vw, 1.9rem) 0 0;
-          padding: 0;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.75rem 1.6rem;
-        }
-        .sh-fact {
-          display: flex;
-          align-items: center;
-          gap: 0.65rem;
-          font-size: var(--fs-xs);
-          color: var(--ink-soft);
-          white-space: nowrap;
-        }
-        .sh-fact span {
-          flex: none;
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: #fff;
-          background: linear-gradient(145deg, var(--f-a), var(--f-b));
-          box-shadow: 0 4px 10px -4px rgba(var(--f-rgb), 0.65);
-        }
-        /* The building fills its column, shown whole, fading out left, right
-           and along the cut bottom edge — as in the home banner. */
-        .sh-intro-media {
-          position: relative;
-          min-height: 220px;
-        }
-        .sh-intro-media img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          object-position: 50% 100%;
-          opacity: 0.85;
-          -webkit-mask-image:
-            linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
-            linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
-          -webkit-mask-composite: source-in;
-          mask-image:
-            linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
-            linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
-          mask-composite: intersect;
-        }
-
-        /* ── Section headings ── */
-        .sh-head { margin: 0 0 clamp(1.25rem, 2.4vw, 1.75rem); }
-        .sh-kicker {
+        .sh-quick-label {
+          margin: 1.5rem 0 0.6rem;
           font-size: var(--fs-eyebrow);
           font-weight: var(--fw-medium);
           letter-spacing: var(--ls-eyebrow);
           text-transform: uppercase;
-          color: #9a9aab;
-          margin: 0 0 0.55rem;
+          color: var(--sh-muted);
+        }
+        .sh-quick {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .sh-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          min-height: 40px;
+          padding: 0 0.9rem;
+          background: var(--sh-chip-bg);
+          border: 1px solid var(--sh-chip-line);
+          border-radius: 10px;
+          color: var(--sh-text);
+          font-size: var(--fs-sm);
+          font-weight: var(--fw-medium);
+          text-decoration: none;
+          white-space: nowrap;
+          transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+        }
+        .sh-chip svg { flex: none; color: color-mix(in srgb, var(--m) 70%, #fff); }
+        .sh-chip:hover {
+          color: var(--sh-text);
+          border-color: color-mix(in srgb, var(--m) 70%, #fff);
+          background: color-mix(in srgb, var(--m) 18%, transparent);
+        }
+        .sh-chip:active { transform: scale(0.98); }
+
+        /* ── Section heading ── */
+        .sh-head { margin: 0 0 1.25rem; }
+        .sh-kicker {
+          margin: 0 0 0.4rem;
+          font-size: var(--fs-eyebrow);
+          font-weight: var(--fw-medium);
+          letter-spacing: var(--ls-eyebrow);
+          text-transform: uppercase;
+          color: var(--sh-muted);
         }
         .sh-heading {
+          margin: 0;
+          font-size: clamp(1.45rem, 2.4vw, 1.9rem);
           font-weight: var(--fw-light);
-          font-size: clamp(1.45rem, 2.6vw, 2rem);
           letter-spacing: -0.02em;
           line-height: 1.2;
-          color: var(--ink);
-          margin: 0;
+          color: var(--sh-text);
         }
 
-        /* ── Module cards ── */
+        /* ── Module cards: one row, always ──
+           Desktop: five cards side by side. Narrower screens: the same
+           single row becomes a native swipe row that snaps card by card,
+           bleeding to the screen edges so the next card peeks in. Vertical
+           padding keeps the hover lift and disc glow unclipped. */
         .sh-modules {
           display: grid;
           grid-template-columns: repeat(5, minmax(0, 1fr));
-          gap: clamp(0.85rem, 1.4vw, 1.15rem);
+          gap: clamp(0.75rem, 1vw, 1.1rem);
+          padding-block: 8px 12px;
         }
-        .sh-module {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          min-width: 0;
-          overflow: hidden;
-          padding: calc(clamp(1.3rem, 2vw, 1.6rem) + 5px) clamp(1.15rem, 1.6vw, 1.4rem) clamp(1.15rem, 1.6vw, 1.4rem);
-          text-align: left;
-          background:
-            linear-gradient(to bottom, rgba(var(--m-accent-rgb), 0.06), rgba(var(--m-accent-rgb), 0) 45%),
-            #fff;
-          border: 1px solid rgba(20, 20, 30, 0.08);
-          border-radius: 0;
-          box-shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 10px 26px rgba(20, 20, 30, 0.05);
-          transition: box-shadow 0.35s ease, border-color 0.35s ease;
-        }
-        .sh-module::before {
-          content: '';
-          position: absolute;
-          inset: 0 0 auto;
-          height: 5px;
-          background: var(--m-accent);
-        }
-        .sh-module:hover,
-        .sh-module:focus-within {
-          border-color: rgba(var(--m-accent-rgb), 0.3);
-          box-shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 20px 44px rgba(var(--m-accent-rgb), 0.16);
-        }
-        .sh-module-num {
-          position: absolute;
-          top: calc(5px + clamp(1.05rem, 1.6vw, 1.3rem));
-          right: clamp(1.05rem, 1.5vw, 1.3rem);
-          font-size: 0.74rem;
-          font-weight: var(--fw-medium);
-          letter-spacing: 0.08em;
-          font-variant-numeric: tabular-nums;
-          color: rgba(var(--m-accent-rgb), 0.6);
-        }
-        /* Free-standing icon, no tile. */
-        .sh-module-icon {
-          display: inline-flex;
-          line-height: 0;
-          color: var(--m-accent);
-          margin-bottom: 1rem;
-          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .sh-module:hover .sh-module-icon { transform: scale(1.08); }
-        .sh-module-label {
-          font-size: clamp(1.05rem, 1.3vw, 1.18rem);
-          font-weight: var(--fw-medium);
-          letter-spacing: -0.015em;
-          line-height: 1.25;
-          margin: 0 0 0.4rem;
-          overflow-wrap: anywhere;
-        }
-        .sh-module-desc {
-          font-size: 0.84rem;
-          font-weight: 300;
-          color: var(--ink-muted);
-          line-height: 1.55;
-          margin: 0 0 1rem;
-        }
-        .sh-module-points {
-          list-style: none;
-          margin: 0 0 1.35rem;
-          padding: 0;
-          display: grid;
-          gap: 0.45rem;
-        }
-        .sh-module-points li {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          font-size: 0.8rem;
-          line-height: 1.35;
-          color: var(--ink-soft);
-        }
-        .sh-module-points li::before {
-          content: '';
-          flex: none;
-          width: 10px;
-          height: 2px;
-          background: linear-gradient(90deg, var(--m-accent), rgba(var(--m-accent-rgb), 0.35));
-        }
-        .sh-demo {
-          margin-top: auto;
-          align-self: stretch;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.45rem;
-          min-height: 42px;
-          padding: 0.65rem 1rem;
-          border-radius: 0;
-          border: 0;
-          font: inherit;
-          font-size: 0.8rem;
-          font-weight: var(--fw-medium);
-          color: #fff;
-          background: var(--m-accent);
-          text-decoration: none;
-          cursor: pointer;
-          /* Hover brightens with an inset white wash, never \`filter\`: a filter
-             would make this button the containing block of its ::after and
-             shrink the card-wide click area to the button itself. */
-          box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0);
-          transition: box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
-        }
-        /* Stretched link: a click anywhere on the card is a click on this. */
-        .sh-demo::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-        }
-        .sh-demo svg { transition: transform 0.25s ease; }
-        .sh-module:hover .sh-demo,
-        .sh-module:focus-within .sh-demo { box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.12); }
-        .sh-module:hover .sh-demo svg,
-        .sh-module:focus-within .sh-demo svg { transform: translateX(3px); }
-        .sh-demo[data-soon='true'] {
-          color: color-mix(in srgb, var(--m-accent) 72%, #000);
-          background: rgba(var(--m-accent-rgb), 0.12);
-          cursor: default;
-        }
-        .sh-module:hover .sh-demo[data-soon='true'] { box-shadow: none; }
-        .sh-demo[data-soon='true']::after { cursor: default; }
-        /* The button's own label already changes, so the status line is
-           for screen readers only. */
-        .sh-note {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0 0 0 0);
-          white-space: nowrap;
+        /* Each cell is a flex box so its framed card fills the full row
+           height: every card the same size whatever its text. */
+        .sh-module { min-width: 0; display: flex; }
+        .sh-module > .npc { flex: 1; }
+        /* Below ~210px a card gets cramped, so the row turns into a swipe row
+           before that happens. */
+        @media (max-width: 1199px) {
+          .sh-modules {
+            display: flex;
+            /* Start-aligned: centring overflowing content would push the
+               first cards past the scroll origin, out of reach. */
+            justify-content: flex-start;
+            gap: 1rem;
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            margin-inline: calc(-1 * var(--sh-gutter));
+            padding: 8px var(--sh-gutter) 18px;
+            scroll-padding-inline: var(--sh-gutter);
+            scrollbar-width: thin;
+            scrollbar-color: var(--sh-scrollbar) transparent;
+          }
+          .sh-module { flex: 0 0 clamp(250px, 74vw, 300px); scroll-snap-align: start; }
         }
 
-        /* ── How it connects ── */
-        .sh-flow {
-          padding-top: clamp(2rem, 4vw, 3rem);
-          border-top: 1px solid rgba(20, 20, 30, 0.07);
-        }
+        /* ── How it works ── */
+        .sh-flow { padding-top: clamp(1.75rem, 3vw, 2.25rem); border-top: 1px solid var(--sh-line); }
         .sh-steps {
           list-style: none;
           margin: 0;
@@ -459,20 +478,15 @@ const ShriHealth = () => {
           grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: clamp(0.75rem, 1.6vw, 1.25rem);
         }
-        .sh-step {
-          position: relative;
-          min-width: 0;
-          padding-top: 1.35rem;
-        }
-        /* The track: one segment per step, blending into the next step's
-           colour, with a dot where the step begins. */
+        .sh-step { position: relative; min-width: 0; padding-top: 1.2rem; }
+        /* A coloured track, one segment per step, blending into the next. */
         .sh-step::before {
           content: '';
           position: absolute;
           inset: 0 0 auto;
           height: 2px;
           background: linear-gradient(90deg, var(--s-a), var(--s-b));
-          opacity: 0.55;
+          opacity: var(--sh-track-opacity);
         }
         .sh-step::after {
           content: '';
@@ -483,199 +497,247 @@ const ShriHealth = () => {
           height: 8px;
           border-radius: 50%;
           background: var(--s-a);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--s-a) 30%, transparent);
         }
-        .sh-step-icons {
+        .sh-step-icons { display: flex; gap: 0.4rem; line-height: 0; margin-bottom: 0.55rem; }
+        .sh-step-icons svg { color: color-mix(in srgb, var(--ic) 70%, #fff); }
+        .sh-step-label { display: block; font-size: 0.95rem; font-weight: var(--fw-medium); color: var(--sh-text); }
+        .sh-step-note { display: block; margin-top: 0.15rem; font-size: var(--fs-sm); font-weight: var(--fw-light); color: var(--sh-muted); }
+
+        /* ── Footer ── */
+        .sh-foot { padding: 0 var(--sh-gutter); border-top: 1px solid var(--sh-line); background: var(--sh-foot-bg); }
+        .sh-foot-inner {
           display: flex;
-          gap: 0.45rem;
-          line-height: 0;
-          margin-bottom: 0.7rem;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.6rem 1.5rem;
+          padding: 1.1rem 0;
+          font-size: 0.78rem;
+          color: var(--sh-muted);
         }
-        .sh-step-label {
-          display: block;
-          font-size: 0.95rem;
-          font-weight: var(--fw-medium);
-          letter-spacing: -0.01em;
-          color: var(--ink);
+        .sh-foot a {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          min-height: 32px;
+          color: var(--sh-soft);
+          text-decoration: none;
         }
-        .sh-step-note {
-          display: block;
-          margin-top: 0.2rem;
-          font-size: 0.8rem;
-          font-weight: 300;
-          color: var(--ink-muted);
-        }
-        .sh-flow-text {
-          margin: clamp(1.4rem, 2.4vw, 1.9rem) 0 0;
-          max-width: 72ch;
-          font-size: 0.9rem;
-          font-weight: 300;
-          line-height: 1.65;
-          color: var(--ink-muted);
-        }
+        .sh-foot a:hover { color: var(--sh-text); }
 
-        .sh-demo:focus-visible, .sh-back:focus-visible, .sh-brand:focus-visible {
-          outline: 2px solid #3A82C4;
-          outline-offset: 3px;
-        }
+        /* One focus ring for every link and button on the page, cards
+           included, in the theme's own colour. */
+        .sh-root a:focus-visible, .sh-root button:focus-visible { outline: 2px solid var(--sh-focus); outline-offset: 3px; }
 
-        .sh-foot {
-          padding: 1.25rem var(--gutter);
-          text-align: center;
-          font-size: 0.75rem;
-          color: #9a9aab;
-          border-top: 1px solid rgba(20, 20, 30, 0.06);
-        }
-
-        /* Five in a row needs ~200px per card for its button and points; below
-           that the grid drops to two columns and the page narrows with it. */
-        @media (max-width: 1200px) {
-          .sh-section, .sh-flow { width: min(100%, 760px); }
-          .sh-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          /* Five cards in two columns: the first spans the row, so it reads
-             1 + 2 + 2 rather than leaving the last card on its own. */
-          .sh-module:first-child { grid-column: 1 / -1; }
-        }
-        @media (min-width: 561px) and (max-width: 1200px) {
-          /* The wide first card sets its points out in a row. */
-          .sh-module:first-child .sh-module-points {
-            grid-auto-flow: column;
-            justify-content: start;
-            gap: 0.45rem 1.5rem;
-          }
-        }
-        @media (max-width: 1000px) {
-          .sh-intro { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
-        }
+        /* ── Responsive ── */
         @media (max-width: 640px) {
-          /* Phones: no room beside the heading, so the building goes rather
-             than sitting under the text. */
-          .sh-intro { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-          .sh-intro-media { display: none; }
-          .sh-fact { white-space: normal; }
-          /* The track turns vertical: a line down the left of each step. */
-          .sh-steps { grid-template-columns: minmax(0, 1fr); gap: 0; }
-          .sh-step { padding: 0 0 1.35rem 1.4rem; }
-          .sh-step::before {
-            inset: 0 auto 0 3px;
-            width: 2px;
-            height: auto;
-            background: linear-gradient(180deg, var(--s-a), var(--s-b));
-          }
-          .sh-step::after { top: 0; left: 0; }
-          .sh-step:last-child { padding-bottom: 0; }
-          .sh-step:last-child::before { display: none; }
-        }
-        @media (max-width: 560px) {
-          .sh-modules { grid-template-columns: minmax(0, 1fr); }
-        }
-        @media (max-width: 380px) {
-          .sh-brand span { display: none; }
+          .sh-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.5rem; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .sh-module, .sh-back, .sh-demo, .sh-demo svg, .sh-module-icon { transition: none; }
-          .sh-module:hover .sh-module-icon,
-          .sh-module:hover .sh-demo svg,
-          .sh-module:focus-within .sh-demo svg { transform: none; }
+          .sh-title-em { animation: none; }
+          .sh-chip, .sh-theme, .sh-theme-icon { transition: none; }
+          .sh-chip:active, .sh-theme:active { transform: none; }
+          ::view-transition-group(*),
+          ::view-transition-old(*),
+          ::view-transition-new(*) { animation: none !important; }
         }
-      `}</style>
 
-      <div className="sh-root">
+        /* Paper is white: print the light theme whatever the screen shows. */
+        @media print {
+          .sh-root, .sh-root[data-theme] {${LIGHT_TOKENS}
+          }
+          ${LIGHT_MODULE_RULES('.sh-root')}
+          .sh-theme { display: none; }
+          .sh-root .npc--dark {
+            --npc-title: var(--ink);
+            --npc-text: var(--ink-soft);
+            --npc-frame: rgba(20, 20, 30, 0.2);
+          }
+          .sh-root .npc--dark.npc--framed { background: #fff; }
+          .sh-root .npc--dark .npc-tags li {
+            background: color-mix(in srgb, var(--npc-accent, #8a8a9c) 11%, #fff);
+            color: color-mix(in srgb, var(--npc-accent, #55556a) 80%, #000);
+          }
+        }
+`;
+
+const ShriHealth = () => {
+  const titleRef = useRef(null);
+  const rootRef = useRef(null);
+  const metaRef = useRef(null);
+  // Lazy: the first render already has the visitor's theme, so there's no
+  // flash of the other one (this page renders on the client only).
+  const [theme, setTheme] = useState(readStoredTheme);
+  const isDark = theme === 'dark';
+  const switchLabel = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = 'SHRI-Health | SHRI-AI';
+    titleRef.current?.focus({ preventScroll: true });
+    return () => { document.title = previousTitle; };
+  }, []);
+
+  // The page's surroundings follow its theme: the body behind it (so iOS
+  // overscroll never flashes another colour), the root colour-scheme (the
+  // main scrollbar) and the mobile browser's chrome. (1) Note what was
+  // there on mount and put it back on unmount; it must run before (2).
+  useLayoutEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const previousBg = body.style.backgroundColor;
+    const previousScheme = html.style.colorScheme;
+    let meta = document.querySelector('meta[name="theme-color"]');
+    const created = !meta;
+    const previousContent = meta ? meta.getAttribute('content') : null;
+    if (created) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    metaRef.current = meta;
+    return () => {
+      body.style.backgroundColor = previousBg;
+      html.style.colorScheme = previousScheme;
+      if (created) meta.remove();
+      else if (previousContent === null) meta.removeAttribute('content');
+      else meta.setAttribute('content', previousContent);
+      metaRef.current = null;
+    };
+  }, []);
+
+  // (2) Apply the current theme to them.
+  useLayoutEffect(() => {
+    document.body.style.backgroundColor = THEME_BG[theme];
+    document.documentElement.style.colorScheme = theme;
+    metaRef.current?.setAttribute('content', THEME_BG[theme]);
+  }, [theme]);
+
+  // Keep other open /dev tabs in step when the theme changes in one.
+  useEffect(() => {
+    const onStorage = (event) => {
+      if (event.key !== THEME_KEY && event.key !== null) return;
+      setTheme(isTheme(event.newValue) ? event.newValue : 'dark');
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  const toggleTheme = () => {
+    // Worked out once, so storage and state always agree.
+    const next = isDark ? 'light' : 'dark';
+    writeStoredTheme(next);
+    const root = rootRef.current;
+    const commit = () => {
+      root?.setAttribute('data-theme-switching', '');
+      flushSync(() => setTheme(next));
+      if (root) {
+        // Apply the new theme while transitions are held, then release them.
+        void getComputedStyle(root).color;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => root.removeAttribute('data-theme-switching'));
+        });
+      }
+    };
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && typeof document.startViewTransition === 'function') {
+      // Called as a method, callback form: the browser cross-fades a
+      // snapshot of the old theme into the new one.
+      document.startViewTransition(commit);
+    } else {
+      commit();
+    }
+  };
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <style>{CSS}</style>
+
+      <div className="sh-root" id="sh-top" ref={rootRef} data-theme={theme}>
         <header className="sh-bar">
-          <a className="sh-brand" href="/" aria-label="SHRI-AI home">
-            <img src="/shri-ai-logo.webp" alt="" draggable={false} />
-            <span>SHRI-AI</span>
-          </a>
-          <a className="sh-back" href="/">
-            <ArrowLeft size={14} strokeWidth={2} aria-hidden="true" />
-            Back to SHRI-AI
-          </a>
+          <div className="sh-wrap sh-bar-inner">
+            <a className="sh-brand" href="/" aria-label="SHRI-AI home">
+              <img src="/shri-ai-logo.webp" alt="" draggable={false} />
+              <b>SHRI-Health</b>
+            </a>
+            <button
+              type="button"
+              className="sh-theme"
+              onClick={toggleTheme}
+              aria-label={switchLabel}
+              title={switchLabel}
+            >
+              <Moon className="sh-theme-icon sh-theme-moon" size={18} strokeWidth={1.8} aria-hidden="true" />
+              <Sun className="sh-theme-icon sh-theme-sun" size={18} strokeWidth={1.8} aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
         <main className="sh-main">
-          <section className="sh-wrap sh-intro">
-            <motion.div className="sh-intro-text" {...rise(0)}>
-              <p className="sh-eyebrow">A product of SHRI-AI</p>
-              <h1 className="sh-title" ref={titleRef} tabIndex={-1}>
+          <motion.section className="sh-wrap" aria-labelledby="sh-title" {...RISE}>
+            <div className="sh-banner-text">
+              <div className="sh-meta">
+                <span className="sh-maker">
+                  <img src="/shri-ai-logo.webp" alt="" draggable={false} />
+                  A product of SHRI-AI
+                </span>
+              </div>
+              <h1 className="sh-title" id="sh-title" ref={titleRef} tabIndex={-1}>
                 SHRI-<span className="sh-title-em">Health</span>
               </h1>
               <p className="sh-lede">
-                One connected care platform for care entry, doctors, pharmacy,
+                One connected care platform for care entry, clinicians, pharmacy,
                 laboratory and procurement management.
               </p>
-              <ul className="sh-facts">
-                {FACTS.map(({ Icon, label, a, b, rgb }) => (
-                  <li key={label} className="sh-fact" style={{ '--f-a': a, '--f-b': b, '--f-rgb': rgb }}>
-                    <span aria-hidden="true"><Icon size={13} strokeWidth={2} /></span>
-                    {label}
+              <p className="sh-quick-label" id="sh-quick-label">Open a demo</p>
+              <ul className="sh-quick" aria-labelledby="sh-quick-label">
+                {MODULES.filter((m) => m.demoUrl).map(({ id, label, Icon, accent, accentRgb, demoUrl }) => (
+                  <li key={id}>
+                    <a className="sh-chip" href={demoUrl} style={{ '--m': accent, '--m-rgb': accentRgb }}>
+                      <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
+                      {label}
+                    </a>
                   </li>
                 ))}
               </ul>
-            </motion.div>
-            <motion.div className="sh-intro-media" aria-hidden="true" {...rise(1)}>
-              <img src="/banner-hospital.webp" alt="" draggable={false} width={1600} height={782} />
-            </motion.div>
-          </section>
-
-          <section className="sh-wrap sh-section" aria-labelledby="sh-modules-heading">
-            <motion.div className="sh-head" {...rise(0)}>
-              <p className="sh-kicker">Platform modules</p>
-              <h2 className="sh-heading" id="sh-modules-heading">Open any module to try its live demo</h2>
-            </motion.div>
-
-            <div className="sh-modules">
-              {MODULES.map(({ id, label, desc, points, Icon, accent, accentRgb, demoUrl }, i) => {
-                const soon = requested.has(id);
-                return (
-                  <motion.article
-                    key={id}
-                    className="sh-module"
-                    style={{ '--m-accent': accent, '--m-accent-rgb': accentRgb }}
-                    {...rise(i)}
-                    whileHover={{ y: -4, transition: { duration: 0.35, ease: EASE } }}
-                  >
-                    <span className="sh-module-num" aria-hidden="true">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="sh-module-icon" aria-hidden="true">
-                      <Icon size={28} strokeWidth={1.6} />
-                    </span>
-                    <h3 className="sh-module-label">{label}</h3>
-                    <p className="sh-module-desc">{desc}</p>
-                    <ul className="sh-module-points">
-                      {points.map((point) => <li key={point}>{point}</li>)}
-                    </ul>
-
-                    {demoUrl ? (
-                      <a className="sh-demo" href={demoUrl} aria-label={`View ${label} demo`}>
-                        View Demo
-                        <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
-                      </a>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          className="sh-demo"
-                          data-soon={soon}
-                          aria-label={`View ${label} demo`}
-                          onClick={() => request(id)}
-                        >
-                          {soon ? 'Demo coming soon' : 'View Demo'}
-                          {!soon && <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />}
-                        </button>
-                        <p className="sh-note" role="status" aria-live="polite">
-                          {soon && 'Demo launching soon.'}
-                        </p>
-                      </>
-                    )}
-                  </motion.article>
-                );
-              })}
             </div>
+          </motion.section>
+
+          <section className="sh-wrap" aria-labelledby="sh-modules-heading">
+            <div className="sh-head">
+              <p className="sh-kicker">Modules</p>
+              <h2 className="sh-heading" id="sh-modules-heading">Open a module</h2>
+            </div>
+
+            {/* The row animates in as a whole: cards waiting off-screen in the
+                swipe row would otherwise never be "in view" to appear. */}
+            <motion.div className="sh-modules" {...RISE}>
+              {MODULES.map(({ id, label, desc, points, image, imageAlt, accent, demoUrl }) => (
+                <div key={id} className="sh-module">
+                  <NotchedProjectCard
+                    href={demoUrl || undefined}
+                    ariaLabel={`Open the ${label} demo`}
+                    title={label}
+                    description={desc}
+                    image={image}
+                    imageAlt={imageAlt}
+                    imageWidth={1200}
+                    imageHeight={900}
+                    badge={demoUrl ? undefined : 'Coming soon'}
+                    tags={points}
+                    accent={accent}
+                    tone={theme}
+                    framed
+                  />
+                </div>
+              ))}
+            </motion.div>
           </section>
 
-          <motion.section className="sh-wrap sh-flow" aria-labelledby="sh-flow-heading" {...rise(0)}>
+          <motion.section className="sh-wrap sh-flow" aria-labelledby="sh-flow-heading" {...RISE}>
             <div className="sh-head">
-              <p className="sh-kicker">How it connects</p>
+              <p className="sh-kicker">How it works</p>
               <h2 className="sh-heading" id="sh-flow-heading">From registration to results</h2>
             </div>
             <ol className="sh-steps">
@@ -683,15 +745,11 @@ const ShriHealth = () => {
                 const first = byId[step.modules[0]];
                 const next = FLOW[i + 1] ? byId[FLOW[i + 1].modules[0]] : first;
                 return (
-                  <li
-                    key={step.key}
-                    className="sh-step"
-                    style={{ '--s-a': first.accent, '--s-b': next.accent }}
-                  >
+                  <li key={step.label} className="sh-step" style={{ '--s-a': first.accent, '--s-b': next.accent }}>
                     <span className="sh-step-icons" aria-hidden="true">
                       {step.modules.map((mid) => {
                         const { Icon, accent } = byId[mid];
-                        return <Icon key={mid} size={24} strokeWidth={1.6} color={accent} />;
+                        return <Icon key={mid} size={22} strokeWidth={1.7} style={{ '--ic': accent }} />;
                       })}
                     </span>
                     <span className="sh-step-label">{step.label}</span>
@@ -700,16 +758,17 @@ const ShriHealth = () => {
                 );
               })}
             </ol>
-            <p className="sh-flow-text">
-              Patients are registered and checked in at Care Entry, seen by the doctor, and
-              served by the pharmacy and the lab, while procurement keeps medicines and
-              supplies stocked.
-            </p>
           </motion.section>
         </main>
 
         <footer className="sh-foot">
-          SHRI-Health is a product of SHRI-AI, Senus Healthcare Research Institute.
+          <div className="sh-wrap sh-foot-inner">
+            <span>SHRI-Health is a product of SHRI-AI, Senus Healthcare Research Institute · {BUILD_VERSION}</span>
+            <a href="#sh-top">
+              Back to top
+              <ArrowUp size={13} strokeWidth={2} aria-hidden="true" />
+            </a>
+          </div>
         </footer>
       </div>
     </MotionConfig>

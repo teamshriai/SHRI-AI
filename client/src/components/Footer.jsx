@@ -1,18 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { scrollToSection } from '../lib/scrollToSection';
-
-// Injected by vite.config.js at build time (see `define`), with dev fallbacks.
-/** "2026-08-19" -> "19.8.26" (D.M.YY). Built explicitly rather than via
- *  toLocaleDateString so the footer reads identically in every locale. */
-function formatBuildVersion(iso) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
-  if (!m) return iso || '';
-  return `${Number(m[3])}.${Number(m[2])}.${m[1].slice(2)}`;
-}
-
-const BUILD_VERSION = formatBuildVersion(
-  import.meta.env.VITE_BUILD_DATE || new Date().toISOString().slice(0, 10)
-);
+import { BUILD_VERSION } from '../lib/buildVersion';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -633,7 +621,7 @@ const Footer = () => {
 
         <div className="shri-footer-bottom">
           <p>© {year} Senus Healthcare Research Institute · 501(c)(3) Nonprofit</p>
-          <p className="shri-build-info">Version {BUILD_VERSION}</p>
+          <p className="shri-build-info">{BUILD_VERSION}</p>
           <div className="shri-legal-links">
             <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Privacy Policy</a>
             <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Terms of Service</a>

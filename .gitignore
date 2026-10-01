@@ -58,8 +58,9 @@ coverage/
 *.swp
 *.swo
 *~
-# Claude Code local session settings
+# Claude Code local settings and installed skills (`npx skills add`)
 .claude/
+skills-lock.json
 
 
 # ── OS files ──
