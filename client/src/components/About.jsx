@@ -23,21 +23,6 @@ const About = () => {
         .accent-blue   { color: #3A82C4; }
         .accent-green  { color: #2aaa72; }
 
-        .icon-chip {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          vertical-align: middle;
-          position: relative;
-          top: -0.06em;
-          margin-left: 0.22em;
-          flex-shrink: 0;
-        }
-
-        .icon-chip svg {
-          display: block;
-        }
-
         .footer-tagline-wrapper {
           position: relative;
           z-index: 10;

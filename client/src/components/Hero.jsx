@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { motion, MotionConfig } from 'framer-motion';
+import { m, MotionConfig } from 'framer-motion';
 import {
   Activity, ArrowRight, Brain, ChartColumn, ChevronRight, ClipboardList,
   Crosshair, Dna, HeartPulse, Radar, Scan, ScanLine, Users,
@@ -116,7 +116,7 @@ const MODULE_CARDS = [
     title: 'Stroke AI',
     tagline: 'AI for Faster Detection and Better Outcomes',
     emblem: 'brain',
-    image: '/stroke-brain.webp',
+    image: '/images/home/stroke-brain.webp',
     imageSize: [425, 460],
     // A transparent cut-out: shown as-is, with no edge fade.
     cutout: true,
@@ -136,7 +136,7 @@ const MODULE_CARDS = [
     title: 'OncoTrace AI',
     tagline: 'AI Imaging + NGS for Early Detection and Personalized Care',
     emblem: 'ribbon',
-    image: '/oncotrace-breast.webp',
+    image: '/images/home/oncotrace-breast.webp',
     imageSize: [358, 460],
     cutout: true,
     features: [
@@ -155,7 +155,7 @@ const MODULE_CARDS = [
     title: 'SHRI HEALTH',
     tagline: 'AI Imaging + NGS for Precision Oncology',
     emblem: 'hospital',
-    image: '/shri-health-lung.webp',
+    image: '/images/home/shri-health-lung.webp',
     imageSize: [376, 406],
     features: [
       { Icon: ScanLine, label: 'CT Imaging AI' },
@@ -170,6 +170,8 @@ const MODULE_CARDS = [
 ];
 
 const EASE = [0.22, 1, 0.36, 1];
+// A transparent 1x1 GIF, for <source>s that should load nothing.
+const BLANK_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const rise = (i = 0) => ({
   initial: { opacity: 0, y: 26 },
   whileInView: { opacity: 1, y: 0 },
@@ -637,7 +639,7 @@ const Hero = () => {
         <div className="hh-wrap hh-body">
           <section className="hh-banner">
             <div className="hh-banner-inner">
-              <motion.div className="hh-banner-text" {...rise(0)}>
+              <m.div className="hh-banner-text" {...rise(0)}>
                 <h1 className="hh-title">
                   AI-Powered <span className="hh-title-em">Healthcare</span>
                 </h1>
@@ -645,16 +647,32 @@ const Hero = () => {
                 <p className="hh-org">
                   A California-based <span className="hh-org-em">501(c)(3)</span> nonprofit organization
                 </p>
-              </motion.div>
-              <motion.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
-                <img src="/banner-hospital.webp" alt="" draggable={false} width={1600} height={782} />
-              </motion.div>
+              </m.div>
+              <m.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
+                {/* The desktop LCP image: fetched first, at the width it is shown
+                    (about 40% of the screen). Phones hide the banner, so they get a
+                    1x1 placeholder and never download the photo. */}
+                <picture>
+                  <source media="(max-width: 640px)" srcSet={BLANK_PIXEL} />
+                  <img
+                    src="/images/home/banner-hospital.webp"
+                    srcSet="/images/home/banner-hospital-800.webp 800w, /images/home/banner-hospital.webp 1600w"
+                    sizes="42vw"
+                    alt=""
+                    width={1600}
+                    height={782}
+                    fetchPriority="high"
+                    decoding="async"
+                    draggable={false}
+                  />
+                </picture>
+              </m.div>
               <ul className="hh-points">
                 {HERO_POINTS.map(({ Icon, label, vars }, i) => (
-                  <motion.li key={label} className="hh-point" style={vars} {...rise(i + 1)}>
+                  <m.li key={label} className="hh-point" style={vars} {...rise(i + 1)}>
                     <span aria-hidden="true"><Icon size={14} strokeWidth={1.75} /></span>
                     {label}
-                  </motion.li>
+                  </m.li>
                 ))}
               </ul>
             </div>
@@ -666,7 +684,7 @@ const Hero = () => {
                 ? { href: card.href, target: '_blank', rel: 'noopener noreferrer' }
                 : { href: card.href };
               return (
-                <motion.article
+                <m.article
                   key={card.id}
                   className="hh-card hh-surface"
                   style={card.vars}
@@ -714,7 +732,7 @@ const Hero = () => {
                     {card.cta}
                     <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
                   </a>
-                </motion.article>
+                </m.article>
               );
             })}
           </section>

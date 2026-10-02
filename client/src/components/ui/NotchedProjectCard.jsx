@@ -284,6 +284,10 @@ export function NotchedProjectCard({
   imageAlt = '',
   imageWidth,
   imageHeight,
+  // Optional responsive sources: e.g. "a-640.webp 640w, a.webp 1200w" with
+  // a matching sizes hint, so small screens download the small file.
+  imageSrcSet,
+  imageSizes,
   badge,
   tags = [],
   monochrome = false,
@@ -321,6 +325,8 @@ export function NotchedProjectCard({
             <img
               className="npc-img"
               src={image}
+              srcSet={imageSrcSet}
+              sizes={imageSrcSet ? imageSizes : undefined}
               alt={imageAlt}
               width={imageWidth}
               height={imageHeight}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { BrainCircuit, Dna, Microscope, Stethoscope } from 'lucide-react';
 import { scrollToSection } from '../lib/scrollToSection';
 
@@ -603,21 +603,6 @@ const Services = () => {
           outline-offset: -2px;
         }
 
-        /* ── partner pills ── */
-        .fa2-partner-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.55rem 1.1rem;
-          border-radius: 100px;
-          font-size: 0.82rem;
-          font-weight: 500;
-          font-family: var(--font-sans);
-          letter-spacing: 0.01em;
-          border: 1px solid transparent;
-          background: #fff;
-        }
-
         /* ── collab grid ── */
         .fa2-collab-grid {
           display: grid;
@@ -764,11 +749,6 @@ const Services = () => {
           height: 1px;
           background: rgba(0,0,0,0.07);
         }
-        .fa2-partners-row {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.65rem;
-        }
         .fa2-focus-grid {
           display: grid;
           grid-template-columns: clamp(200px, 28%, 320px) 1fr;
@@ -833,7 +813,7 @@ const Services = () => {
               research content, not buried under it. The logo is decorative
               here — the company is named in the text beside it — so alt is
               empty rather than a duplicate of the adjacent sentence. */}
-          <motion.div
+          <m.div
             className="fa2-sponsor"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -851,7 +831,7 @@ const Services = () => {
                 aria-label="ViSolve portfolio (opens in a new tab)"
               >
                 <img
-                  src="/visolve-logo.webp"
+                  src="/images/services/visolve-logo.webp"
                   alt="ViSolve"
                   className="fa2-sponsor-logo"
                   width="201"
@@ -882,7 +862,7 @@ const Services = () => {
                   stroke imaging, and AI for healthcare.
                 </p>
 
-                <motion.a
+                <m.a
                   href="https://visolve.com/portfolio/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -895,7 +875,7 @@ const Services = () => {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </motion.a>
+                </m.a>
               </div>
             </div>
 
@@ -910,7 +890,7 @@ const Services = () => {
               </p>
               <ol className="fa2-ai-index">
                 {VISOLVE_AI.map(({ Icon, title, desc, items, accent, accentRgb }, i) => (
-                  <motion.li
+                  <m.li
                     key={title}
                     className="fa2-ai-row"
                     style={{ '--ai-accent': accent, '--ai-accent-rgb': accentRgb }}
@@ -932,11 +912,11 @@ const Services = () => {
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
-                  </motion.li>
+                  </m.li>
                 ))}
               </ol>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* ═══════════════════════════════════
               SECTION 1 — FOCUS AREAS
@@ -944,7 +924,7 @@ const Services = () => {
           <div className="fa2-focus-grid">
 
             {/* Left sticky header */}
-            <motion.div
+            <m.div
               className="fa2-sticky-left"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -975,10 +955,10 @@ const Services = () => {
               </h2>
 
               <div style={{ width: '2rem', height: '1px', background: '#0a0a0a', marginBottom: '1.5rem' }} />
-            </motion.div>
+            </m.div>
 
             {/* Right accordion */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.1 }}
@@ -995,7 +975,7 @@ const Services = () => {
                       style={{ background: isActive ? '#fff' : '#fdfdfd' }}
                     >
                       {/* Animated accent bar */}
-                      <motion.div
+                      <m.div
                         initial={{ scaleY: 0, opacity: 0 }}
                         animate={{ scaleY: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
                         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -1020,13 +1000,13 @@ const Services = () => {
                         <span style={monoNum}>{area.number}</span>
 
                         {/* Icon */}
-                        <motion.span
+                        <m.span
                           animate={{ color: isActive ? area.accent : '#bbb' }}
                           transition={{ duration: 0.25 }}
                           style={{ display: 'flex', alignItems: 'center', marginRight: '1.25rem', flexShrink: 0 }}
                         >
                           {area.icon}
-                        </motion.span>
+                        </m.span>
 
                         {/* Title + subtitle */}
                         <span style={{ flex: 1, minWidth: 0 }}>
@@ -1057,7 +1037,7 @@ const Services = () => {
                         </span>
 
                         {/* Plus / cross icon */}
-                        <motion.span
+                        <m.span
                           animate={{ rotate: isActive ? 45 : 0 }}
                           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                           style={{
@@ -1075,13 +1055,13 @@ const Services = () => {
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                             <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                           </svg>
-                        </motion.span>
+                        </m.span>
                       </button>
 
                       {/* Expandable panel */}
                       <AnimatePresence initial={false}>
                         {isActive && (
-                          <motion.div
+                          <m.div
                             key="content"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
@@ -1111,7 +1091,7 @@ const Services = () => {
 
                               <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                                 {area.features.map((f, fi) => (
-                                  <motion.div
+                                  <m.div
                                     key={f}
                                     initial={{ opacity: 0, x: -8 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -1134,18 +1114,18 @@ const Services = () => {
                                       <circle cx="12" cy="12" r="9" stroke={area.accent} strokeWidth="1.5" opacity="0.3" />
                                     </svg>
                                     {f}
-                                  </motion.div>
+                                  </m.div>
                                 ))}
                               </div>
                             </div>
-                          </motion.div>
+                          </m.div>
                         )}
                       </AnimatePresence>
                     </div>
                   );
                 })}
               </div>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* ── Divider ── */}
@@ -1156,7 +1136,7 @@ const Services = () => {
           ═══════════════════════════════════ */}
 
           {/* Heading */}
-          <motion.div
+          <m.div
             id="partnership"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1174,10 +1154,10 @@ const Services = () => {
             <p style={{ ...dmSans, fontSize: '0.875rem', color: '#888', fontWeight: 300, maxWidth: '50ch', lineHeight: 1.7 }}>
               Accelerating healthcare innovation through diverse global collaborations.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Areas of Collaboration */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.1 }}
@@ -1189,7 +1169,7 @@ const Services = () => {
             </p>
             <div className="fa2-collab-grid">
               {collaborationAreas.map((area, i) => (
-                <motion.div
+                <m.div
                   key={area.title}
                   className="fa2-collab-card"
                   initial={{ opacity: 0, y: 20 }}
@@ -1205,13 +1185,13 @@ const Services = () => {
                   <p style={{ ...dmSans, fontSize: '0.8rem', color: '#999', fontWeight: 300, lineHeight: 1.6, margin: 0 }}>
                     {area.desc}
                   </p>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
           {/* CTA */}
-          <motion.div
+          <m.div
             className="fa2-cta-block"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1238,7 +1218,7 @@ const Services = () => {
                 <p style={{ ...dmSans, fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7, maxWidth: '55ch', margin: 0 }}>
                   As a nonprofit, SHRI-AI relies on strategic partnerships and philanthropic contributions.
                 </p>
-                <motion.a
+                <m.a
                   href="#contact"
                   onClick={(e) => {
                     e.preventDefault();
@@ -1254,17 +1234,17 @@ const Services = () => {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </motion.a>
+                </m.a>
               </div>
             </div>
 
-          </motion.div>
+          </m.div>
 
           {/* ═══════════════════════════════════
               COLLABORATING ORGANISATION
               Its own container, sibling to the CTA block above.
           ═══════════════════════════════════ */}
-          <motion.div
+          <m.div
             className="fa2-org"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1272,7 +1252,14 @@ const Services = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <figure className="fa2-org-visual">
-              <img src="/indostateshealth.webp" alt="The Indo States Health hospital campus" />
+              <img
+                src="/images/services/indostateshealth.webp"
+                alt="The Indo States Health hospital campus"
+                width={1200}
+                height={642}
+                loading="lazy"
+                decoding="async"
+              />
             </figure>
             <div className="fa2-org-panel">
               <p className="fa2-org-eyebrow">Collaborating Organization</p>
@@ -1284,7 +1271,7 @@ const Services = () => {
                 Advancing equitable healthcare by making state-of-the-art medical treatment accessible to every individual, regardless of background.
               </p>
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </section>

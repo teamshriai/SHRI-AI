@@ -1,12 +1,13 @@
-import { useEffect, useRef } from 'react';
-import { ABOUT_SHRI_AI } from '../data/roles';
+import { useEffect, useMemo, useRef } from 'react';
+import { ABOUT_SHRI_AI, getRoleDetails } from '../data/roleDetails';
 import { navigateHome } from '../lib/careersRoute';
 
 /**
  * Standalone job page. Rendered by App instead of the site — not on top of it —
  * so it has its own scroll, its own header and no navbar scroll-spy to fight
- * with. Every listing uses the same section order, driven entirely by the role
- * object in src/data/roles.js.
+ * with. Every listing uses the same section order, driven entirely by the role:
+ * its card fields from src/data/roles.js (passed in as `role`) merged with its
+ * long-form fields from src/data/roleDetails.js, which loads with this page.
  */
 
 const SECTIONS = [
@@ -41,7 +42,9 @@ const ArrowRight = () => (
 /** Where applications go. One constant, used by every listing. */
 const HR_EMAIL = 'hr@shri-ai.org';
 
-const JobDetail = ({ job }) => {
+const JobDetail = ({ role }) => {
+  // Card fields + long-form fields, merged once per role.
+  const job = useMemo(() => (role ? { ...role, ...getRoleDetails(role.slug) } : undefined), [role]);
   const titleRef = useRef(null);
 
   // Announce the new page to assistive technology, and label the browser tab.
@@ -506,7 +509,7 @@ const JobDetail = ({ job }) => {
   const bar = (
     <div className="jd-bar">
       <button type="button" className="jd-brand" onClick={goHome} aria-label="SHRI-AI home">
-        <img className="jd-brand-mark" src="/shri-ai-logo.webp" alt="" draggable={false} />
+        <img className="jd-brand-mark" src="/images/brand/shri-ai-logo.webp" alt="" width={35} height={35} draggable={false} />
         <span className="jd-brand-name">SHRI-AI</span>
       </button>
       <button type="button" className="jd-back" onClick={goHome}>

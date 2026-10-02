@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -6,8 +6,7 @@ import Services from './components/Services';
 import Team from './components/Team';
 import Careers from './components/Careers';
 import Footer from './components/Footer';
-import JobDetail from './components/JobDetail';
-import ShriHealth from './components/ShriHealth';
+import { lazyPage } from './lib/lazyPage';
 import { getRoleBySlug } from './data/roles';
 import {
   ROUTE_EVENT,
@@ -18,6 +17,12 @@ import {
   readSectionRoute,
 } from './lib/careersRoute';
 import { scrollTargetFor } from './lib/scrollToSection';
+
+// Separate pages load on demand, so the home page doesn't carry them.
+const ShriHealth = lazyPage(() => import('./components/ShriHealth'));
+const JobDetail = lazyPage(() => import('./components/JobDetail'));
+// Held while a lazy page loads: an empty full-height area, no flash.
+const pageFallback = <div style={{ minHeight: '100dvh' }} aria-busy="true" />;
 
 function App() {
   const wrapRef  = useRef(null);
@@ -195,11 +200,19 @@ function App() {
   }, [roleSlug]);
 
   if (page === 'shri-health') {
-    return <ShriHealth />;
+    return (
+      <Suspense fallback={pageFallback}>
+        <ShriHealth />
+      </Suspense>
+    );
   }
 
   if (roleSlug) {
-    return <JobDetail job={getRoleBySlug(roleSlug)} />;
+    return (
+      <Suspense fallback={pageFallback}>
+        <JobDetail role={getRoleBySlug(roleSlug)} />
+      </Suspense>
+    );
   }
 
   return (

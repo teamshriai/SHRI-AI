@@ -10,10 +10,10 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
  * Clean URLs that must resolve on a plain static host.
  *
  * https://shri-ai.org/careers and https://shri-ai.org/team are linked from
- * Stroke-AI. The site is served by nginx with no SPA fallback, so those paths
- * returned 404: public/_redirects and public/.htaccess only cover
- * Netlify-style and Apache hosts, and nginx reads neither. Rather than depend
- * on a server change, the build writes a real dist/<path>/index.html — nginx
+ * Stroke-AI. The site is served by nginx, and a server without an SPA
+ * fallback would 404 those paths. Rather than depend on that server setting
+ * (see deploy/nginx/shri-ai-site.conf), the build writes a real
+ * dist/<path>/index.html — nginx
  * then serves it as the directory index, and App reads the path and lands on
  * the matching heading.
  *
@@ -61,5 +61,22 @@ export default defineConfig({
       new Date().toISOString().slice(0, 10)
     ),
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
+  },
+  build: {
+    // Every browser the site supports runs ES2020; no legacy transforms.
+    target: 'es2020',
+    rolldownOptions: {
+      output: {
+        // Libraries in their own long-lived chunks: a content change to the
+        // site's code doesn't make returning visitors re-download React or
+        // the animation library (nginx caches /assets/ for a year).
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/, priority: 20 },
+            { name: 'motion', test: /node_modules[\\/](framer-motion|motion-dom|motion-utils)[\\/]/, priority: 10 },
+          ],
+        },
+      },
+    },
   },
 })

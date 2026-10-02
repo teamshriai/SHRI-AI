@@ -445,9 +445,11 @@ const Navbar = () => {
               textDecoration: 'none',
             }}
           >
-            <img 
-              src="/shri-ai-logo.webp" 
-              alt="SHRI-AI logo" 
+            <img
+              src="/images/brand/shri-ai-logo.webp"
+              alt="SHRI-AI logo"
+              width="48"
+              height="48"
               className="logo-img"
             />
 

@@ -2,8 +2,12 @@
 # SHRI-AI — one root .gitignore for the whole repository.
 #
 # What is committed:
-#   client/          the website (React + Vite)
-#   client/dist/     the built site — tracked on purpose, see "Build output"
+#   client/src/         the website's source (React + Vite)
+#   client/public/      static files served as-is, incl. the built photos
+#   client/dist/        the built site — tracked on purpose, see "Build output"
+#   client/image-src/   photo manifests (sources.json), not the photos
+#   client/scripts/     build tooling (npm run images)
+#   client/deploy/      server config examples
 #
 # Patterns without a leading slash match at any depth.
 # ─────────────────────────────────────────────────────────────────────────────
@@ -19,7 +23,6 @@
 # ── Dependencies ──
 # Rebuilt from package-lock.json by `npm ci`; the lockfile stays committed.
 node_modules/
-jspm_packages/
 
 
 # ── Build output ──
@@ -29,6 +32,14 @@ jspm_packages/
 .vite/
 *.tsbuildinfo
 *.local
+
+
+# ── Image originals ──
+# Full-size photos downloaded by `npm run images` (client/scripts/
+# build-images.mjs). Each set's sources.json is the committed record of
+# where they come from; the originals are only a local cache, and the
+# optimised WebP output in client/public/ is what ships.
+client/image-src/**/originals/
 
 
 # ── Environment files ──
@@ -58,6 +69,10 @@ coverage/
 *.swp
 *.swo
 *~
+# Merge and backup leftovers
+*.orig
+*.rej
+*.bak
 # Claude Code local settings and installed skills (`npx skills add`)
 .claude/
 skills-lock.json

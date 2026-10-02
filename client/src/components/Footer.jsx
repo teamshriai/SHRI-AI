@@ -53,11 +53,9 @@ const Footer = () => {
 
         @keyframes subtle-drift1 { 0%{transform:translateY(0) translateZ(0);} 100%{transform:translateY(-10px) translateZ(0);} }
         @keyframes subtle-drift2 { 0%{transform:translateY(0) translateZ(0);} 100%{transform:translateY(-7px) translateZ(0);} }
-        @keyframes subtle-drift3 { 0%{transform:translateY(0) translateZ(0);} 100%{transform:translateY(-13px) translateZ(0);} }
 
         .sd1 { animation: subtle-drift1 12s ease-in-out infinite alternate; }
         .sd2 { animation: subtle-drift2 14s ease-in-out infinite alternate; }
-        .sd3 { animation: subtle-drift3 16s ease-in-out infinite alternate; }
 
         .fgl-shape {
           position: absolute;
@@ -524,10 +522,12 @@ const Footer = () => {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
                 <img
-                  src="/shri-ai-logo.webp"
+                  src="/images/brand/shri-ai-logo.webp"
                   alt="SHRI-AI logo"
                   width="48"
                   height="48"
+                  loading="lazy"
+                  decoding="async"
                   className="shri-brand-mark"
                 />
                 <div>

@@ -7,8 +7,8 @@ import { ROLES } from '../data/roles';
  * organisation working across stroke imaging and precision oncology, and every
  * one maps to a focus area the site already states.
  *
- * The roles themselves — and their full job descriptions — live in
- * src/data/roles.js, because JobDetail.jsx renders the same objects. A card is
+ * The roles' card fields live in src/data/roles.js; the full job descriptions
+ * live in src/data/roleDetails.js and load only with the job page. A card is
  * a real link to /?role=<slug>, so it can be middle-clicked, copied or shared;
  * the click handler upgrades that to an in-page view swap.
  */

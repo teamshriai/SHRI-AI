@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
 const TEAM_MEMBERS = [
@@ -9,7 +9,7 @@ const TEAM_MEMBERS = [
     name: 'Sena Palanisami',
     role: 'Founder & Technology Leader',
     bio: 'Open-source healthcare technology · Ex-Chairman of OpenEMR',
-    image: '/Sena-Palanisami.webp',
+    image: '/images/team/Sena-Palanisami.webp',
     cardSummary: 'Open-source healthcare technology and AI.',
     objectPosition: '50% 22%',
     accent: '#7B6FCD',
@@ -63,7 +63,7 @@ const TEAM_MEMBERS = [
     name: 'Manoj Mittal',
     role: 'Group Vice President, FP&A — Gartner',
     bio: 'Finance leader specializing in FP&A, M&A, and corporate growth strategy.',
-    image: '/manoj.webp',
+    image: '/images/team/manoj.webp',
     cardSummary: 'Group Vice President, FP&A at Gartner.',
     objectPosition: '50% 30%',
     accent: '#D4891E',
@@ -115,7 +115,7 @@ const TEAM_MEMBERS = [
     name: 'Dr. Rajesh Rangaswamy',
     role: 'MD, DABR, CAQ(NR), CAST(EVN)',
     bio: 'MD, DABR, CAQ(NR), CAST(EVN)',
-    image: '/Rajesh-Rangaswamy.webp',
+    image: '/images/team/Rajesh-Rangaswamy.webp',
     cardSummary: 'Founder of Indostates Health · Neuroradiology.',
     objectPosition: '50% 20%',
     accent: '#3A82C4',
@@ -171,7 +171,7 @@ const TEAM_MEMBERS = [
     name: 'Dr. Balasubramaniam A V',
     role: 'MBBS, MD (PGI, Chandigarh), DNB, FRCR (UK)',
     bio: 'MBBS, MD (PGI, Chandigarh), DNB, FRCR (UK)',
-    image: '/Balasubramaniam-AV.webp',
+    image: '/images/team/Balasubramaniam-AV.webp',
     cardSummary: 'Diagnostic Radiology and stroke imaging AI.',
     // Portrait is landscape (1200x1010) and the subject sits slightly left of
     // centre, so the 5:8 card crop is nudged left and up to keep the face
@@ -236,7 +236,7 @@ const TEAM_MEMBERS = [
     name: 'Dr. S. K. Muruganand',
     role: 'MBBS, DMRD',
     bio: 'MBBS, DMRD',
-    image: '/SK-Muruganand.webp',
+    image: '/images/team/SK-Muruganand.webp',
     // Source is a square 1:1 portrait, unlike the others' varied crops. The
     // card's 5:8 frame crops width only (face is horizontally centred, so
     // 50% suffices there); the mobile modal's 16:10 frame crops height, so a
@@ -286,7 +286,7 @@ const TEAM_MEMBERS = [
     name: 'Dr. Gowrishankar Palaniswamy',
     role: 'Internal Medicine Resident — MUSC Health',
     bio: 'Physician-researcher advancing AI-driven oncology diagnostics and equitable cancer care.',
-    image: '/Gowrishankar-Palaniswamy.webp',
+    image: '/images/team/Gowrishankar-Palaniswamy.webp',
     // Square 1:1 source: the card's 5:8 crop trims width only (face reads
     // centred, so 50% suffices there); the mobile modal's 16:10/3:2 crops
     // trim height instead, so a low Y keeps the hair/face and trims below —
@@ -391,7 +391,7 @@ const TeamModal = ({ member, onClose }) => {
   };
 
   return (
-    <motion.div
+    <m.div
       className="team-modal-overlay"
       onClick={handleOverlayClick}
       initial={{ opacity: 0 }}
@@ -399,7 +399,7 @@ const TeamModal = ({ member, onClose }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <motion.div
+      <m.div
         ref={dialogRef}
         className="team-modal"
         role="dialog"
@@ -478,8 +478,8 @@ const TeamModal = ({ member, onClose }) => {
             ))}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 };
 
@@ -1062,6 +1062,7 @@ const Team = () => {
                     className="team-card-photo"
                     style={{ objectPosition: member.objectPosition }}
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="team-card-overlay" aria-hidden="true">
                     <h3 className="team-name">

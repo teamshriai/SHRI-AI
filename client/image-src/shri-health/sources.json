@@ -1,0 +1,73 @@
+{
+  "$comment": "Provenance and build input for the SHRI-Health module card photos. Run `npm run images` (client/) to download any missing original into originals/ (git-ignored) and regenerate public/images/shri-health/*.webp. To swap a photo, change its entry here and re-run; the output file names must stay the same.",
+  "outDir": "public/images/shri-health",
+  "licenses": {
+    "pexels": {
+      "name": "Pexels License",
+      "url": "https://www.pexels.com/license/",
+      "terms": "Free for commercial use, no attribution required, modification allowed. Do not sell unaltered copies, imply endorsement by people shown, or use people in a misleading or offensive way."
+    },
+    "unsplash": {
+      "name": "Unsplash License",
+      "url": "https://unsplash.com/license",
+      "terms": "Free for commercial and non-commercial use, no attribution required, modification allowed. Do not sell unaltered copies or compile photos into a competing service."
+    }
+  },
+  "images": [
+    {
+      "name": "care-entry",
+      "source": "pexels",
+      "id": 7108329,
+      "title": "People at Registration in a Clinic",
+      "photographer": "Pavel Danilyuk",
+      "page": "https://www.pexels.com/photo/people-at-registration-in-a-clinic-7108329/",
+      "alt": "A receptionist helping two patients at a bright clinic reception desk",
+      "focus": "centre"
+    },
+    {
+      "name": "clinician",
+      "source": "pexels",
+      "id": 39192356,
+      "title": "Doctor Measuring Blood Pressure of Senior Patient",
+      "photographer": "Vitaly Gariev",
+      "page": "https://www.pexels.com/photo/doctor-measuring-blood-pressure-of-senior-patient-39192356/",
+      "alt": "A doctor with a stethoscope measuring a senior patient's blood pressure at a clinic desk",
+      "focus": {
+        "x": 0.15,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "pharmacy",
+      "source": "unsplash",
+      "id": "1642055514517-7b52288890ec",
+      "title": "Pharmacy shelves stocked with medicine boxes",
+      "photographer": "Árpád Czapp",
+      "page": "https://unsplash.com/photos/tvP6pCnq9iI",
+      "alt": "Pharmacy aisles with shelves fully stocked with medicine boxes",
+      "focus": "centre",
+      "quality": 70
+    },
+    {
+      "name": "lab",
+      "source": "pexels",
+      "id": 4031692,
+      "title": "Female Scientist in White Lab Coat Working in a Laboratory",
+      "photographer": "Edward Jenner",
+      "page": "https://www.pexels.com/photo/female-scientist-in-white-lab-coat-working-in-a-laboratory-4031692/",
+      "alt": "A laboratory scientist in a white coat and blue gloves at a lab bench with glassware",
+      "focus": "centre"
+    },
+    {
+      "name": "procurement",
+      "source": "pexels",
+      "id": 31112245,
+      "title": "Warehouse Worker in Industrial Storage Facility",
+      "photographer": "EqualStock IN",
+      "page": "https://www.pexels.com/photo/warehouse-worker-in-industrial-storage-facility-31112245/",
+      "alt": "A worker managing stock in a medical supply warehouse aisle lined with blue bins",
+      "focus": "centre",
+      "quality": 70
+    }
+  ]
+}

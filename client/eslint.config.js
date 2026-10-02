@@ -49,4 +49,14 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
     },
   },
+  // Node build scripts (npm run images): Node globals, no React rules.
+  {
+    files: ['scripts/**/*.{js,mjs}'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.node,
+    },
+  },
 ])

@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { motion, MotionConfig } from 'framer-motion';
+import { m, MotionConfig } from 'framer-motion';
 import {
-  ArrowUp, ClipboardPlus, FlaskConical, Moon, PackageCheck, Pill, Stethoscope, Sun,
+  ClipboardPlus, FlaskConical, Moon, PackageCheck, Pill, Stethoscope, Sun,
 } from 'lucide-react';
 import { BUILD_VERSION } from '../lib/buildVersion';
 import { NotchedProjectCard } from './ui/NotchedProjectCard';
@@ -18,9 +18,10 @@ import { NotchedProjectCard } from './ui/NotchedProjectCard';
  *
  * Each module is a NotchedProjectCard (components/ui): a photo cover with
  * the open arrow nested in a notch, and the whole card as one link. The
- * photos are Unsplash (Unsplash License, no attribution required), cropped
- * to 4:3 and saved as 1200x900 WebP in public/shri-health/; their Unsplash
- * IDs are noted beside each module.
+ * photos are from Pexels and Unsplash (both licences: free for commercial
+ * use, no attribution required), built by `npm run images` into 1200x900 and 640x480 WebP in
+ * public/images/shri-health/. image-src/shri-health/sources.json records each
+ * photo's source, photographer and licence, and is the place to swap one.
  *
  * Demo URLs end in a slash: each demo is served as a directory, and the bare
  * path would cost a redirect before the page starts loading.
@@ -56,65 +57,64 @@ function writeStoredTheme(value) {
   }
 }
 
+/* Both built sizes of a card photo, for <img srcset>. */
+const photo = (name) => ({
+  image: `/images/shri-health/${name}.webp`,
+  imageSrcSet: `/images/shri-health/${name}-640.webp 640w, /images/shri-health/${name}.webp 1200w`,
+});
+// The card photo's rendered width: a fixed ~300px card in the swipe row
+// below 1200px, about a fifth of the screen above it.
+const PHOTO_SIZES = '(max-width: 1199px) 300px, 19vw';
+
 const MODULES = [
   {
     id: 'care-entry',
-    image: '/shri-health/care-entry.webp', // Unsplash 1519494026892-80bbd2d6fd0d
-    imageAlt: 'A hospital reception desk with floor signage',
+    ...photo('care-entry'), // Pexels 7108329, Pavel Danilyuk
+    imageAlt: 'A receptionist helping two patients at a bright clinic reception desk',
     label: 'Care Entry',
     desc: 'Patient registration, intake and visit check-in.',
-    points: ['Patient registration', 'Triage & vitals', 'Appointment scheduling'],
     Icon: ClipboardPlus,
     accent: '#b52a6b',
-    accentRgb: '181, 42, 107',
     demoUrl: 'https://www.shri-ai.org/dev/care-entry/',
   },
   {
     id: 'doctor',
-    image: '/shri-health/clinician.webp', // Unsplash 1666214280557-f1b5022eb634
-    imageAlt: 'Two clinicians reviewing a scan on a monitor',
+    ...photo('clinician'), // Pexels 39192356, Vitaly Gariev
+    imageAlt: "A doctor with a stethoscope measuring a senior patient's blood pressure at a clinic desk",
     label: 'Clinician',
     desc: 'Patient records, consultations and care notes.',
-    points: ['Electronic health records', 'Consultation notes', 'Orders & prescriptions'],
     Icon: Stethoscope,
     accent: '#3A82C4',
-    accentRgb: '58, 130, 196',
     demoUrl: 'https://www.shri-ai.org/dev/clinician/',
   },
   {
     id: 'pharma',
-    image: '/shri-health/pharmacy.webp', // Unsplash 1631549916768-4119b2e5f926
-    imageAlt: 'Blister packs of assorted tablets and capsules',
+    ...photo('pharmacy'), // Unsplash 1642055514517-7b52288890ec, Árpád Czapp
+    imageAlt: 'Pharmacy aisles with shelves fully stocked with medicine boxes',
     label: 'Pharmacy',
     desc: 'Prescriptions, dispensing and medicine stock.',
-    points: ['e-Prescriptions', 'Dispensing', 'Stock & expiry alerts'],
     Icon: Pill,
     accent: '#7B6FCD',
-    accentRgb: '123, 111, 205',
     demoUrl: 'https://www.shri-ai.org/dev/pharmacy/',
   },
   {
     id: 'laboratory',
-    image: '/shri-health/lab.webp', // Unsplash 1582719471384-894fbb16e074
-    imageAlt: 'A scientist working at a laboratory microscope',
+    ...photo('lab'), // Pexels 4031692, Edward Jenner
+    imageAlt: 'A laboratory scientist in a white coat and blue gloves at a lab bench with glassware',
     label: 'Lab',
     desc: 'Samples, tests and result reporting.',
-    points: ['Sample tracking', 'Test orders', 'Result reporting'],
     Icon: FlaskConical,
     accent: '#1f9163',
-    accentRgb: '31, 145, 99',
     demoUrl: 'https://www.shri-ai.org/dev/laboratory/',
   },
   {
     id: 'procurement',
-    image: '/shri-health/procurement.webp', // Unsplash 1553413077-190dd305871c
-    imageAlt: 'A warehouse aisle with stocked shelves',
+    ...photo('procurement'), // Pexels 31112245, EqualStock IN
+    imageAlt: 'A worker managing stock in a medical supply warehouse aisle lined with blue bins',
     label: 'Procurement',
     desc: 'Purchase orders, vendors and supply tracking.',
-    points: ['Purchase orders', 'Vendor management', 'Inventory tracking'],
     Icon: PackageCheck,
     accent: '#a8690f',
-    accentRgb: '168, 105, 15',
     demoUrl: 'https://www.shri-ai.org/dev/procurement/',
   },
 ];
@@ -156,22 +156,21 @@ const LIGHT_TOKENS = `
           --sh-btn-line: rgba(20, 20, 30, 0.16);
           --sh-btn-hover-bg: #f4f5f8;
           --sh-btn-hover-line: rgba(20, 20, 30, 0.26);
-          --sh-chip-bg: #ffffff;
-          --sh-chip-line: rgba(20, 20, 30, 0.12);
           --sh-title-g1: #7B6FCD;
           --sh-title-g2: #3A82C4;
           --sh-title-g3: #a8690f;
           --sh-scrollbar: rgba(20, 20, 30, 0.25);
           --sh-track-opacity: 0.55;
           --sh-focus: #3A82C4;
-          --sh-theme-icon: #a8690f;`;
+          --sh-theme-icon: #a8690f;
+          --sh-plate-line: rgba(20, 20, 30, 0.1);
+          --sh-plate-shadow: 0 6px 18px -10px rgba(20, 20, 30, 0.35);
+          --sh-rule: rgba(20, 20, 30, 0.14);`;
 
-/* Colours that mix with each element's own module colour (--m on a chip,
-   --ic on a step icon) can't be page-level tokens — a custom property
-   resolves var() where it is declared — so light restates those rules. */
+/* Colours that mix with each element's own module colour (--ic on a step
+   icon) can't be page-level tokens — a custom property resolves var() where
+   it is declared — so light restates those rules. */
 const LIGHT_MODULE_RULES = (scope) => `
-        ${scope} .sh-chip svg { color: var(--m); }
-        ${scope} .sh-chip:hover { border-color: rgba(var(--m-rgb), 0.5); background: color-mix(in srgb, var(--m) 8%, #fff); }
         ${scope} .sh-step-icons svg { color: var(--ic); }`;
 
 const CSS = `
@@ -191,8 +190,6 @@ const CSS = `
           --sh-btn-line: rgba(255, 255, 255, 0.18);
           --sh-btn-hover-bg: rgba(255, 255, 255, 0.08);
           --sh-btn-hover-line: rgba(255, 255, 255, 0.3);
-          --sh-chip-bg: rgba(255, 255, 255, 0.05);
-          --sh-chip-line: rgba(255, 255, 255, 0.35);
           --sh-title-g1: #b3a8f5;
           --sh-title-g2: #74b6ee;
           --sh-title-g3: #f2b766;
@@ -200,6 +197,9 @@ const CSS = `
           --sh-track-opacity: 0.8;
           --sh-focus: #8cc0f0;
           --sh-theme-icon: #a9c9f5;
+          --sh-plate-line: rgba(255, 255, 255, 0);
+          --sh-plate-shadow: 0 8px 22px -12px rgba(0, 0, 0, 0.7);
+          --sh-rule: rgba(255, 255, 255, 0.22);
           /* Slimmer side margins than the rest of the site, so the page's
              containers use as much of the screen as possible. */
           --sh-gutter: clamp(0.9rem, 2.5vw, 2.5rem);
@@ -250,23 +250,48 @@ const CSS = `
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
-          min-height: 66px;
+          min-height: calc(var(--sh-plate) + 20px);
         }
-        .sh-brand {
+        /* Brands: SHRI-AI (home) and the partner, Indo States Health, each on
+           a white plate so both logos read the same in dark and light. Every
+           size follows --sh-plate, the plate height (50px: a 46px SHRI-AI
+           mark and a 38px-tall partner logo). */
+        .sh-bar { --sh-plate: 50px; }
+        .sh-brands { display: flex; align-items: center; gap: 0.875rem; min-width: 0; }
+        .sh-brand,
+        .sh-partner {
+          flex: none;
           display: inline-flex;
           align-items: center;
-          gap: 0.65rem;
-          color: var(--sh-text);
+          height: var(--sh-plate);
+          border-radius: calc(var(--sh-plate) * 0.2);
+          background: #fff;
+          box-shadow: 0 0 0 1px var(--sh-plate-line), var(--sh-plate-shadow);
           text-decoration: none;
-          min-width: 0;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .sh-brand:hover { color: var(--sh-text); }
-        .sh-brand img { width: 35px; height: 35px; object-fit: contain; display: block; flex: none; border-radius: 8px; background: #fff; padding: 2px; }
-        .sh-brand b {
+        .sh-brand { width: var(--sh-plate); justify-content: center; }
+        .sh-partner { padding: 0 calc(var(--sh-plate) * 0.22); }
+        .sh-brand img {
+          display: block;
+          width: calc(var(--sh-plate) - 4px);
+          height: calc(var(--sh-plate) - 4px);
+          object-fit: contain;
+        }
+        .sh-partner img { display: block; width: auto; height: calc(var(--sh-plate) * 0.762); }
+        @media (hover: hover) {
+          .sh-brand:hover,
+          .sh-partner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 1px var(--sh-plate-line), 0 12px 26px -12px rgba(0, 0, 0, 0.5);
+          }
+        }
+        .sh-brands-rule { flex: none; width: 1px; height: calc(var(--sh-plate) * 0.6); background: var(--sh-rule); }
+        .sh-wordmark {
           min-width: 0;
           overflow: hidden;
           text-overflow: ellipsis;
-          font-size: 1rem;
+          font-size: 1.375rem;
           font-weight: var(--fw-medium);
           letter-spacing: -0.01em;
           white-space: nowrap;
@@ -281,8 +306,8 @@ const CSS = `
           flex: none;
           display: inline-grid;
           place-items: center;
-          width: 40px;
-          height: 40px;
+          width: 46px;
+          height: 46px;
           padding: 0;
           border-radius: 50%;
           /* Full shorthand: Tailwind's preflight leaves buttons border-less
@@ -294,8 +319,6 @@ const CSS = `
           -webkit-tap-highlight-color: transparent;
           transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
         }
-        /* A 44px hit area around the 40px circle. */
-        .sh-theme::before { content: ''; position: absolute; inset: -2px; border-radius: 50%; }
         .sh-theme-icon {
           grid-area: 1 / 1;
           display: block;
@@ -372,46 +395,6 @@ const CSS = `
           line-height: var(--lh-body);
           color: var(--sh-soft);
         }
-        .sh-quick-label {
-          margin: 1.5rem 0 0.6rem;
-          font-size: var(--fs-eyebrow);
-          font-weight: var(--fw-medium);
-          letter-spacing: var(--ls-eyebrow);
-          text-transform: uppercase;
-          color: var(--sh-muted);
-        }
-        .sh-quick {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-        }
-        .sh-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          min-height: 40px;
-          padding: 0 0.9rem;
-          background: var(--sh-chip-bg);
-          border: 1px solid var(--sh-chip-line);
-          border-radius: 10px;
-          color: var(--sh-text);
-          font-size: var(--fs-sm);
-          font-weight: var(--fw-medium);
-          text-decoration: none;
-          white-space: nowrap;
-          transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-        }
-        .sh-chip svg { flex: none; color: color-mix(in srgb, var(--m) 70%, #fff); }
-        .sh-chip:hover {
-          color: var(--sh-text);
-          border-color: color-mix(in srgb, var(--m) 70%, #fff);
-          background: color-mix(in srgb, var(--m) 18%, transparent);
-        }
-        .sh-chip:active { transform: scale(0.98); }
-
         /* ── Section heading ── */
         .sh-head { margin: 0 0 1.25rem; }
         .sh-kicker {
@@ -446,6 +429,11 @@ const CSS = `
            height: every card the same size whatever its text. */
         .sh-module { min-width: 0; display: flex; }
         .sh-module > .npc { flex: 1; }
+        /* A slightly shorter card than the component's default: a 16:11
+           photo instead of 4:3 (the 4:3 images just lose a sliver top and
+           bottom) and a little less frame padding. */
+        .sh-module .npc-cover { aspect-ratio: 16 / 11; }
+        .sh-module .npc--framed { padding: 7px 7px 14px; }
         /* Below ~210px a card gets cramped, so the row turns into a swipe row
            before that happens. */
         @media (max-width: 1199px) {
@@ -516,28 +504,29 @@ const CSS = `
           font-size: 0.78rem;
           color: var(--sh-muted);
         }
-        .sh-foot a {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          min-height: 32px;
-          color: var(--sh-soft);
-          text-decoration: none;
-        }
-        .sh-foot a:hover { color: var(--sh-text); }
 
         /* One focus ring for every link and button on the page, cards
            included, in the theme's own colour. */
         .sh-root a:focus-visible, .sh-root button:focus-visible { outline: 2px solid var(--sh-focus); outline-offset: 3px; }
 
         /* ── Responsive ── */
+        /* Narrow screens: the H1 already names the page, so the wordmark
+           makes room, and the plates scale with the width so both logos and
+           the theme switch always fit on one line (full size from 360px). */
+        @media (max-width: 540px) {
+          .sh-wordmark { display: none; }
+          .sh-bar { --sh-plate: clamp(40px, 14vw, 50px); }
+        }
+        @media (max-width: 380px) {
+          .sh-brands { gap: 0.5rem; }
+        }
         @media (max-width: 640px) {
           .sh-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.5rem; }
         }
         @media (prefers-reduced-motion: reduce) {
           .sh-title-em { animation: none; }
-          .sh-chip, .sh-theme, .sh-theme-icon { transition: none; }
-          .sh-chip:active, .sh-theme:active { transform: none; }
+          .sh-theme, .sh-theme-icon, .sh-brand, .sh-partner { transition: none; }
+          .sh-theme:active { transform: none; }
           ::view-transition-group(*),
           ::view-transition-old(*),
           ::view-transition-new(*) { animation: none !important; }
@@ -555,10 +544,6 @@ const CSS = `
             --npc-frame: rgba(20, 20, 30, 0.2);
           }
           .sh-root .npc--dark.npc--framed { background: #fff; }
-          .sh-root .npc--dark .npc-tags li {
-            background: color-mix(in srgb, var(--npc-accent, #8a8a9c) 11%, #fff);
-            color: color-mix(in srgb, var(--npc-accent, #55556a) 80%, #000);
-          }
         }
 `;
 
@@ -654,13 +639,31 @@ const ShriHealth = () => {
     <MotionConfig reducedMotion="user">
       <style>{CSS}</style>
 
-      <div className="sh-root" id="sh-top" ref={rootRef} data-theme={theme}>
+      <div className="sh-root" ref={rootRef} data-theme={theme}>
         <header className="sh-bar">
           <div className="sh-wrap sh-bar-inner">
-            <a className="sh-brand" href="/" aria-label="SHRI-AI home">
-              <img src="/shri-ai-logo.webp" alt="" draggable={false} />
-              <b>SHRI-Health</b>
-            </a>
+            <div className="sh-brands">
+              <a className="sh-brand" href="/" aria-label="SHRI-AI home">
+                <img src="/images/brand/shri-ai-logo.webp" alt="" width={46} height={46} draggable={false} />
+              </a>
+              <span className="sh-brands-rule" aria-hidden="true" />
+              <a
+                className="sh-partner"
+                href="https://indostates.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Indo States Health (opens in a new tab)"
+              >
+                <img
+                  src="/images/shri-health/logo-indostates.webp"
+                  alt="Indo States Health"
+                  width={156}
+                  height={38}
+                  draggable={false}
+                />
+              </a>
+              <b className="sh-wordmark">SHRI-Health</b>
+            </div>
             <button
               type="button"
               className="sh-theme"
@@ -668,18 +671,18 @@ const ShriHealth = () => {
               aria-label={switchLabel}
               title={switchLabel}
             >
-              <Moon className="sh-theme-icon sh-theme-moon" size={18} strokeWidth={1.8} aria-hidden="true" />
-              <Sun className="sh-theme-icon sh-theme-sun" size={18} strokeWidth={1.8} aria-hidden="true" />
+              <Moon className="sh-theme-icon sh-theme-moon" size={20} strokeWidth={1.8} aria-hidden="true" />
+              <Sun className="sh-theme-icon sh-theme-sun" size={20} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
         </header>
 
         <main className="sh-main">
-          <motion.section className="sh-wrap" aria-labelledby="sh-title" {...RISE}>
+          <m.section className="sh-wrap" aria-labelledby="sh-title" {...RISE}>
             <div className="sh-banner-text">
               <div className="sh-meta">
                 <span className="sh-maker">
-                  <img src="/shri-ai-logo.webp" alt="" draggable={false} />
+                  <img src="/images/brand/shri-ai-logo.webp" alt="" draggable={false} />
                   A product of SHRI-AI
                 </span>
               </div>
@@ -690,19 +693,8 @@ const ShriHealth = () => {
                 One connected care platform for care entry, clinicians, pharmacy,
                 laboratory and procurement management.
               </p>
-              <p className="sh-quick-label" id="sh-quick-label">Open a demo</p>
-              <ul className="sh-quick" aria-labelledby="sh-quick-label">
-                {MODULES.filter((m) => m.demoUrl).map(({ id, label, Icon, accent, accentRgb, demoUrl }) => (
-                  <li key={id}>
-                    <a className="sh-chip" href={demoUrl} style={{ '--m': accent, '--m-rgb': accentRgb }}>
-                      <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
             </div>
-          </motion.section>
+          </m.section>
 
           <section className="sh-wrap" aria-labelledby="sh-modules-heading">
             <div className="sh-head">
@@ -712,8 +704,8 @@ const ShriHealth = () => {
 
             {/* The row animates in as a whole: cards waiting off-screen in the
                 swipe row would otherwise never be "in view" to appear. */}
-            <motion.div className="sh-modules" {...RISE}>
-              {MODULES.map(({ id, label, desc, points, image, imageAlt, accent, demoUrl }) => (
+            <m.div className="sh-modules" {...RISE}>
+              {MODULES.map(({ id, label, desc, image, imageSrcSet, imageAlt, accent, demoUrl }) => (
                 <div key={id} className="sh-module">
                   <NotchedProjectCard
                     href={demoUrl || undefined}
@@ -721,21 +713,22 @@ const ShriHealth = () => {
                     title={label}
                     description={desc}
                     image={image}
+                    imageSrcSet={imageSrcSet}
+                    imageSizes={PHOTO_SIZES}
                     imageAlt={imageAlt}
                     imageWidth={1200}
                     imageHeight={900}
                     badge={demoUrl ? undefined : 'Coming soon'}
-                    tags={points}
                     accent={accent}
                     tone={theme}
                     framed
                   />
                 </div>
               ))}
-            </motion.div>
+            </m.div>
           </section>
 
-          <motion.section className="sh-wrap sh-flow" aria-labelledby="sh-flow-heading" {...RISE}>
+          <m.section className="sh-wrap sh-flow" aria-labelledby="sh-flow-heading" {...RISE}>
             <div className="sh-head">
               <p className="sh-kicker">How it works</p>
               <h2 className="sh-heading" id="sh-flow-heading">From registration to results</h2>
@@ -758,16 +751,12 @@ const ShriHealth = () => {
                 );
               })}
             </ol>
-          </motion.section>
+          </m.section>
         </main>
 
         <footer className="sh-foot">
           <div className="sh-wrap sh-foot-inner">
             <span>SHRI-Health is a product of SHRI-AI, Senus Healthcare Research Institute · {BUILD_VERSION}</span>
-            <a href="#sh-top">
-              Back to top
-              <ArrowUp size={13} strokeWidth={2} aria-hidden="true" />
-            </a>
           </div>
         </footer>
       </div>

@@ -31,8 +31,9 @@ const SITE_ROOT = import.meta.env.BASE_URL || '/';
  * from Stroke-AI, so each has to land on its heading rather than 404. Two
  * halves make that work:
  *
- *   1. the host must serve index.html for the path — see public/_redirects
- *      and public/.htaccess, which cover Netlify-style and Apache hosts;
+ *   1. the host must serve index.html for the path — the build writes
+ *      dist/<path>/index.html for each (CLEAN_PATHS in vite.config.js), and
+ *      deploy/nginx/shri-ai-site.conf adds an SPA fallback on top;
  *   2. this map tells App which section to land on once the page has mounted.
  *
  * Adding another is one entry here, nothing else. The hash form (/#careers)
