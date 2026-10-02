@@ -170,8 +170,6 @@ const MODULE_CARDS = [
 ];
 
 const EASE = [0.22, 1, 0.36, 1];
-// A transparent 1x1 GIF, for <source>s that should load nothing.
-const BLANK_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const rise = (i = 0) => ({
   initial: { opacity: 0, y: 26 },
   whileInView: { opacity: 1, y: 0 },
@@ -223,6 +221,7 @@ const Hero = () => {
            the five points right. */
         .hh-banner {
           --bpad: clamp(1.25rem, 2vw, 1.9rem);
+          --bpad-x: clamp(1.5rem, 3vw, 3rem);
           position: relative;
           overflow: hidden;
           border-radius: 22px;
@@ -256,7 +255,7 @@ const Hero = () => {
           align-items: center;
           gap: clamp(1rem, 2vw, 2rem);
           min-height: clamp(170px, 11.5vw, 205px);
-          padding: var(--bpad) clamp(1.5rem, 3vw, 3rem);
+          padding: var(--bpad) var(--bpad-x);
         }
         .hh-banner-text { min-width: 0; }
         .hh-title {
@@ -599,11 +598,28 @@ const Hero = () => {
           .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(150px, 36%, 300px); }
         }
         @media (max-width: 640px) {
-          /* Phones: no room for a building beside the heading, so it goes
-             rather than sitting under the text. */
+          /* Phones: the building moves under the heading, full banner width
+             (up to 500px, centred) and sitting on its bottom edge; the five
+             points make room for it. The image sets its own height from its
+             width/height ratio, so the fades stay on its edges and nothing
+             shifts as it loads. */
           .hh-banner-inner { grid-template-columns: minmax(0, 1fr); }
-          .hh-banner-media { display: none; }
-          .hh-point { white-space: normal; }
+          .hh-banner-media {
+            grid-column: 1;
+            grid-row: auto;
+            align-self: auto;
+            min-height: 0;
+            margin: 0 calc(-1 * var(--bpad-x)) calc(-1 * var(--bpad));
+          }
+          .hh-banner-media img {
+            position: static;
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin-inline: auto;
+          }
+          .hh-points { display: none; }
           /* Phones: the three modules drop their card box and read as one
              flowing list, split by hairlines. Everything inside is as-is. */
           .hh-modules { gap: 0; }
@@ -649,23 +665,20 @@ const Hero = () => {
                 </p>
               </m.div>
               <m.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
-                {/* The desktop LCP image: fetched first, at the width it is shown
-                    (about 40% of the screen). Phones hide the banner, so they get a
-                    1x1 placeholder and never download the photo. */}
-                <picture>
-                  <source media="(max-width: 640px)" srcSet={BLANK_PIXEL} />
-                  <img
-                    src="/images/home/banner-hospital.webp"
-                    srcSet="/images/home/banner-hospital-800.webp 800w, /images/home/banner-hospital.webp 1600w"
-                    sizes="42vw"
-                    alt=""
-                    width={1600}
-                    height={782}
-                    fetchPriority="high"
-                    decoding="async"
-                    draggable={false}
-                  />
-                </picture>
+                {/* The LCP image: fetched first, at the width it is shown (about
+                    40% of the screen beside the heading, the banner's full width
+                    under it on phones). */}
+                <img
+                  src="/images/home/banner-hospital.webp"
+                  srcSet="/images/home/banner-hospital-800.webp 800w, /images/home/banner-hospital.webp 1600w"
+                  sizes="(max-width: 640px) 92vw, 42vw"
+                  alt=""
+                  width={1600}
+                  height={782}
+                  fetchPriority="high"
+                  decoding="async"
+                  draggable={false}
+                />
               </m.div>
               <ul className="hh-points">
                 {HERO_POINTS.map(({ Icon, label, vars }, i) => (
