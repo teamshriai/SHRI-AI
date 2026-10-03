@@ -13,12 +13,16 @@ import {
  * system weights and the index.css tokens. Card accents are the brand colours
  * the old hero gave each platform's link.
  *
+ * SHRI Health, the hospital platform and the current priority, leads the
+ * platforms as a full-width featured card with its own dark look and
+ * problem-first copy; Stroke AI and OncoTrace AI follow as two equal cards.
+ *
  * Every illustration has its own box and never sits behind text: each card's
  * art is its own grid column beside the feature list (the reference layout),
- * and the banner's building is its own column (dropped on phones rather than
- * layered under text). Images are exported at 2x into public/ and are always
- * shown whole: object-fit contain, with only a soft fade at the outer edges
- * (or a drop shadow, for transparent cut-outs).
+ * and the banner's building is its own column (under the heading on phones).
+ * Images are exported at 2x into public/ and are always shown whole: object-
+ * fit contain, with only a soft fade at the outer edges (or a drop shadow,
+ * for transparent cut-outs).
  */
 
 /* ── Emblems ──
@@ -150,24 +154,31 @@ const MODULE_CARDS = [
     external: true,
     vars: { ...accentVars('#b52a6b', '#e67aa6', '181, 42, 107'), '--c-tint-1': '#fbe1ee', '--c-tint-2': '#f5ecfc' },
   },
-  {
-    id: 'shri-health',
-    title: 'SHRI HEALTH',
-    tagline: 'AI Imaging + NGS for Precision Oncology',
-    emblem: 'hospital',
-    image: '/images/home/shri-health-lung.webp',
-    imageSize: [376, 406],
-    features: [
-      { Icon: ScanLine, label: 'CT Imaging AI' },
-      { Icon: Dna, label: 'NGS & Molecular Profiling' },
-      { Icon: Activity, label: 'Biomarker Analysis' },
-      { Icon: ClipboardList, label: 'Treatment Monitoring' },
-    ],
-    cta: 'SHRI Health Platform',
-    href: '/dev',
-    vars: { ...accentVars('#1f9163', '#5cc79a', '31, 145, 99', '#167a52'), '--c-tint-1': '#dcf2e8', '--c-tint-2': '#eef8f6' },
-  },
 ];
+
+/* SHRI Health: the hospital platform, featured ahead of the others. The
+   paragraph names the problems hospitals have today, then what the platform
+   does about them. The photo is the SHRI-Health page's own
+   (image-src/shri-health). */
+const FEATURED = {
+  kicker: 'Our priority · AI for hospitals',
+  title: 'SHRI Health',
+  subtitle: 'The Intelligent Hospital Platform',
+  tagline: 'Connected Care. One Unified Experience.',
+  para:
+    'Built to raise the quality of care and the productivity of every team. Hospitals lose hours to registration queues, paperwork, orders lost between departments ' +
+    'and medicines that run out or expire. SHRI Health connects every department, so patients ' +
+    "register once, doctors spend more time with patients than on forms, pharmacy and lab work " +
+    "straight from the doctor's orders, and stock is tracked before it runs short.",
+  photo: 'clinician',
+  cta: 'Explore SHRI Health',
+  href: '/dev',
+  vars: accentVars('#1f9163', '#5cc79a', '31, 145, 99', '#167a52'),
+};
+const featuredPhoto = (name) => ({
+  src: `/images/shri-health/${name}.webp`,
+  srcSet: `/images/shri-health/${name}-640.webp 640w, /images/shri-health/${name}.webp 1200w`,
+});
 
 const EASE = [0.22, 1, 0.36, 1];
 const rise = (i = 0) => ({
@@ -379,7 +390,7 @@ const Hero = () => {
            sit under text at any width. */
         .hh-modules {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: clamp(1.5rem, 2.6vw, 2.75rem);
         }
         .hh-card {
@@ -564,6 +575,146 @@ const Hero = () => {
 
         .hh-btn:focus-visible { outline: 2px solid #3A82C4; outline-offset: 3px; }
 
+        /* ── Featured: SHRI Health ──
+           Its own surface (deep hospital green, white type), not a variant of
+           .hh-card, so the phone rule that unboxes the cards leaves it be.
+           Text left; one photo fills the right side edge to edge and fades
+           into the green, so the card reads as a single scene rather than
+           framed pieces. The whole card is the link through the button's
+           stretched ::after. */
+        .hh-feature {
+          grid-column: 1 / -1;
+          position: relative;
+          overflow: hidden;
+          display: grid;
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+          align-items: stretch;
+          border-radius: 20px;
+          color: #fff;
+          background:
+            radial-gradient(ellipse 60% 80% at 85% 40%, rgba(92, 199, 154, 0.32), transparent 70%),
+            radial-gradient(ellipse 50% 60% at 0% 100%, rgba(58, 130, 196, 0.22), transparent 70%),
+            linear-gradient(135deg, #0d3a2b 0%, #12573f 55%, #1f9163 100%);
+          box-shadow:
+            0 1px 2px rgba(10, 40, 30, 0.2),
+            0 40px 70px -36px rgba(13, 58, 43, 0.75);
+        }
+        .hh-feature::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 3px;
+          background: linear-gradient(90deg, #7B6FCD, #3A82C4, #2aaa72, #D4891E, #b52a6b, #7B6FCD);
+          background-size: 200% 100%;
+          animation: hhSlide 10s linear infinite;
+          opacity: 0.8;
+        }
+        .hh-feature-text {
+          position: relative;
+          z-index: 1;
+          min-width: 0;
+          padding: clamp(1.75rem, 3.4vw, 3.5rem);
+          padding-right: 0;
+        }
+        .hh-feature-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin: 0 0 1.1rem;
+          padding: 0.4rem 0.85rem;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.12);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+          font-size: var(--fs-xs);
+          font-weight: var(--fw-medium);
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #c9f1de;
+        }
+        .hh-feature-kicker::before {
+          content: '';
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #5cc79a;
+          box-shadow: 0 0 0 4px rgba(92, 199, 154, 0.25);
+        }
+        .hh-feature-head { display: flex; align-items: center; gap: 1rem; }
+        .hh-feature-head .hh-emblem {
+          padding: 0.55rem;
+          border-radius: 14px;
+          background: #fff;
+          filter: none;
+          box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);
+        }
+        .hh-feature-title {
+          margin: 0;
+          font-size: clamp(2rem, 3.4vw, 3.1rem);
+          font-weight: var(--fw-medium);
+          letter-spacing: -0.03em;
+          line-height: 1.02;
+        }
+        .hh-feature-subtitle {
+          margin: 0.3rem 0 0;
+          font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+          font-weight: var(--fw-regular);
+          line-height: 1.3;
+          color: #c9f1de;
+        }
+        /* The tagline is the card's statement: larger, with a mint rule. */
+        .hh-feature-tagline {
+          margin: 1.6rem 0 0;
+          padding-left: 1rem;
+          border-left: 3px solid #5cc79a;
+          font-size: clamp(1.2rem, 1.9vw, 1.65rem);
+          font-weight: var(--fw-light);
+          letter-spacing: -0.015em;
+          line-height: 1.25;
+        }
+        .hh-feature-para {
+          margin: 1.25rem 0 0;
+          max-width: 62ch;
+          font-size: var(--fs-body);
+          font-weight: var(--fw-light);
+          line-height: var(--lh-body);
+          color: rgba(255, 255, 255, 0.86);
+        }
+        .hh-feature .hh-btn {
+          margin-top: 1.75rem;
+          min-height: 48px;
+          padding: 0.8rem 1.6rem;
+          background: #fff;
+          color: #12573f;
+          font-size: var(--fs-sm);
+          box-shadow: inset 0 0 0 999px rgba(31, 145, 99, 0), 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+        }
+        .hh-feature .hh-btn::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+        .hh-feature:hover .hh-btn,
+        .hh-feature:focus-within .hh-btn {
+          color: #0d3a2b;
+          box-shadow: inset 0 0 0 999px rgba(31, 145, 99, 0.08), 0 18px 34px -14px rgba(0, 0, 0, 0.7);
+        }
+        .hh-feature:hover .hh-btn svg,
+        .hh-feature:focus-within .hh-btn svg { transform: translateX(3px); }
+        .hh-feature .hh-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+        .hh-feature-photo {
+          position: relative;
+          min-height: 360px;
+        }
+        .hh-feature-photo img {
+          position: absolute;
+          inset: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: 30% 50%;
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 22%, #000 48%);
+          mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 22%, #000 48%);
+        }
+
         /* ── Desktop scale ──
            zoom sets the drawn size of everything inside (text, padding,
            icons, images) and so the containers' height; width is set
@@ -596,6 +747,16 @@ const Hero = () => {
           .hh-banner-media { grid-column: 2; grid-row: 1 / span 2; }
           .hh-modules { grid-template-columns: minmax(0, 1fr); }
           .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(150px, 36%, 300px); }
+          /* Featured: the photo on top, fading down into the text. */
+          .hh-feature { grid-template-columns: minmax(0, 1fr); }
+          /* 16:10 holds the 78%-wide 4:3 photo (0.585 of the width tall). */
+          .hh-feature-text { padding: 0 clamp(1.25rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 2.5rem); }
+          .hh-feature-photo { order: -1; min-height: 0; height: clamp(190px, 42vw, 340px); }
+          .hh-feature-photo img {
+            object-position: 50% 30%;
+            -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+            mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+          }
         }
         @media (max-width: 640px) {
           /* Phones: the building moves under the heading, full banner width
@@ -635,7 +796,9 @@ const Hero = () => {
             padding: 1.75rem 0;
           }
           .hh-card + .hh-card { border-top: 1px solid rgba(20, 20, 40, 0.08); }
-          .hh-modules > .hh-card:first-child { padding-top: 0.5rem; }
+          .hh-feature + .hh-card { padding-top: 2rem; }
+          .hh-feature { margin-bottom: 0.5rem; border-radius: 16px; }
+          .hh-feature .hh-btn { align-self: stretch; justify-content: center; width: 100%; }
           .hh-card-main { margin-right: 0; }
         }
         @media (max-width: 480px) {
@@ -643,11 +806,12 @@ const Hero = () => {
           .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .hh-banner::after, .hh-title-em { animation: none; }
+          .hh-banner::after, .hh-feature::after, .hh-title-em { animation: none; }
           .hh-corner, .hh-btn, .hh-btn svg, .hh-feat-icon { transition: none; }
           .hh-features li:hover .hh-feat-icon { transform: none; }
           .hh-card:hover .hh-corner, .hh-card:focus-within .hh-corner,
-          .hh-card:hover .hh-btn svg, .hh-card:focus-within .hh-btn svg { transform: none; }
+          .hh-card:hover .hh-btn svg, .hh-card:focus-within .hh-btn svg,
+          .hh-feature:hover .hh-btn svg, .hh-feature:focus-within .hh-btn svg { transform: none; }
         }
       `}</style>
 
@@ -691,7 +855,38 @@ const Hero = () => {
             </div>
           </section>
 
-          <section className="hh-modules" aria-label="AI modules">
+          <section className="hh-modules" aria-label="AI platforms">
+            <m.article className="hh-feature" style={FEATURED.vars} {...rise(0)}>
+              <div className="hh-feature-text">
+                <p className="hh-feature-kicker">{FEATURED.kicker}</p>
+                <div className="hh-feature-head">
+                  <Emblem kind="hospital" />
+                  <div>
+                    <h2 className="hh-feature-title">{FEATURED.title}</h2>
+                    <p className="hh-feature-subtitle">{FEATURED.subtitle}</p>
+                  </div>
+                </div>
+                <p className="hh-feature-tagline">{FEATURED.tagline}</p>
+                <p className="hh-feature-para">{FEATURED.para}</p>
+                <a className="hh-btn" href={FEATURED.href}>
+                  {FEATURED.cta}
+                  <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+                </a>
+              </div>
+              <div className="hh-feature-photo" aria-hidden="true">
+                <img
+                  {...featuredPhoto(FEATURED.photo)}
+                  sizes="(max-width: 1100px) 92vw, 42vw"
+                  alt=""
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
+            </m.article>
+
             {MODULE_CARDS.map((card, i) => {
               const linkProps = card.external
                 ? { href: card.href, target: '_blank', rel: 'noopener noreferrer' }
@@ -701,7 +896,7 @@ const Hero = () => {
                   key={card.id}
                   className="hh-card hh-surface"
                   style={card.vars}
-                  {...rise(i)}
+                  {...rise(i + 1)}
                   whileHover={{ y: -4, transition: { duration: 0.35, ease: EASE } }}
                 >
                   <div className="hh-card-head">
