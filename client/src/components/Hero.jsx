@@ -322,11 +322,14 @@ const Hero = () => {
           min-height: 170px;
           margin-block: calc(-1 * var(--bpad));
         }
-        /* contain, not cover: the whole building always shows. The render is
-           a cut-out with a clear sky, so it fades out at the left and right
-           and only along the bottom, where the road is cut straight; the
-           roofline stays crisp. The two fades are intersected, and the whole
-           image sits slightly translucent so it reads as part of the banner. */
+        /* contain, not cover: the whole building always shows. The photo
+           (the Indo States Health centre) is a cut-out with the sky removed,
+           so it fades out at the left and right and only along the bottom,
+           where the grounds are cut straight; the roofline stays crisp. The
+           two fades are intersected, and it sits very slightly translucent so
+           it reads as part of the banner. Source: UN_USED_FILES/client/
+           assets-src/indostates-cutout-full.png, cropped to 2585x1173 at
+           (169, 226) and exported at 1600w (q76) and 800w (q80). */
         .hh-banner-media img {
           position: absolute;
           inset: 0;
@@ -335,7 +338,7 @@ const Hero = () => {
           object-fit: contain;
           /* Sits on the banner's bottom edge, not centred in it. */
           object-position: 50% 100%;
-          opacity: 0.85;
+          opacity: 0.95;
           -webkit-mask-image:
             linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
             linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
@@ -580,8 +583,9 @@ const Hero = () => {
            .hh-card, so the phone rule that unboxes the cards leaves it be.
            Text left; one photo fills the right side edge to edge and fades
            into the green, so the card reads as a single scene rather than
-           framed pieces. The whole card is the link through the button's
-           stretched ::after. */
+           framed pieces. The card itself is the link (one element, one tab
+           stop, clickable edge to edge, photo included); the white pill is
+           only its visual button. */
         .hh-feature {
           grid-column: 1 / -1;
           position: relative;
@@ -591,6 +595,10 @@ const Hero = () => {
           align-items: stretch;
           border-radius: 20px;
           color: #fff;
+          text-decoration: none;
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          transition: box-shadow 0.3s ease;
           background:
             radial-gradient(ellipse 60% 80% at 85% 40%, rgba(92, 199, 154, 0.32), transparent 70%),
             radial-gradient(ellipse 50% 60% at 0% 100%, rgba(58, 130, 196, 0.22), transparent 70%),
@@ -690,15 +698,20 @@ const Hero = () => {
           font-size: var(--fs-sm);
           box-shadow: inset 0 0 0 999px rgba(31, 145, 99, 0), 0 14px 30px -14px rgba(0, 0, 0, 0.6);
         }
-        .hh-feature .hh-btn::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+        .hh-feature:hover,
+        .hh-feature:focus-visible {
+          box-shadow:
+            0 1px 2px rgba(10, 40, 30, 0.2),
+            0 48px 80px -36px rgba(13, 58, 43, 0.9);
+        }
+        .hh-feature:focus-visible { outline: 3px solid #3A82C4; outline-offset: 4px; }
         .hh-feature:hover .hh-btn,
-        .hh-feature:focus-within .hh-btn {
+        .hh-feature:focus-visible .hh-btn {
           color: #0d3a2b;
           box-shadow: inset 0 0 0 999px rgba(31, 145, 99, 0.08), 0 18px 34px -14px rgba(0, 0, 0, 0.7);
         }
         .hh-feature:hover .hh-btn svg,
-        .hh-feature:focus-within .hh-btn svg { transform: translateX(3px); }
-        .hh-feature .hh-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+        .hh-feature:focus-visible .hh-btn svg { transform: translateX(3px); }
         .hh-feature-photo {
           position: relative;
           min-height: 360px;
@@ -741,10 +754,30 @@ const Hero = () => {
           .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
         }
         @media (max-width: 1100px) {
-          /* Text and chips stacked left, building on the right. */
-          .hh-banner-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); }
-          .hh-points { grid-column: 1; flex-direction: row; flex-wrap: wrap; }
-          .hh-banner-media { grid-column: 2; grid-row: 1 / span 2; }
+          /* Tablets and phones: the building is wide, so it gets the
+             banner's full width under the heading (up to 640px, centred)
+             rather than a narrow column; the points sit to the heading's
+             right. The image sets its own height from its width/height
+             ratio, so the fades stay on its edges and nothing shifts as it
+             loads. */
+          .hh-banner-inner { grid-template-columns: minmax(0, 1fr) auto; }
+          .hh-banner-text { grid-column: 1; grid-row: 1; }
+          .hh-points { grid-column: 2; grid-row: 1; }
+          .hh-banner-media {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            align-self: auto;
+            min-height: 0;
+            margin: 0 calc(-1 * var(--bpad-x)) calc(-1 * var(--bpad));
+          }
+          .hh-banner-media img {
+            position: static;
+            display: block;
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            margin-inline: auto;
+          }
           .hh-modules { grid-template-columns: minmax(0, 1fr); }
           .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(150px, 36%, 300px); }
           /* Featured: the photo on top, fading down into the text. */
@@ -759,27 +792,10 @@ const Hero = () => {
           }
         }
         @media (max-width: 640px) {
-          /* Phones: the building moves under the heading, full banner width
-             (up to 500px, centred) and sitting on its bottom edge; the five
-             points make room for it. The image sets its own height from its
-             width/height ratio, so the fades stay on its edges and nothing
-             shifts as it loads. */
+          /* Phones: one column, building under the heading (up to 500px);
+             the five points make room for it. */
           .hh-banner-inner { grid-template-columns: minmax(0, 1fr); }
-          .hh-banner-media {
-            grid-column: 1;
-            grid-row: auto;
-            align-self: auto;
-            min-height: 0;
-            margin: 0 calc(-1 * var(--bpad-x)) calc(-1 * var(--bpad));
-          }
-          .hh-banner-media img {
-            position: static;
-            display: block;
-            width: 100%;
-            max-width: 500px;
-            height: auto;
-            margin-inline: auto;
-          }
+          .hh-banner-media img { max-width: 500px; }
           .hh-points { display: none; }
           /* Phones: the three modules drop their card box and read as one
              flowing list, split by hairlines. Everything inside is as-is. */
@@ -811,7 +827,7 @@ const Hero = () => {
           .hh-features li:hover .hh-feat-icon { transform: none; }
           .hh-card:hover .hh-corner, .hh-card:focus-within .hh-corner,
           .hh-card:hover .hh-btn svg, .hh-card:focus-within .hh-btn svg,
-          .hh-feature:hover .hh-btn svg, .hh-feature:focus-within .hh-btn svg { transform: none; }
+          .hh-feature:hover .hh-btn svg, .hh-feature:focus-visible .hh-btn svg { transform: none; }
         }
       `}</style>
 
@@ -831,14 +847,14 @@ const Hero = () => {
               <m.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
                 {/* The LCP image: fetched first, at the width it is shown (about
                     40% of the screen beside the heading, the banner's full width
-                    under it on phones). */}
+                    under it on tablets and phones, up to 640px). */}
                 <img
-                  src="/images/home/banner-hospital.webp"
-                  srcSet="/images/home/banner-hospital-800.webp 800w, /images/home/banner-hospital.webp 1600w"
-                  sizes="(max-width: 640px) 92vw, 42vw"
+                  src="/images/home/banner-indostates.webp"
+                  srcSet="/images/home/banner-indostates-800.webp 800w, /images/home/banner-indostates.webp 1600w"
+                  sizes="(max-width: 1100px) min(92vw, 640px), 42vw"
                   alt=""
                   width={1600}
-                  height={782}
+                  height={726}
                   fetchPriority="high"
                   decoding="async"
                   draggable={false}
@@ -856,7 +872,15 @@ const Hero = () => {
           </section>
 
           <section className="hh-modules" aria-label="AI platforms">
-            <m.article className="hh-feature" style={FEATURED.vars} {...rise(0)}>
+            <m.a
+              className="hh-feature"
+              href={FEATURED.href}
+              aria-label={`${FEATURED.cta}: ${FEATURED.subtitle}`}
+              style={FEATURED.vars}
+              {...rise(0)}
+              whileHover={{ y: -4, transition: { duration: 0.35, ease: EASE } }}
+              whileTap={{ scale: 0.99 }}
+            >
               <div className="hh-feature-text">
                 <p className="hh-feature-kicker">{FEATURED.kicker}</p>
                 <div className="hh-feature-head">
@@ -868,10 +892,10 @@ const Hero = () => {
                 </div>
                 <p className="hh-feature-tagline">{FEATURED.tagline}</p>
                 <p className="hh-feature-para">{FEATURED.para}</p>
-                <a className="hh-btn" href={FEATURED.href}>
+                <span className="hh-btn" aria-hidden="true">
                   {FEATURED.cta}
                   <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
-                </a>
+                </span>
               </div>
               <div className="hh-feature-photo" aria-hidden="true">
                 <img
@@ -885,7 +909,7 @@ const Hero = () => {
                   draggable={false}
                 />
               </div>
-            </m.article>
+            </m.a>
 
             {MODULE_CARDS.map((card, i) => {
               const linkProps = card.external
