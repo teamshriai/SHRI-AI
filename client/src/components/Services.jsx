@@ -680,6 +680,9 @@ const Services = () => {
           /* sets the row's floor when the panel copy is short */
           min-height: clamp(190px, 20vw, 300px);
         }
+        /* The photo links to the Indo States Health site. */
+        .fa2-org-link { position: absolute; inset: 0; display: block; }
+        .fa2-org-link:focus-visible { outline: 3px solid #3A82C4; outline-offset: -3px; }
         .fa2-org-visual img {
           position: absolute;
           inset: 0;
@@ -688,6 +691,13 @@ const Services = () => {
           object-fit: cover;
           object-position: 50% 45%;
           display: block;
+          transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @media (hover: hover) {
+          .fa2-org-link:hover img { transform: scale(1.04); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .fa2-org-visual img { transition: none; }
         }
 
         /* Dark glass text panel — carries the surface that used to live on the
@@ -1252,14 +1262,22 @@ const Services = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <figure className="fa2-org-visual">
-              <img
-                src="/images/services/indostateshealth.webp"
-                alt="The Indo States Health hospital campus"
-                width={1200}
-                height={642}
-                loading="lazy"
-                decoding="async"
-              />
+              <a
+                className="fa2-org-link"
+                href="https://indostates.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Indo States Health hospital campus (opens indostates.com in a new tab)"
+              >
+                <img
+                  src="/images/services/indostateshealth.webp"
+                  alt="The Indo States Health hospital campus"
+                  width={1200}
+                  height={642}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
             </figure>
             <div className="fa2-org-panel">
               <p className="fa2-org-eyebrow">Collaborating Organization</p>

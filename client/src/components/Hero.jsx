@@ -319,12 +319,18 @@ const Hero = () => {
         }
 
         /* The building: a small photo in its own zone at the right,
-           centred top to bottom. */
+           centred top to bottom. It links to the Indo States Health site. */
         .hh-banner-media {
           grid-area: media;
           justify-self: end;
           align-self: center;
+          display: block;
           width: clamp(220px, 22vw, 400px);
+          border-radius: 12px;
+        }
+        .hh-banner-media:focus-visible { outline: 2px solid #3A82C4; outline-offset: 4px; }
+        @media (hover: hover) {
+          .hh-banner-media:hover img { transform: scale(1.04); opacity: 1; }
         }
         /* The photo (the Indo States Health centre) is a cut-out with the sky
            removed, so it fades out at the left and right and only along the
@@ -340,6 +346,7 @@ const Hero = () => {
           width: 100%;
           height: auto;
           opacity: 0.95;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
           -webkit-mask-image:
             linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
             linear-gradient(180deg, #000 0%, #000 80%, transparent 100%);
@@ -811,6 +818,7 @@ const Hero = () => {
         }
         @media (prefers-reduced-motion: reduce) {
           .hh-banner::after, .hh-feature::after, .hh-title-em { animation: none; }
+          .hh-banner-media img { transition: none; }
           .hh-corner, .hh-btn, .hh-btn svg, .hh-feat-icon { transition: none; }
           .hh-features li:hover .hh-feat-icon { transform: none; }
           .hh-card:hover .hh-corner, .hh-card:focus-within .hh-corner,
@@ -832,7 +840,14 @@ const Hero = () => {
                   A California-based <span className="hh-org-em">501(c)(3)</span> nonprofit organization
                 </p>
               </m.div>
-              <m.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
+              <m.a
+                className="hh-banner-media"
+                href="https://indostates.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Indo States Health (opens indostates.com in a new tab)"
+                {...rise(1)}
+              >
                 {/* Fetched first (it is in the first view on every screen), at the
                     width it is shown: about 22% of the screen on desktop, 30% on
                     tablets, up to 260px on phones. */}
@@ -847,7 +862,7 @@ const Hero = () => {
                   decoding="async"
                   draggable={false}
                 />
-              </m.div>
+              </m.a>
               <ul className="hh-points">
                 {HERO_POINTS.map(({ Icon, label, vars }, i) => (
                   <m.li key={label} className="hh-point" style={vars} {...rise(i + 1)}>
