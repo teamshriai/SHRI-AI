@@ -19,7 +19,7 @@ import {
  *
  * Every illustration has its own box and never sits behind text: each card's
  * art is its own grid column beside the feature list (the reference layout),
- * and the banner's building is its own column (under the heading on phones).
+ * and the banner's small building photo has its own zone at the right.
  * Images are exported at 2x into public/ and are always shown whole: object-
  * fit contain, with only a soft fade at the outer edges (or a drop shadow,
  * for transparent cut-outs).
@@ -112,6 +112,7 @@ const HERO_POINTS = [
   { Icon: ChartColumn, label: 'Genomic Insights', vars: PALETTE[2] },
   { Icon: HeartPulse, label: 'Better Outcomes', vars: PALETTE[4] },
   { Icon: Users, label: 'Accessible to All', vars: PALETTE[3] },
+  { Icon: Activity, label: 'Real-time Monitoring', vars: accentVars('#1f9e9a', '#6fd3cf', '31, 158, 154') },
 ];
 
 const MODULE_CARDS = [
@@ -161,7 +162,6 @@ const MODULE_CARDS = [
    does about them. The photo is the SHRI-Health page's own
    (image-src/shri-health). */
 const FEATURED = {
-  kicker: 'Our priority · AI for hospitals',
   title: 'SHRI Health',
   subtitle: 'The Intelligent Hospital Platform',
   tagline: 'Connected Care. One Unified Experience.',
@@ -226,10 +226,13 @@ const Hero = () => {
             0 26px 50px -30px rgba(40, 40, 90, 0.25);
         }
 
-        /* ── Banner (reference layout) ──
-           A rounded card the width of the card row, not full-bleed: heading
-           left, the building in its own middle column fading at both sides,
-           the five points right. */
+        /* ── Banner ──
+           A rounded card the width of the card row, not full-bleed, in three
+           zones: heading left, the six points as a centred 3 + 3 grid, and a
+           small photo of the Indo States Health centre at the right, centred
+           top to bottom. The equal side columns keep the points at the
+           banner's true centre. Below 1280px the grid needs the full width,
+           so it moves under the heading and photo. */
         .hh-banner {
           --bpad: clamp(1.25rem, 2vw, 1.9rem);
           --bpad-x: clamp(1.5rem, 3vw, 3rem);
@@ -262,13 +265,14 @@ const Hero = () => {
 
         .hh-banner-inner {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) auto;
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+          grid-template-areas: "text points media";
           align-items: center;
-          gap: clamp(1rem, 2vw, 2rem);
+          gap: clamp(1.25rem, 2.5vw, 2.5rem);
           min-height: clamp(170px, 11.5vw, 205px);
           padding: var(--bpad) var(--bpad-x);
         }
-        .hh-banner-text { min-width: 0; }
+        .hh-banner-text { grid-area: text; min-width: 0; }
         .hh-title {
           margin: 0;
           font-size: var(--fs-h2);
@@ -314,30 +318,27 @@ const Hero = () => {
           -webkit-text-fill-color: transparent;
         }
 
-        /* The building is its own column — never under the heading. It
-           runs the banner's full height and fades out at both sides. */
+        /* The building: a small photo in its own zone at the right,
+           centred top to bottom. */
         .hh-banner-media {
-          position: relative;
-          align-self: stretch;
-          min-height: 170px;
-          margin-block: calc(-1 * var(--bpad));
+          grid-area: media;
+          justify-self: end;
+          align-self: center;
+          width: clamp(220px, 22vw, 400px);
         }
-        /* contain, not cover: the whole building always shows. The photo
-           (the Indo States Health centre) is a cut-out with the sky removed,
-           so it fades out at the left and right and only along the bottom,
-           where the grounds are cut straight; the roofline stays crisp. The
-           two fades are intersected, and it sits very slightly translucent so
-           it reads as part of the banner. Source: UN_USED_FILES/client/
-           assets-src/indostates-cutout-full.png, cropped to 2585x1173 at
-           (169, 226) and exported at 1600w (q76) and 800w (q80). */
+        /* The photo (the Indo States Health centre) is a cut-out with the sky
+           removed, so it fades out at the left and right and only along the
+           bottom, where the grounds are cut straight; the roofline stays
+           crisp. The two fades are intersected, and it sits very slightly
+           translucent so it reads as part of the banner. Its height follows
+           from the width/height attributes, so nothing shifts as it loads.
+           Source: UN_USED_FILES/client/assets-src/indostates-cutout-full.png,
+           cropped to 2585x1173 at (169, 226) and exported at 1600w (q76) and
+           800w (q80). */
         .hh-banner-media img {
-          position: absolute;
-          inset: 0;
+          display: block;
           width: 100%;
-          height: 100%;
-          object-fit: contain;
-          /* Sits on the banner's bottom edge, not centred in it. */
-          object-position: 50% 100%;
+          height: auto;
           opacity: 0.95;
           -webkit-mask-image:
             linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
@@ -350,26 +351,29 @@ const Hero = () => {
         }
 
         .hh-points {
+          grid-area: points;
+          justify-self: center;
           list-style: none;
           margin: 0;
           padding: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
+          display: grid;
+          grid-template-columns: repeat(3, max-content);
+          justify-content: center;
+          gap: 1rem clamp(1.5rem, 2.4vw, 2.5rem);
         }
         .hh-point {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          font-size: var(--fs-xs);
+          gap: 0.85rem;
+          font-size: var(--fs-body);
           font-weight: var(--fw-regular);
           color: var(--ink-soft);
           white-space: nowrap;
         }
         .hh-point span {
           flex: none;
-          width: 26px;
-          height: 26px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           display: inline-flex;
           align-items: center;
@@ -626,29 +630,6 @@ const Hero = () => {
           padding: clamp(1.75rem, 3.4vw, 3.5rem);
           padding-right: 0;
         }
-        .hh-feature-kicker {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin: 0 0 1.1rem;
-          padding: 0.4rem 0.85rem;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.12);
-          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
-          font-size: var(--fs-xs);
-          font-weight: var(--fw-medium);
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color: #c9f1de;
-        }
-        .hh-feature-kicker::before {
-          content: '';
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #5cc79a;
-          box-shadow: 0 0 0 4px rgba(92, 199, 154, 0.25);
-        }
         .hh-feature-head { display: flex; align-items: center; gap: 1rem; }
         .hh-feature-head .hh-emblem {
           padding: 0.55rem;
@@ -736,14 +717,16 @@ const Hero = () => {
            at 100% so text remains readable. */
         @media (min-width: 1101px) {
           .hh-body { zoom: 0.84; width: 91%; }
-          /* Desktop banner at twice its base height; the building column
-             widens so the (uncropped) image grows into the extra room. */
+          .hh-banner-inner { min-height: clamp(280px, 20vw, 360px); }
+        }
+        /* Narrower desktops: heading and photo on top, the 3 + 3 grid
+           centred below them. */
+        @media (min-width: 1101px) and (max-width: 1279px) {
           .hh-banner-inner {
-            /* ~2x the measured base height (1536px: 192px -> ~385px drawn). */
-            min-height: clamp(400px, 30vw, 540px);
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) auto;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas: "text media" "points points";
+            row-gap: 1.75rem;
           }
-          .hh-points { gap: 0.9rem; }
         }
 
         /* ── Responsive ── */
@@ -754,35 +737,26 @@ const Hero = () => {
           .hh-features li { gap: 0.7rem; font-size: var(--fs-xs); }
         }
         @media (max-width: 1100px) {
-          /* Tablets and phones: the building is wide, so it gets the
-             banner's full width under the heading (up to 640px, centred)
-             rather than a narrow column; the points sit to the heading's
-             right. The image sets its own height from its width/height
-             ratio, so the fades stay on its edges and nothing shifts as it
-             loads. */
-          .hh-banner-inner { grid-template-columns: minmax(0, 1fr) auto; }
-          .hh-banner-text { grid-column: 1; grid-row: 1; }
-          .hh-points { grid-column: 2; grid-row: 1; }
-          .hh-banner-media {
-            grid-column: 1 / -1;
-            grid-row: 2;
-            align-self: auto;
-            min-height: 0;
-            margin: 0 calc(-1 * var(--bpad-x)) calc(-1 * var(--bpad));
+          /* Tablets: heading with the small photo at its right, then the
+             points as a centred 3 + 3 grid of pills across the banner. */
+          .hh-banner-inner {
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas: "text media" "points points";
+            row-gap: 1.5rem;
           }
-          .hh-banner-media img {
-            position: static;
-            display: block;
-            width: 100%;
-            max-width: 640px;
-            height: auto;
-            margin-inline: auto;
+          .hh-banner-media { width: clamp(200px, 30vw, 300px); }
+          .hh-points { justify-self: stretch; gap: 0.6rem; }
+          .hh-point {
+            padding: 0.45rem 1rem 0.45rem 0.45rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: inset 0 0 0 1px rgba(20, 20, 40, 0.06);
           }
+          .hh-point span { width: 30px; height: 30px; }
           .hh-modules { grid-template-columns: minmax(0, 1fr); }
           .hh-card-main { grid-template-columns: minmax(0, 1fr) clamp(150px, 36%, 300px); }
           /* Featured: the photo on top, fading down into the text. */
           .hh-feature { grid-template-columns: minmax(0, 1fr); }
-          /* 16:10 holds the 78%-wide 4:3 photo (0.585 of the width tall). */
           .hh-feature-text { padding: 0 clamp(1.25rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 2.5rem); }
           .hh-feature-photo { order: -1; min-height: 0; height: clamp(190px, 42vw, 340px); }
           .hh-feature-photo img {
@@ -791,12 +765,19 @@ const Hero = () => {
             mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
           }
         }
+        /* Three pills no longer fit across: two per row. */
+        @media (max-width: 820px) {
+          .hh-points { grid-template-columns: repeat(2, max-content); }
+        }
         @media (max-width: 640px) {
-          /* Phones: one column, building under the heading (up to 500px);
-             the five points make room for it. */
-          .hh-banner-inner { grid-template-columns: minmax(0, 1fr); }
-          .hh-banner-media img { max-width: 500px; }
-          .hh-points { display: none; }
+          /* Phones: one column: heading, the points as centred pills, then
+             the small photo at the right. */
+          .hh-banner-inner {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "text" "points" "media";
+            row-gap: 1.25rem;
+          }
+          .hh-banner-media { width: min(70%, 260px); }
           /* Phones: the three modules drop their card box and read as one
              flowing list, split by hairlines. Everything inside is as-is. */
           .hh-modules { gap: 0; }
@@ -816,6 +797,13 @@ const Hero = () => {
           .hh-feature { margin-bottom: 0.5rem; border-radius: 16px; }
           .hh-feature .hh-btn { align-self: stretch; justify-content: center; width: 100%; }
           .hh-card-main { margin-right: 0; }
+        }
+        @media (max-width: 560px) {
+          /* Small phones: one compact column of equal-width pills (the
+             widest sets the width), centred, so six points stay tidy. */
+          .hh-points { grid-template-columns: max-content; gap: 0.45rem; }
+          .hh-point { padding: 0.35rem 1rem 0.35rem 0.35rem; }
+          .hh-point span { width: 28px; height: 28px; }
         }
         @media (max-width: 480px) {
           .hh-card-main { grid-template-columns: minmax(0, 1fr) 104px; }
@@ -845,13 +833,13 @@ const Hero = () => {
                 </p>
               </m.div>
               <m.div className="hh-banner-media" aria-hidden="true" {...rise(1)}>
-                {/* The LCP image: fetched first, at the width it is shown (about
-                    40% of the screen beside the heading, the banner's full width
-                    under it on tablets and phones, up to 640px). */}
+                {/* Fetched first (it is in the first view on every screen), at the
+                    width it is shown: about 22% of the screen on desktop, 30% on
+                    tablets, up to 260px on phones. */}
                 <img
                   src="/images/home/banner-indostates.webp"
                   srcSet="/images/home/banner-indostates-800.webp 800w, /images/home/banner-indostates.webp 1600w"
-                  sizes="(max-width: 1100px) min(92vw, 640px), 42vw"
+                  sizes="(max-width: 640px) 260px, (max-width: 1100px) 30vw, 22vw"
                   alt=""
                   width={1600}
                   height={726}
@@ -863,7 +851,7 @@ const Hero = () => {
               <ul className="hh-points">
                 {HERO_POINTS.map(({ Icon, label, vars }, i) => (
                   <m.li key={label} className="hh-point" style={vars} {...rise(i + 1)}>
-                    <span aria-hidden="true"><Icon size={14} strokeWidth={1.75} /></span>
+                    <span aria-hidden="true"><Icon size={17} strokeWidth={1.75} /></span>
                     {label}
                   </m.li>
                 ))}
@@ -882,7 +870,6 @@ const Hero = () => {
               whileTap={{ scale: 0.99 }}
             >
               <div className="hh-feature-text">
-                <p className="hh-feature-kicker">{FEATURED.kicker}</p>
                 <div className="hh-feature-head">
                   <Emblem kind="hospital" />
                   <div>

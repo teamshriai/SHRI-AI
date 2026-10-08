@@ -2,7 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { m, MotionConfig } from 'framer-motion';
 import {
-  ClipboardPlus, FlaskConical, Moon, PackageCheck, Pill, Stethoscope, Sun,
+  Bell, BellRing, CalendarClock, ClipboardPlus, FlaskConical, Moon, PackageCheck,
+  Pill, Stethoscope, Sun,
 } from 'lucide-react';
 import { BUILD_VERSION } from '../lib/buildVersion';
 import { NotchedProjectCard } from './ui/NotchedProjectCard';
@@ -121,12 +122,34 @@ const MODULES = [
 
 const byId = Object.fromEntries(MODULES.map((m) => [m.id, m]));
 
-/* How a visit moves through the platform, left to right. */
+/* How a visit moves through the platform, left to right. Each step also
+   names the reminder or follow-up it sends, so the flow doesn't end at the
+   counter: appointments, follow-up visits, refills and results, restocking. */
 const FLOW = [
-  { modules: ['care-entry'], label: 'Care Entry', note: 'Registration & triage' },
-  { modules: ['doctor'], label: 'Clinician', note: 'Consultation & orders' },
-  { modules: ['pharma', 'laboratory'], label: 'Pharmacy & Lab', note: 'Dispensing & tests' },
-  { modules: ['procurement'], label: 'Procurement', note: 'Stock & suppliers' },
+  {
+    modules: ['care-entry'],
+    label: 'Care Entry',
+    note: 'Registration & triage',
+    followUp: { Icon: BellRing, text: 'Appointment reminders' },
+  },
+  {
+    modules: ['doctor'],
+    label: 'Clinician',
+    note: 'Consultation & orders',
+    followUp: { Icon: CalendarClock, text: 'Follow-up visits' },
+  },
+  {
+    modules: ['pharma', 'laboratory'],
+    label: 'Pharmacy & Lab',
+    note: 'Dispensing & tests',
+    followUp: { Icon: Bell, text: 'Refill & result reminders' },
+  },
+  {
+    modules: ['procurement'],
+    label: 'Procurement',
+    note: 'Stock & suppliers',
+    followUp: { Icon: Bell, text: 'Reorder & expiry reminders' },
+  },
 ];
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -491,6 +514,24 @@ const CSS = `
         .sh-step-icons svg { color: color-mix(in srgb, var(--ic) 70%, #fff); }
         .sh-step-label { display: block; font-size: 0.95rem; font-weight: var(--fw-medium); color: var(--sh-text); }
         .sh-step-note { display: block; margin-top: 0.15rem; font-size: var(--fs-sm); font-weight: var(--fw-light); color: var(--sh-muted); }
+        /* The step's reminder / follow-up, as a small tag in its accent. */
+        .sh-step-follow {
+          display: inline-flex;
+          align-items: flex-start;
+          gap: 0.4rem;
+          max-width: 100%;
+          margin-top: 0.6rem;
+          padding: 0.28rem 0.65rem 0.28rem 0.5rem;
+          /* A pill on one line; a rounded box when it wraps on phones. */
+          border-radius: 13px;
+          border: 1px solid color-mix(in srgb, var(--s-a) 35%, transparent);
+          background: color-mix(in srgb, var(--s-a) 12%, transparent);
+          font-size: var(--fs-xs);
+          font-weight: var(--fw-regular);
+          line-height: 1.3;
+          color: var(--sh-text);
+        }
+        .sh-step-follow svg { flex: none; margin-top: 0.05rem; color: var(--s-a); }
 
         /* ── Footer ── */
         .sh-foot { padding: 0 var(--sh-gutter); border-top: 1px solid var(--sh-line); background: var(--sh-foot-bg); }
@@ -731,7 +772,7 @@ const ShriHealth = () => {
           <m.section className="sh-wrap sh-flow" aria-labelledby="sh-flow-heading" {...RISE}>
             <div className="sh-head">
               <p className="sh-kicker">How it works</p>
-              <h2 className="sh-heading" id="sh-flow-heading">From registration to results</h2>
+              <h2 className="sh-heading" id="sh-flow-heading">From registration to follow-up</h2>
             </div>
             <ol className="sh-steps">
               {FLOW.map((step, i) => {
@@ -747,6 +788,10 @@ const ShriHealth = () => {
                     </span>
                     <span className="sh-step-label">{step.label}</span>
                     <span className="sh-step-note">{step.note}</span>
+                    <span className="sh-step-follow">
+                      <step.followUp.Icon size={14} strokeWidth={1.9} aria-hidden="true" />
+                      {step.followUp.text}
+                    </span>
                   </li>
                 );
               })}
