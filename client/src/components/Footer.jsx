@@ -605,6 +605,18 @@ const Footer = () => {
               </div>
 
               <div className="shri-address-box">
+                <svg width="28" height="28" fill="none" stroke="#2aaa72" viewBox="0 0 24 24" strokeWidth={2} style={{ flexShrink: 0, marginTop: 4 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <div className="shri-address-text">
+                  <strong style={{ display: 'block', marginBottom: 4, color: '#2aaa72' }}>India Office</strong>
+                  1, Rukmani Nagar, Ramanathapuram<br />
+                  Coimbatore - 641 045, Tamil Nadu, INDIA
+                </div>
+              </div>
+
+              <div className="shri-address-box">
                 <svg width="28" height="28" fill="none" stroke="#a064ff" viewBox="0 0 24 24" strokeWidth={2} style={{ flexShrink: 0, marginTop: 4 }}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                   <circle cx="12" cy="10" r="3" />
