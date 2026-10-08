@@ -10,7 +10,7 @@ const navLinks = [
   { name: 'Collaborating Organizations', href: '#partnership', Icon: Handshake },
   { name: 'Team', href: '#team', Icon: Users },
   { name: 'Careers', href: '#careers', Icon: BriefcaseBusiness },
-  { name: 'Contact', href: '#contact', triggerForm: true, Icon: Mail },
+  { name: 'Contact', href: '#contact', Icon: Mail },
 ];
 
 const Navbar = () => {
@@ -110,12 +110,12 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleNavClick = useCallback((e, href, triggerForm = false) => {
+  // Every link only scrolls to its section; Contact lands on the "Get in
+  // touch" panel, and the visitor opens the form from there.
+  const handleNavClick = useCallback((e, href) => {
     e.preventDefault();
     setIsOpen(false);
-    if (scrollToSection(href) && triggerForm) {
-      window.dispatchEvent(new CustomEvent('open-contact-form'));
-    }
+    scrollToSection(href);
   }, []);
 
   const isTransparent = !scrolled && !isOpen;
@@ -482,7 +482,7 @@ const Navbar = () => {
                     href={link.href}
                     className={`nav-link ${mode}${isActive ? ' active' : ''}`}
                     aria-current={isActive ? 'true' : undefined}
-                    onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     <link.Icon className="nav-icon" size={16} strokeWidth={1.6} aria-hidden="true" />
                     <span className="nav-link-label">{link.name}</span>
@@ -538,7 +538,7 @@ const Navbar = () => {
                       href={link.href}
                       className={`mobile-link${activeId === link.href.slice(1) ? ' active' : ''}`}
                       aria-current={activeId === link.href.slice(1) ? 'true' : undefined}
-                      onClick={(e) => handleNavClick(e, link.href, link.triggerForm)}
+                      onClick={(e) => handleNavClick(e, link.href)}
                     >
                       <span className="mobile-link-inner">
                         <link.Icon className="nav-icon" size={18} strokeWidth={1.6} aria-hidden="true" />
