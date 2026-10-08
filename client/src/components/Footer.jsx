@@ -2,6 +2,24 @@ import { useState, useEffect, useRef } from 'react';
 import { scrollToSection } from '../lib/scrollToSection';
 import { BUILD_VERSION } from '../lib/buildVersion';
 
+/* Offices shown in the footer, each with its Google Maps embed. */
+const OFFICES = [
+  {
+    title: 'USA Headquarters',
+    lines: ['6559 Springpath Lane, San Jose, CA 95120, USA'],
+    color: '#ff8c1e',
+    mapTitle: 'Map: SHRI-AI USA Headquarters, San Jose',
+    map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4558.947129299513!2d-121.88439919999999!3d37.219291600000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808e313c74a19941%3A0xec4c74b0157b91b1!2s6559%20Springpath%20Ln%2C%20San%20Jose%2C%20CA%2095120%2C%20USA!5e1!3m2!1sen!2sin!4v1777609086171!5m2!1sen!2sin',
+  },
+  {
+    title: 'India Development center',
+    lines: ['1, Rukmani Nagar, Ramanathapuram', 'Coimbatore - 641 045, Tamil Nadu, INDIA'],
+    color: '#2aaa72',
+    mapTitle: 'Map: SHRI-AI India Office, Coimbatore',
+    map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.1559027837116!2d76.99115442840123!3d10.995974062984727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba859fb5b93f923%3A0x8dad57dab1d7cae9!2sVisolve!5e1!3m2!1sen!2sin!4v1791445694355!5m2!1sen!2sin',
+  },
+];
+
 const Footer = () => {
   const year = new Date().getFullYear();
   const [formVisible, setFormVisible] = useState(false);
@@ -307,19 +325,40 @@ const Footer = () => {
         .shri-contact-item:last-child { margin-bottom: 0; }
         .shri-contact-item:hover { color: #ff8c1e; }
 
-        .shri-map-wrap {
-          border-radius: 20px;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.15);
-          /* Bounded rather than a bare aspect-ratio, which made the map taller
-             on wide columns than the 220px it replaced. Capped at ~60% of the
-             previous rendered size. */
-          aspect-ratio: 16 / 9;
-          width: min(100%, 305px);
-          max-height: 175px;
-          margin-bottom: 24px;
-          position: relative;
+        /* One card per office: its map on top, its address below. Two side
+           by side when the column has room, stacked when it doesn't. */
+        .shri-offices {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+          gap: 16px;
+          margin-bottom: 16px;
         }
+        .shri-office {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          border-radius: 16px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          transition: background 0.3s ease;
+        }
+        .shri-office:hover { background: rgba(255,255,255,0.08); }
+        /* Fixed 16:9 box, so the lazily loaded map never shifts the page. */
+        .shri-office-map {
+          position: relative;
+          aspect-ratio: 16 / 9;
+          background: rgba(255,255,255,0.04);
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .shri-office-map iframe {
+          position: absolute;
+          inset: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+          border: 0;
+        }
+        .shri-office-body { display: flex; gap: 14px; padding: 20px; }
 
         .shri-address-box {
           background: rgba(255,255,255,0.05);
@@ -579,41 +618,32 @@ const Footer = () => {
             {/* Global Reach */}
             <div className="shri-footer-col-map">
               <p className="shri-col-label">Global Reach</p>
-              <div className="shri-map-wrap">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4558.947129299513!2d-121.88439919999999!3d37.219291600000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808e313c74a19941%3A0xec4c74b0157b91b1!2s6559%20Springpath%20Ln%2C%20San%20Jose%2C%20CA%2095120%2C%20USA!5e1!3m2!1sen!2sin!4v1777609086171!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Global Reach"
-                />
-              </div>
-              
-              {/* Address Boxes */}
-              <div className="shri-address-box">
-                <svg width="28" height="28" fill="none" stroke="#ff8c1e" viewBox="0 0 24 24" strokeWidth={2} style={{ flexShrink: 0, marginTop: 4 }}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <div className="shri-address-text">
-                  <strong style={{ display: 'block', marginBottom: 4, color: '#ff8c1e' }}>USA Headquarters</strong>
-                  6559 Springpath Lane, San Jose, CA 95120, USA
-                </div>
-              </div>
-
-              <div className="shri-address-box">
-                <svg width="28" height="28" fill="none" stroke="#2aaa72" viewBox="0 0 24 24" strokeWidth={2} style={{ flexShrink: 0, marginTop: 4 }}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <div className="shri-address-text">
-                  <strong style={{ display: 'block', marginBottom: 4, color: '#2aaa72' }}>India Office</strong>
-                  1, Rukmani Nagar, Ramanathapuram<br />
-                  Coimbatore - 641 045, Tamil Nadu, INDIA
-                </div>
+              <div className="shri-offices">
+                {OFFICES.map((office) => (
+                  <div className="shri-office" key={office.title}>
+                    <div className="shri-office-map">
+                      <iframe
+                        src={office.map}
+                        title={office.mapTitle}
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="shri-office-body">
+                      <svg width="28" height="28" fill="none" stroke={office.color} viewBox="0 0 24 24" strokeWidth={2} style={{ flexShrink: 0, marginTop: 4 }} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      <div className="shri-address-text">
+                        <strong style={{ display: 'block', marginBottom: 4, color: office.color }}>{office.title}</strong>
+                        {office.lines.map((line, i) => (
+                          <span key={line}>{i > 0 && <br />}{line}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               <div className="shri-address-box">
