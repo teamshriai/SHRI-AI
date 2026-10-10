@@ -26,6 +26,11 @@ const Footer = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
   const firstInputRef = useRef(null);
+  const formInnerRef = useRef(null);
+  // Height the open form needs (content + its container's padding). On
+  // desktop the form overlays the section, so the section grows to this
+  // while the form is open and stays short while it is closed.
+  const [formHeight, setFormHeight] = useState(0);
 
   const handleGetInTouch = () => {
     setFormVisible(true);
@@ -37,6 +42,12 @@ const Footer = () => {
     setTimeout(() => {
       firstInputRef.current?.focus({ preventScroll: true });
     }, 400); // Wait for a portion of the transition
+    // Tablets and phones open the form below the headline, so bring it into
+    // view once the row has finished opening (the headline settles as it
+    // opens, so measuring earlier would overshoot).
+    if (window.matchMedia?.('(max-width: 900px)').matches) {
+      setTimeout(() => scrollToSection('contact-form-overlay'), 900);
+    }
   };
 
   const handleExit = () => { setFormVisible(false); setShowSuccess(false); };
@@ -45,6 +56,18 @@ const Footer = () => {
     setShowSuccess(true);
     setTimeout(() => { setShowSuccess(false); setFormVisible(false); }, 2500);
   };
+
+  useEffect(() => {
+    const inner = formInnerRef.current;
+    if (!inner || typeof ResizeObserver === 'undefined') return undefined;
+    const measure = () => {
+      const box = getComputedStyle(inner.parentElement);
+      setFormHeight(Math.ceil(inner.offsetHeight + parseFloat(box.paddingTop) + parseFloat(box.paddingBottom)));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(inner);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleOpenContact = () => {
@@ -120,14 +143,22 @@ const Footer = () => {
           .fl2-shape { width: 24%; height: clamp(100px, 32vh, 260px); bottom: -8vh; }
         }
 
-        .cta-content {
-          transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.65s ease;
+        /* ── Contact section ──
+           Short while closed. "Get in touch" brings the form in from the
+           right while the headline stays: on desktop the form takes the
+           right half and the headline eases smaller on the left (the section
+           grows to the form's measured height, --form-h); on tablets and
+           phones the form opens below the headline. The glass shapes glide
+           left either way. */
+        .cta-section {
+          min-height: 58vh;
+          transition: min-height 0.85s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .cta-content.slide-out {
-          transform: translateX(-100%);
-          opacity: 0;
-          pointer-events: none;
-        }
+        .cta-stage { position: relative; z-index: 20; flex: 1; display: flex; flex-direction: column; }
+        .cta-content { flex: 1; display: flex; flex-direction: column; }
+        .cta-action { transition: opacity 0.4s ease; }
+        .cta-content.form-open .cta-action { opacity: 0; pointer-events: none; }
+        .cta-hero { transform-origin: 0 50%; transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1); }
 
         .form-container {
           position: absolute;
@@ -140,7 +171,8 @@ const Footer = () => {
           z-index: 30;
           display: flex;
           align-items: flex-start;
-          padding: clamp(60px, 8vw, 80px) clamp(20px, 4vw, 56px);
+          /* Extra room at the top for the round back button. */
+          padding: clamp(72px, 7vw, 88px) clamp(20px, 4vw, 56px) clamp(40px, 5vw, 64px);
           overflow-y: auto;
           overflow-x: hidden;
         }
@@ -151,12 +183,37 @@ const Footer = () => {
         }
         .form-container.visible { transform: translateX(0); }
 
-        @media (max-width: 900px) { .form-container { width: 65%; } }
-        @media (max-width: 680px) { .form-container { width: 100%; } }
+        @media (min-width: 901px) {
+          .cta-section.contact-open { min-height: max(58vh, var(--form-h, 0px)); }
+          .cta-content.form-open .cta-hero { transform: scale(0.82); }
+        }
+        @media (max-width: 900px) {
+          /* Headline row, then the form's row, collapsed until it opens. */
+          .cta-stage {
+            display: grid;
+            grid-template-rows: auto 0fr;
+            transition: grid-template-rows 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .cta-section.contact-open .cta-stage { grid-template-rows: auto 1fr; }
+          .form-container {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            padding: 0;
+            overflow: hidden;
+          }
+          .form-inner { padding: 72px clamp(20px, 4vw, 56px) 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cta-section, .cta-stage, .cta-hero, .cta-action { transition: none; }
+        }
 
         .back-arrow-btn {
           position: absolute;
-          top: clamp(18px, 3vw, 34px);
+          top: clamp(12px, 1.6vw, 20px);
           left: clamp(14px, 3vw, 34px);
           display: flex;
           align-items: center;
@@ -210,15 +267,6 @@ const Footer = () => {
         }
         .git-btn:hover { background: #2d2d40; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,26,36,0.25); }
 
-        .cta-bottom {
-          display: grid; grid-template-columns: 1fr 1fr;
-          border-top: 1px solid rgba(100,100,120,0.16);
-          background: rgba(255,255,255,0.13);
-          backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-        }
-        @media (max-width: 560px) { .cta-bottom { grid-template-columns: 1fr; } }
-        .cta-bottom-divider { border-right: 1px solid rgba(100,100,120,0.16); }
-        @media (max-width: 560px) { .cta-bottom-divider { border-right: none; border-bottom: 1px solid rgba(100,100,120,0.16); } }
 
         .contact-form { width: 100%; }
         .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
@@ -443,9 +491,10 @@ const Footer = () => {
       {/* ── CTA SECTION ── */}
       <section
         id="contact"
+        className={`cta-section${formVisible ? ' contact-open' : ''}`}
         style={{
+          '--form-h': `${formHeight}px`,
           position: 'relative',
-          minHeight: '70vh',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -464,90 +513,82 @@ const Footer = () => {
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(244,243,250,0.97) 0%, rgba(244,243,250,0.78) 38%, transparent 100%)', zIndex: 10 }} />
         </div>
 
-        <div className={`cta-content ${formVisible ? 'slide-out' : ''}`} style={{ position: 'relative', zIndex: 20, display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: 'clamp(20px, 3vw, 40px) 4vw' }}>
-            <button className="git-btn" onClick={handleGetInTouch}>
-              Get in touch
-              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
-          </div>
-          
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 4vw' }}>
-            <p className="fcta-label">Partner With Us</p>
-            <h2 className="fcta-heading">
-              Advance Precision<br />Health Research<br />
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                In Just
-                <span className="fcta-badge">
-                  One Email
-                  <svg width="32" height="32" fill="none" stroke="#1a1a24" viewBox="0 0 24 24" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
+        <div className="cta-stage">
+          <div className={`cta-content${formVisible ? ' form-open' : ''}`}>
+            <div className="cta-action" style={{ display: 'flex', justifyContent: 'flex-end', padding: 'clamp(20px, 3vw, 40px) 4vw' }}>
+              <button className="git-btn" onClick={handleGetInTouch} tabIndex={formVisible ? -1 : undefined}>
+                Get in touch
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="cta-hero" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 4vw clamp(32px, 5vw, 64px)' }}>
+              <p className="fcta-label">Partner With Us</p>
+              <h2 className="fcta-heading">
+                Advance Precision<br />Health Research<br />
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                  In Just
+                  <span className="fcta-badge">
+                    One Email
+                    <svg width="32" height="32" fill="none" stroke="#1a1a24" viewBox="0 0 24 24" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
                 </span>
-              </span>
-            </h2>
+              </h2>
+            </div>
+
           </div>
 
-          <div className="cta-bottom">
-            <div className="cta-bottom-divider" style={{ padding: '32px 4vw' }}>
-              <p style={{ fontSize: 'var(--fs-eyebrow)', fontFamily: 'var(--font-ui)', fontWeight: 500, letterSpacing: 'var(--ls-eyebrow)', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Our Mission</p>
-              <p style={{ fontSize: 'var(--fs-sm)', color: '#555', lineHeight: 'var(--lh-body)', margin: 0 }}>California-based 501(c)(3) nonprofit advancing equitable access to AI-driven diagnostics worldwide.</p>
-            </div>
-            <div style={{ padding: '32px 4vw' }}>
-              <p style={{ fontSize: 'var(--fs-eyebrow)', fontFamily: 'var(--font-ui)', fontWeight: 500, letterSpacing: 'var(--ls-eyebrow)', textTransform: 'uppercase', color: '#888', margin: '0 0 12px' }}>Vision</p>
-              <p style={{ fontSize: 'var(--fs-sm)', color: '#555', lineHeight: 'var(--lh-body)', margin: 0 }}>Moving innovations from lab to clinic — translational research powered by AI and genomic precision.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Form Overlay */}
-        <div className={`form-container ${formVisible ? 'visible' : ''}`} id="contact-form-overlay">
-          <button className="back-arrow-btn" onClick={handleExit} aria-label="Go back">
-            <div className="back-arrow-icon">
-              <svg className="back-arrow-svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 12H5m7-7l-7 7 7 7" />
-              </svg>
-            </div>
-            <span className="back-arrow-label">Back</span>
-          </button>
-          <div className="form-inner">
-            {!showSuccess ? (
-              <>
-                <h3 className="form-title">Get in Touch</h3>
-                <p className="form-desc">Discuss how we can collaborate to advance precision health research.</p>
-                <form className="contact-form" onSubmit={handleSubmit}>
-                  <div className="name-grid">
-                    <div>
-                      <label className="form-label" htmlFor="fname">First Name</label>
-                      <input ref={firstInputRef} className="form-input" type="text" id="fname" required />
-                    </div>
-                    <div>
-                      <label className="form-label" htmlFor="lname">Last Name</label>
-                      <input className="form-input" type="text" id="lname" required />
-                    </div>
-                  </div>
-                  <div className="form-group" style={{ marginBottom: '24px' }}>
-                    <label className="form-label" htmlFor="email">Email Address</label>
-                    <input className="form-input" type="email" id="email" required />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: '32px' }}>
-                    <label className="form-label" htmlFor="message">Message</label>
-                    <textarea className="form-textarea" id="message" required />
-                  </div>
-                  <button type="submit" className="form-submit">Send Message</button>
-                </form>
-              </>
-            ) : (
-              <div className="success-notification" style={{ background: '#fff', padding: '60px', borderRadius: 24, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
-                <div style={{ width: 80, height: 80, margin: '0 auto 32px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                </div>
-                <h3 style={{ fontSize: 'var(--fs-h4)', fontWeight: 400, margin: '0 0 16px' }}>Message Sent!</h3>
-                <p style={{ fontSize: 'var(--fs-sm)', color: '#6b6b80' }}>We&apos;ll get back to you within 24 hours</p>
+          {/* Contact Form Overlay */}
+          <div className={`form-container ${formVisible ? 'visible' : ''}`} id="contact-form-overlay">
+            <button className="back-arrow-btn" onClick={handleExit} aria-label="Go back">
+              <div className="back-arrow-icon">
+                <svg className="back-arrow-svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 12H5m7-7l-7 7 7 7" />
+                </svg>
               </div>
-            )}
+              <span className="back-arrow-label">Back</span>
+            </button>
+            <div className="form-inner" ref={formInnerRef}>
+              {!showSuccess ? (
+                <>
+                  <h3 className="form-title">Get in Touch</h3>
+                  <p className="form-desc">Discuss how we can collaborate to advance precision health research.</p>
+                  <form className="contact-form" onSubmit={handleSubmit}>
+                    <div className="name-grid">
+                      <div>
+                        <label className="form-label" htmlFor="fname">First Name</label>
+                        <input ref={firstInputRef} className="form-input" type="text" id="fname" required />
+                      </div>
+                      <div>
+                        <label className="form-label" htmlFor="lname">Last Name</label>
+                        <input className="form-input" type="text" id="lname" required />
+                      </div>
+                    </div>
+                    <div className="form-group" style={{ marginBottom: '24px' }}>
+                      <label className="form-label" htmlFor="email">Email Address</label>
+                      <input className="form-input" type="email" id="email" required />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: '32px' }}>
+                      <label className="form-label" htmlFor="message">Message</label>
+                      <textarea className="form-textarea" id="message" required />
+                    </div>
+                    <button type="submit" className="form-submit">Send Message</button>
+                  </form>
+                </>
+              ) : (
+                <div className="success-notification" style={{ background: '#fff', padding: '60px', borderRadius: 24, textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
+                  <div style={{ width: 80, height: 80, margin: '0 auto 32px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <h3 style={{ fontSize: 'var(--fs-h4)', fontWeight: 400, margin: '0 0 16px' }}>Message Sent!</h3>
+                  <p style={{ fontSize: 'var(--fs-sm)', color: '#6b6b80' }}>We&apos;ll get back to you within 24 hours</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
